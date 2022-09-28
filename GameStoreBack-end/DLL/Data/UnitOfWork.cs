@@ -1,18 +1,42 @@
 ﻿using DLL.Interafeces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using DLL.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace DLL.Data
 {
     public class UnitOfWork : IUnitOfWork
     {
-        public IGameRepository GameRepository => throw new NotImplementedException();
+        private GameStoreDbContext db;
 
-        public IGanreRepository GanreRepository => throw new NotImplementedException();
+        public UnitOfWork(DbContextOptions<GameStoreDbContext> options)
+        {
+            this.db = new GameStoreDbContext(options);
+        }
 
+        IGameRepository gameRepository;
+        public IGameRepository GameRepository
+        {
+            get
+            {
+                if(gameRepository == null)
+                {
+                    gameRepository = new GameRepository(db);
+                }
+                return gameRepository;
+            }
+        }
+        IGanreRepository ganreRepository;
+        public IGanreRepository GanreRepository
+        {
+            get
+            {
+                if (ganreRepository == null)
+                {
+                    ganreRepository = new GanreRepository(db);
+                }
+                return ganreRepository;
+            }
+        }
         public Task SaveAsync()
         {
             throw new NotImplementedException();

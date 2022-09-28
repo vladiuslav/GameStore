@@ -1,43 +1,47 @@
 ﻿using DLL.Interafeces;
+using DLL.Data;
 using DLL.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace DLL.Repositories
 {
     public class GameRepository : IGameRepository
     {
-        public Task AddAsync(Game entity)
+        private readonly GameStoreDbContext _dbContext;
+        public GameRepository(GameStoreDbContext dbContext)
         {
-            throw new NotImplementedException();
+            _dbContext = dbContext;
+        }
+
+        public async Task AddAsync(Game entity)
+        {
+            await _dbContext.Games.AddAsync(entity);
         }
 
         public void Delete(Game entity)
         {
-            throw new NotImplementedException();
+            _dbContext.Games.Remove(entity);
         }
 
-        public Task DeleteByIdAsync(int id)
+        public async Task DeleteByIdAsync(int id)
         {
-            throw new NotImplementedException();
+           var game = await _dbContext.Games.FirstAsync(g => g.Id==id);
+            _dbContext.Games.Remove(game);
         }
 
-        public Task<IEnumerable<Game>> GetAllAsync()
+        public async Task<IEnumerable<Game>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _dbContext.Games.ToListAsync();
         }
 
-        public Task<Game> GetByIdAsync(int id)
+        public async Task<Game> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _dbContext.Games.FirstAsync(g => g.Id==id);
         }
 
         public void Update(Game entity)
         {
-            throw new NotImplementedException();
+            _dbContext.Entry(entity).CurrentValues.SetValues(entity);
         }
     }
 }

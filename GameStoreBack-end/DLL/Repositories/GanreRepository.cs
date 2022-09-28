@@ -1,43 +1,46 @@
 ﻿using DLL.Interafeces;
+using DLL.Data;
 using DLL.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace DLL.Repositories
 {
     public class GanreRepository : IGanreRepository
     {
-        public Task AddAsync(Ganre entity)
+        private readonly GameStoreDbContext _dbContext;
+        public GanreRepository(GameStoreDbContext dbContext)
         {
-            throw new NotImplementedException();
+            _dbContext = dbContext;
+        }
+        public async Task AddAsync(Ganre entity)
+        {
+            await _dbContext.Ganres.AddAsync(entity);
         }
 
         public void Delete(Ganre entity)
         {
-            throw new NotImplementedException();
+            _dbContext.Ganres.Remove(entity);
         }
 
-        public Task DeleteByIdAsync(int id)
+        public async Task DeleteByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var ganre = await _dbContext.Ganres.FirstAsync(g => g.Id == id);
+            _dbContext.Ganres.Remove(ganre);
         }
 
-        public Task<IEnumerable<Ganre>> GetAllAsync()
+        public async Task<IEnumerable<Ganre>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _dbContext.Ganres.ToListAsync();
         }
 
-        public Task<Ganre> GetByIdAsync(int id)
+        public async Task<Ganre> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _dbContext.Ganres.FirstAsync(g => g.Id == id);
         }
 
         public void Update(Ganre entity)
         {
-            throw new NotImplementedException();
+            _dbContext.Entry(entity).CurrentValues.SetValues(entity);
         }
     }
 }
