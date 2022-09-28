@@ -361,3 +361,10 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/GameStoreBack-end/DLL/Entities/Ganre.cs
+/GameStoreBack-end/DLL/Entities/Game.cs
+/GameStoreBack-end/DLL/Entities/BaseEntity.cs
+/GameStoreBack-end/DLL/Interafeces/IUnitOfWork.cs
+/GameStoreBack-end/DLL/Interafeces/IRepository.cs
+/GameStoreBack-end/DLL/Interafeces/IGanreRepository.cs
+/GameStoreBack-end/DLL/Interafeces/IGameRepository.cs
