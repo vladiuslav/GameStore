@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace DLL.Entities
 {
     public class Game: BaseEntity
     {
-        
+        [Required]
+        [MinLength(3)]
         public string Name { get; set; }
+        [Required]
+        [MinLength(3)]
         public string Description { get; set; }
-        public string ImageUrl { get; set; }
+        public string? ImageUrl { get; set; }
         public ICollection<Ganre> Ganres { get; set; }
     }
 }

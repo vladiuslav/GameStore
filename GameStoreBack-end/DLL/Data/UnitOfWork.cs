@@ -37,9 +37,9 @@ namespace DLL.Data
                 return ganreRepository;
             }
         }
-        public Task SaveAsync()
+        public async Task SaveAsync()
         {
-            throw new NotImplementedException();
+            await db.SaveChangesAsync();
         }
     }
 }

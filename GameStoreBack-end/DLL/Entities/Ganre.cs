@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace DLL.Entities
 {
     public class Ganre :BaseEntity
     {
+        [Required]
+        [MinLength(3)]
         public string Name { get; set; }
         public ICollection<Game> Games { get; set; }
     }

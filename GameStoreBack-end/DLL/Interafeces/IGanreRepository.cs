@@ -9,5 +9,7 @@ namespace DLL.Interafeces
 {
     public interface IGanreRepository : IRepository<Ganre>
     {
+        Task<IEnumerable<Ganre>> GetAllWithDetailsAsync();
+        Task<Ganre> GetByIdWithDetailsAsync(int id);
     }
 }

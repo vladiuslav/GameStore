@@ -9,5 +9,7 @@ namespace DLL.Interafeces
 {
     public interface IGameRepository : IRepository<Game>
     {
+        Task<IEnumerable<Game>> GetAllWithDetailsAsync();
+        Task<Game> GetByIdWithDetailsAsync(int id);
     }
 }

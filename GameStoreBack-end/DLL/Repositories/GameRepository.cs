@@ -34,9 +34,19 @@ namespace DLL.Repositories
             return await _dbContext.Games.ToListAsync();
         }
 
+        public async Task<IEnumerable<Game>> GetAllWithDetailsAsync()
+        {
+            return await _dbContext.Games.Include(g=>g.Ganres).ToListAsync();
+        }
+
         public async Task<Game> GetByIdAsync(int id)
         {
             return await _dbContext.Games.FirstAsync(g => g.Id==id);
+        }
+
+        public async Task<Game> GetByIdWithDetailsAsync(int id)
+        {
+            return await _dbContext.Games.Include(g=>g.Ganres).FirstOrDefaultAsync(g => g.Id == id);
         }
 
         public void Update(Game entity)
