@@ -36,8 +36,18 @@ article {
   background-color: #333;
 }
 
+.game-container {
+  margin-top: 1em;
+  padding: 1em;
+  background-color: #111;
+}
 
-footer{
+.game-container a {
+  color: white;
+  text-decoration: none;
+}
+
+footer {
   height: 5em;
   background-color: #333;
 }

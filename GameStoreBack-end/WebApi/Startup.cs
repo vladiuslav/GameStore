@@ -31,9 +31,11 @@ namespace WEBAPI
             services.AddTransient<IGameService, GameService>();
             services.AddTransient<IGanreService, GanreService>();
             services.AddControllers();
+            services.AddCors();
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
             // Configure the HTTP request pipeline.
             if (env.IsDevelopment())
             {
@@ -42,6 +44,11 @@ namespace WEBAPI
             }
 
             app.UseHttpsRedirection();
+            app.UseCors(x => x
+                   .AllowAnyMethod()
+                   .AllowAnyHeader()
+                   .SetIsOriginAllowed(origin => true)
+                   .AllowCredentials());
 
             app.UseRouting();
 
