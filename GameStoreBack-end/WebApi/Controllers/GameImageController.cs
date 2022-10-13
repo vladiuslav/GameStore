@@ -1,0 +1,53 @@
+﻿using AutoMapper;
+using BLL.Interfaces;
+using BLL.Models;
+using System.Net;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using WebApi.Models;
+using System.IO;
+
+namespace WebApi.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class GameImageController : ControllerBase
+    {
+        private IWebHostEnvironment _appEnvironment;
+        private IGameService _gameService;
+        private IMapper _mapper;
+        public GameImageController(IGameService gameService, IWebHostEnvironment appEnvironment)
+        {
+            _gameService = gameService;
+            _appEnvironment = appEnvironment;
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<AutoMapperProfile>();
+            }
+            );
+            _mapper = new Mapper(config);
+        }
+
+        [HttpPost]
+        [Route("/ImgUpload/{gameId}")]
+        [HttpPost]
+        public async Task<IActionResult> UploadImage(IFormFile uploadedFile,int gameId)
+        {
+            if (uploadedFile != null)
+            {
+                var game = await _gameService.GetByIdAsync(gameId);
+                // путь к папке Files
+                string path = "/img/" + uploadedFile.FileName;
+                // сохраняем файл в папку Files в каталоге wwwroot
+                using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
+                {
+                    await uploadedFile.CopyToAsync(fileStream);
+                    game.ImageUrl=uploadedFile.FileName;
+                    await _gameService.UpdateAsync(game);
+                }
+            }
+            return Ok();
+        }
+
+    }
+}

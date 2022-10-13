@@ -69,6 +69,7 @@ namespace BLL.Services
         public async Task<GameModel> GetByIdAsync(int id)
         {
             return _mapper.Map<GameModel>(await _unitOfWork.GameRepository.GetByIdWithDetailsAsync(id));
+
         }
 
         public async Task UpdateAsync(GameModel model)

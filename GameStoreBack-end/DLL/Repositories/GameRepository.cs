@@ -46,12 +46,17 @@ namespace DLL.Repositories
 
         public async Task<Game> GetByIdWithDetailsAsync(int id)
         {
-            return await _dbContext.Games.Include(g=>g.Ganres).FirstOrDefaultAsync(g => g.Id == id);
+            var game = await _dbContext.Games.Include(g => g.Ganres).FirstOrDefaultAsync(g => g.Id == id);
+            if (game != null)
+            {
+                _dbContext.Entry(game).State = EntityState.Detached;
+            }
+            return game;
         }
 
         public void Update(Game entity)
         {
-            _dbContext.Entry(entity).CurrentValues.SetValues(entity);
+            _dbContext.Entry(entity).State = EntityState.Modified;
         }
     }
 }

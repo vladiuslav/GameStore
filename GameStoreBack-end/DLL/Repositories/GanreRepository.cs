@@ -50,7 +50,7 @@ namespace DLL.Repositories
 
         public void Update(Ganre entity)
         {
-            _dbContext.Entry(entity).CurrentValues.SetValues(entity);
+            _dbContext.Entry(entity).State = EntityState.Modified;
         }
     }
 }

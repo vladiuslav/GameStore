@@ -28,8 +28,8 @@ namespace WEBAPI
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
-            services.AddTransient<IGameService, GameService>();
-            services.AddTransient<IGanreService, GanreService>();
+            services.AddScoped<IGameService, GameService>();
+            services.AddScoped<IGanreService, GanreService>();
             services.AddControllers();
             services.AddCors();
         }
@@ -49,7 +49,7 @@ namespace WEBAPI
                    .AllowAnyHeader()
                    .SetIsOriginAllowed(origin => true)
                    .AllowCredentials());
-
+            app.UseStaticFiles();
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
