@@ -16,12 +16,11 @@ const ChangeGameImage = () => {
         const res = await fetch('https://localhost:7025/api/GameImage/' + GameId, {
             method: 'PUT',
             headers: {
-                'Accept': "*/*",
+                'Accept': '*/*',
                 'Content-Type': "multipart/form-data"
             },
             body: JSON.stringify(data),
         });
-        console.log(res);
 
     }
 

@@ -1,4 +1,22 @@
 footer {
     height: 5em;
-    background-color: #1e1e1e;
+    margin-left: 10%;
+    width: 82%;
+    background-color: #000;
+}
+.footer-img-left {
+    display: inline-block;
+    width: fit-content;
+    float: left;
+}
+.footer-text-left{
+    display: inline-block;
+    width: fit-content;
+    float: left;
+}
+.footer-text-right{
+    display: inline-block;
+    width: fit-content;
+    margin-top: 1.5em;
+    float: right;
 }
