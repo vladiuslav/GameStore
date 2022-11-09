@@ -48,9 +48,11 @@ namespace DLL.Repositories
             return await _dbContext.Ganres.Include(g=>g.Games).FirstOrDefaultAsync(g => g.Id == id);
         }
 
-        public void Update(Ganre entity)
+        public async Task UpdateAsync(Ganre entity)
         {
-            _dbContext.Entry(entity).State = EntityState.Modified;
+            var ganre = await _dbContext.Ganres.FindAsync(entity.Id);
+            ganre.Name = entity.Name;
+            ganre.Games = entity.Games;
         }
     }
 }

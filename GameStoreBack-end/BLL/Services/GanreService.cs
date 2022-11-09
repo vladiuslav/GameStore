@@ -74,7 +74,7 @@ namespace BLL.Services
 
         public async Task UpdateAsync(GanreModel model)
         {
-            _unitOfWork.GanreRepository.Update(_mapper.Map<Ganre>(model));
+            await _unitOfWork.GanreRepository.UpdateAsync(_mapper.Map<Ganre>(model));
             await _unitOfWork.SaveAsync();
         }
     }

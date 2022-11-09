@@ -30,6 +30,7 @@ namespace WEBAPI
             services.AddSwaggerGen();
             services.AddScoped<IGameService, GameService>();
             services.AddScoped<IGanreService, GanreService>();
+            services.AddScoped<ISearchFilterService, SearchFilterService>();
             services.AddControllers();
             services.AddCors();
         }
@@ -43,12 +44,11 @@ namespace WEBAPI
                 app.UseSwaggerUI();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();  
             app.UseCors(x => x
                    .AllowAnyMethod()
                    .AllowAnyHeader()
-                   .SetIsOriginAllowed(origin => true)
-                   .AllowCredentials());
+                   .AllowAnyOrigin());
             app.UseStaticFiles();
             app.UseRouting();
 

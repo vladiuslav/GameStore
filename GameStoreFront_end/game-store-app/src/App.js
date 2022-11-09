@@ -10,32 +10,9 @@ import Community from './components/Community';
 import Support from './components/Support';
 import Footer from './components/Footer';
 import ErrorPage from './components/ErrorPage';
-
+import SignIn from './components/SignIn';
 
 const App = () => {
-      const [games, setGames] = useState([]);
-
-      useEffect(() => {
-            const getGames = async () => {
-                  const gamesFromServer = await fetchGames()
-                  setGames(gamesFromServer)
-            }
-
-            getGames()
-      }, [])
-
-
-      //Get Games
-      const fetchGames = async () => {
-
-            const res = await fetch(`https://localhost:7025/api/Game`);
-            const data = await res.json();
-
-            return data;
-      }
-
-
-
       return (
             <Router>
                   <Header />
@@ -43,7 +20,7 @@ const App = () => {
                         <Routes>
                               <Route
                                     path='/'
-                                    element={<Games games={games} />} />
+                                    element={<Games />} />
                               <Route
                                     path='/Community'
                                     element={<Community />} />
@@ -56,6 +33,9 @@ const App = () => {
                               <Route
                                     path='/Game/:GameId'
                                     element={<Game />} />
+                              <Route
+                                    path='/SignIn'
+                                    element={<SignIn />} />
                               <Route
                                     path='*'
                                     element={<ErrorPage />} />

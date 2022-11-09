@@ -54,9 +54,15 @@ namespace DLL.Repositories
             return game;
         }
 
-        public void Update(Game entity)
+        public async Task UpdateAsync(Game entity)
         {
-            _dbContext.Entry(entity).State = EntityState.Modified;
+            var game = await _dbContext.Games.FindAsync(entity.Id);
+            game.Name = entity.Name;
+            game.Description = entity.Description;
+            game.Price = entity.Price;
+            game.ImageUrl = entity.ImageUrl;
+            game.Ganres = entity.Ganres;
+
         }
     }
 }

@@ -1,0 +1,61 @@
+.games-bar {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+.games-bar li {
+    float: left;
+}
+
+.games {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+.game-container {
+    display: inline-block;
+    grid-template-rows: auto;
+    padding: 0.5em;
+    width: 20em;
+    margin: 2.25em;
+    background-color: #000;
+}
+
+.game-image-small {
+    width: 20em;
+    height: 15em;
+    background-size: cover;
+}
+
+.game-container a {
+    color: white;
+    text-decoration: none;
+}
+
+.games-filters {
+    list-style-type: none;
+}
+
+.games-filters li {
+    display: inline-block;
+    width: 30%;
+}
+
+#ganresFiltersDiv {
+    border: #000 1ps solid;
+    position: absolute;
+    background-color: #1e1e1e;
+    border: #000 solid 1px;
+    border-radius: 4px;
+    padding-top: 1em;
+    padding-left: 1em;
+}
+
+.ganre-name{
+    background-color: #4554a0;
+    padding: 0.5em;
+    border: none;
+    border-radius: 4px;
+}

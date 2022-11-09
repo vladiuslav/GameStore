@@ -74,7 +74,7 @@ namespace BLL.Services
 
         public async Task UpdateAsync(GameModel model)
         {
-            _unitOfWork.GameRepository.Update(_mapper.Map<Game>(model));
+            await _unitOfWork.GameRepository.UpdateAsync(_mapper.Map<Game>(model));
             await _unitOfWork.SaveAsync();
         }
     }

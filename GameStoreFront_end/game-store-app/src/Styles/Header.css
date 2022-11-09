@@ -1,0 +1,33 @@
+nav{
+    margin-left: 10%;
+    width: 82%;
+}
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #000;
+}
+
+nav li {
+    float: left;
+}
+
+nav li a {
+    font-size: 1.2em;
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 1em 2em;
+    text-decoration: none;
+}
+
+nav li a:hover {
+    background-color: #1e1e1e;
+}
+
+.site-logo{
+    width: 3.75em; 
+    height: 3.75em;
+}

@@ -51,17 +51,21 @@ namespace WebApi.Controllers
         {
             var gameModel = _mapper.Map<GameModel>(game);
             await _gameService.AddAsync(gameModel);
-            return Ok();
+            var response = new JsonResult(game);
+            response.StatusCode = 201;
+            return response;
         }
 
 
-        [HttpPut("{id}")]
+        //ganres ids 
+        [HttpPut("{id:int}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> Update(string id, [FromBody] GameViewModel game)
+        public async Task<IActionResult> Update([FromRoute]int id, [FromBody] GameViewModel game)
         {
             var gameModel = _mapper.Map<GameModel>(game);
+            gameModel.Id = id;
             await _gameService.UpdateAsync(gameModel);
             return NoContent();
         }
@@ -73,7 +77,10 @@ namespace WebApi.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             await _gameService.DeleteByIdAsync(id);
-            return NoContent();
+            var result = new JsonResult("");
+            result.StatusCode=204;
+            result.ContentType="application/json";
+            return result;
         }
     }
 }

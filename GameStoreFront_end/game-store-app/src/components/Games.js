@@ -1,39 +1,174 @@
-import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import AddGameComponent from "./GamePage/AddGameComponent";
+import fetchGames from "./Fetches/fetchGames/fetchGames";
+import fetchGamesByGanres from "./Fetches/fetchGames/fetchGamesByGanres";
+import fetchGamesByName from "./Fetches/fetchGames/fetchGamesByName";
+import fetchGanres from "./Fetches/fetchGanres";
+import GameImageSmall from "./GamePage/GameImageSmall";
 const Games = () => {
   const [games, setGames] = useState([]);
-
+  const [ganres, setGanres] = useState([]);
+  const [searchName, setSearchName] = useState("");
+  const [checkedState, setCheckedState] = useState([]);
+  const [showResults, setShowResults] = useState(false);
   useEffect(() => {
+    //get games
     const getGames = async () => {
       const gamesFromServer = await fetchGames();
-      console.log(gamesFromServer);
       setGames(gamesFromServer);
+    };
+    getGames();
+
+    //get ganres
+    const getGanres = async () => {
+      const ganresFromServer = await fetchGanres();
+      setGanres(ganresFromServer);
+      return await ganresFromServer;
+    };
+    let ganresFromServer = getGanres();
+
+    const getChecks = async (ganresFromServer) => {
+      let ganresChecks = [];
+      await ganresFromServer.then((value) => {
+        ganresChecks = Array(value.length).fill(false);
+      });
+
+      setCheckedState(ganresChecks);
+    };
+
+    getChecks(ganresFromServer);
+  }, []);
+
+  const showGanresOnClick = () => {
+    setShowResults(!showResults);
+  };
+
+  // CheckedFunction
+  const handleOnChange = (position) => {
+    const updatedCheckedState = checkedState.map((item, index) =>
+      index === position ? !item : item
+    );
+    setCheckedState(updatedCheckedState);
+  };
+
+  const FindByName = () => {
+    const getGames = async () => {
+      const gamesFromServer = await fetchGamesByName(searchName);
+      setGames(gamesFromServer);
+    };
+    getGames();
+  };
+  const FindByGanres = () => {
+    const getGames = async () => {
+      const gamesFromServer = await fetchGamesByGanres(checkedState);
+      setGames(gamesFromServer);
+    };
+    getGames();
+  };
+
+  const clearFilters = () => {
+    const getGames = async () => {
+      const gamesFromServer = await fetchGames();
+      setGames(gamesFromServer);
+    };
+    getGames();
+  };
+
+  const getGanres = (ids) => {
+    if (ganres.length != 0) {
+      let GanresString = "|";
+      ganres.forEach((element) => {
+        if (ids.find((id) => id == element.id) != null) {
+          GanresString += element.name + "|";
+        }
+      });
+      return <div className="ganre-name"> {GanresString} </div>;
     }
-    getGames()
-  }, [])
+    return <></>;
+  };
 
-
-  //Get Games
-  const fetchGames = async () => {
-
-    const res = await fetch(`https://localhost:7025/api/Game`);
-    const data = await res.json();
-
-    return data;
-  }
-
+  //render
   return (
     <>
-      {games.map((game, id) => (
-        <div className='game-container' key={id}>
-          <Link to={"/Game/" + game.id}>
-            {game.name}
-          </Link>
-        </div>
-      ))}
+      <ul className="games-filters">
+        <li>
+          <input
+            type="text"
+            placeholder="Game name"
+            value={searchName}
+            onChange={(e) => setSearchName(e.target.value)}
+          />
+          <button
+            onClick={() => {
+              FindByName();
+            }}
+          >
+            Search
+          </button>
+        </li>
+        <li>
+          <button
+            onClick={() => {
+              showGanresOnClick();
+            }}
+          >
+            {showResults ? "Hide game ganres" : "Show game ganres"}
+          </button>
+          {showResults ? <div id="ganresFiltersDiv">
+            <ul>
+              {ganres.map((item) => (
+                <li key={item.id}>
+                  <input
+                    type="checkbox"
+                    value={checkedState[item.id]}
+                    onChange={() => handleOnChange(item.id)}
+                  />
+                  <label>{item.name}</label>
+                </li>
+              ))}
+            </ul>
+            <button
+              onClick={() => {
+                FindByGanres();
+              }}
+            >
+              Search by ganres
+            </button>
+          </div> : null
+          }
+        </li>
+        <li>
+          <button
+            onClick={() => {
+              clearFilters();
+            }}
+          >
+            Clear filters
+          </button>
+        </li>
+      </ul>
+      <div className="games">
+        {games.map((game, id) => (
+          <div className="game-container" key={id}>
+            <Link to={"/Game/" + game.id}>
+              <GameImageSmall GameImageUrl={game.imageUrl} />
+              <p>
+                {game.name} {game.price}$
+              </p>
+              <p>{getGanres(game.ganresIds)}</p>
+              <p>
+                {game.description.length < 20
+                  ? game.description
+                  : game.description.slice(0, 40) + "..."}
+              </p>
+            </Link>
+          </div>
+        ))}
+      </div>
+      <AddGameComponent />
     </>
-  )
-}
+  );
+};
 
-export default Games
+export default Games;

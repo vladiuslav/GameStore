@@ -1,0 +1,57 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
+using BLL.Services;
+using BLL.Interfaces;
+using BLL.Models;
+using WebApi.Models;
+
+namespace WebApi.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class SearchFilterControler : ControllerBase
+    {
+        private IMapper _mapper;
+        private ISearchFilterService _searchFilterService ;
+        private IGameService _gameService ;
+        public SearchFilterControler(ISearchFilterService searchFilterService, IGameService gameService)
+        {
+            _searchFilterService = searchFilterService;
+            _gameService = gameService;
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<AutoMapperProfile>();
+            });
+            _mapper = new Mapper(config);
+        }
+
+        [HttpPost("Search/{gameName}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> GetGamesByNames(string gameName)
+        {
+            IEnumerable<GameViewModel> games;
+
+            games = _mapper.Map<IEnumerable<GameViewModel>>(await _searchFilterService.SearchGamesByName(gameName));
+                
+            if (games == null)
+            {
+                return NotFound();
+            }
+            return Ok(games);    
+        }
+
+        [HttpPost("Filter")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> GetGamesByFilters(GanresIdsModel ganresIds)
+        {
+            var games = _mapper.Map<IEnumerable<GameViewModel>>(await _searchFilterService.FilterGameByGanres(ganresIds.ganresIds));
+            if (games == null)
+            {
+                return NotFound();
+            }
+            return Ok(games);
+        }
+    }
+}

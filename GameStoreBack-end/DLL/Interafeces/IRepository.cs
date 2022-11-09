@@ -19,6 +19,6 @@ namespace DLL.Interafeces
 
         Task DeleteByIdAsync(int id);
 
-        void Update(TEntity entity);
+        Task UpdateAsync(TEntity entity);
     }
 }

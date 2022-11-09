@@ -1,32 +1,66 @@
 import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
-
+import { Link, useParams } from 'react-router-dom'
+import ChangeGameComponent from './GamePage/ChangeGameComponent';
+import ChangeGameImage from './GamePage/ChangeGameImage';
+import fetchGame from './Fetches/fetchGame';
+import fetchDeleteGame from './Fetches/fetchDeleteGame';
+import fetchGanres from './Fetches/fetchGanres';
+import GameImageBig from './GamePage/GameImageBig';
 const Game = () => {
+  const [ganres, setGanres] = useState([]);
   const [game, setGame] = useState([]);
   const { GameId } = useParams();
 
   useEffect(() => {
     const getGame = async () => {
-      const gamesFromServer = await fetchGames();
-      setGame(gamesFromServer);
-    }
-    getGame()
+      const gameFromServer = await fetchGame(GameId);
+      setGame(gameFromServer);
+    };
+    getGame();
+
+    const getGanres = async () => {
+      const ganresFromServer = await fetchGanres();
+      setGanres(ganresFromServer);
+    };
+    getGanres();
+
   }, [])
 
-
-  //Get Games
-  const fetchGames = async () => {
-
-    const res = await fetch(`https://localhost:7025/api/Game/` + GameId);
-    const data = await res.json();
-
-    return data;
+  //Delete Game 
+  const deleteGame = () => {
+    fetchDeleteGame(GameId);
   }
+
+  const getGanres = (ids) => {
+    if (ganres.length != 0) {
+
+      let GanresString = "|";
+      ganres.forEach(element => {
+        if (ids.find(id => id == element.id) != null) {
+          GanresString += element.name + '|';
+        }
+      });
+      return (<> {GanresString} </>);
+    }
+    return (<></>);
+  }
+
   return (
-    <>
-      <p>{game.name}</p>
-      <p>{game.id}</p>
-    </>
+    <div className='game-page'>
+      <GameImageBig GameImageUrl={game.imageUrl} />
+      <div className='game-info'>
+        <div className="game-ganres">{getGanres(game.ganresIds)}</div>
+        <div className='game-price'>{game.price + "$"}</div>
+        <div className='game-name'><h1>{game.name}</h1></div>
+      </div>
+      <div className='game-description'>
+        <h1>Description</h1>
+        <p>{game.description}</p>
+      </div>
+      <ChangeGameComponent />
+      <button onClick={() => deleteGame()}>Delete game</button>
+      <ChangeGameImage />
+    </div>
   )
 }
 
