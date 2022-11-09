@@ -28,26 +28,30 @@ namespace WebApi.Controllers
             _mapper = new Mapper(config);
         }
 
-        [HttpPost]
-        [Route("/ImgUpload/{gameId}")]
-        [HttpPost]
-        public async Task<IActionResult> UploadImage(IFormFile uploadedFile,int gameId)
+        [HttpPut]
+        [Consumes("multipart/form-data")]
+        [Route("{gameId}")]
+        public async Task<IActionResult> Image(int gameId,[FromForm]FileModel fileModel)
         {
-            if (uploadedFile != null)
+            if (fileModel.UploadedFile != null)
             {
                 var game = await _gameService.GetByIdAsync(gameId);
                 // путь к папке Files
-                string path = "/img/" + uploadedFile.FileName;
+                string path = "/img/" + fileModel.UploadedFile.FileName;
                 // сохраняем файл в папку Files в каталоге wwwroot
                 using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
                 {
-                    await uploadedFile.CopyToAsync(fileStream);
-                    game.ImageUrl=uploadedFile.FileName;
+                    await fileModel.UploadedFile.CopyToAsync(fileStream);
+                    game.ImageUrl= fileModel.UploadedFile.FileName;
                     await _gameService.UpdateAsync(game);
                 }
             }
             return Ok();
         }
 
+        public class FileModel
+        {
+            public IFormFile UploadedFile { get; set; }
+        }
     }
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { json, Link, useParams } from 'react-router-dom'
 import React from 'react'
 import Game from '../Game';
 
@@ -10,15 +10,16 @@ const ChangeGameImage = () => {
 
     const fetchImage = async () => {
         var data = new FormData()
-        data.append("file", image);
-        const res = await fetch('https://localhost:7025/ImgUpload/' + GameId, {
-            method: 'POST',
+        data.append("UploadedFile", image);
+        console.log(data);
+
+        const res = await fetch('https://localhost:7025/api/GameImage/' + GameId, {
+            method: 'PUT',
             headers: {
-                'mode': 'cors',
                 'Accept': "*/*",
                 'Content-Type': "multipart/form-data"
             },
-            body: data
+            body: JSON.stringify(data),
         });
         console.log(res);
 
@@ -29,8 +30,7 @@ const ChangeGameImage = () => {
             <label>Image of game</label>
             <input
                 type='file'
-                value={image}
-                onChange={(e) => setImage(e.target.value)}
+                onChange={(e) => setImage(e.target.files[0])}
             />
             <button onClick={() => fetchImage()}>Change game image</button>
         </div>
