@@ -77,12 +77,13 @@ const Games = () => {
 
   const getGanres = (ids) => {
     if (ganres.length != 0) {
-      let GanresString = "|";
+      let GanresString = "";
       ganres.forEach((element) => {
         if (ids.find((id) => id == element.id) != null) {
-          GanresString += element.name + "|";
+          GanresString += element.name + "/";
         }
       });
+      GanresString = GanresString.slice(0, GanresString.length - 1);
       return <div className="ganre-name"> {GanresString} </div>;
     }
     return <></>;
@@ -149,14 +150,14 @@ const Games = () => {
         </li>
       </ul>
       <div className="games">
-        {games.map((game, id) => (
-          <div className="game-container" key={id}>
+        {games.map((game) => (
+          <div className="game-container" key={game.id}>
             <Link to={"/Game/" + game.id}>
               <GameImageSmall GameImageUrl={game.imageUrl} />
               <p>
                 {game.name} {game.price}$
               </p>
-              <p>{getGanres(game.ganresIds)}</p>
+              <div>{getGanres(game.ganresIds)}</div>
               <p>
                 {game.description.length < 20
                   ? game.description

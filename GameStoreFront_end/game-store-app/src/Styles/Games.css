@@ -51,11 +51,20 @@
     border-radius: 4px;
     padding-top: 1em;
     padding-left: 1em;
+    width: auto;
 }
-
+#ganresFiltersDiv ul{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+#ganresFiltersDiv ul li{
+    margin: 0;
+    padding: 0;
+}
 .ganre-name{
     background-color: #4554a0;
-    padding: 0.5em;
     border: none;
+    padding: 0.2em;
     border-radius: 4px;
 }

@@ -33,17 +33,17 @@ const Game = () => {
 
   const getGanres = (ids) => {
     if (ganres.length != 0) {
-
-      let GanresString = "|";
-      ganres.forEach(element => {
-        if (ids.find(id => id == element.id) != null) {
-          GanresString += element.name + '|';
+      let GanresString = "";
+      ganres.forEach((element) => {
+        if (ids.find((id) => id == element.id) != null) {
+          GanresString += element.name + "/";
         }
       });
-      return (<> {GanresString} </>);
+      GanresString = GanresString.slice(0, GanresString.length - 1);
+      return <div className="ganre-name"> {GanresString} </div>;
     }
-    return (<></>);
-  }
+    return <></>;
+  };
 
   return (
     <div className='game-page'>

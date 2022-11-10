@@ -36,9 +36,17 @@ namespace WebApi.Controllers
             if (fileModel.UploadedFile != null)
             {
                 var game = await _gameService.GetByIdAsync(gameId);
-                // путь к папке Files
+
+                // path to file
                 string path = "/img/" + fileModel.UploadedFile.FileName;
-                // сохраняем файл в папку Files в каталоге wwwroot
+
+                // delete previous imae if exist
+                if (game.ImageUrl != "Logo.png")
+                {
+                    System.IO.File.Delete(_appEnvironment.WebRootPath + game.ImageUrl);
+                }
+
+                // save Files in cataloge wwwroot
                 using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
                 {
                     await fileModel.UploadedFile.CopyToAsync(fileStream);
