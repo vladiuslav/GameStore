@@ -9,6 +9,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerUI;
+using System.Runtime.CompilerServices;
+using WebApi;
 
 namespace WEBAPI
 {
@@ -28,9 +30,10 @@ namespace WEBAPI
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
-            services.AddScoped<IGameService, GameService>();
+            services.AddScoped<IGameService,GameService>();
             services.AddScoped<IGanreService, GanreService>();
             services.AddScoped<ISearchFilterService, SearchFilterService>();
+            services.AddAutoMapper(typeof(AutoMapperProfile));
             services.AddControllers();
             services.AddCors();
         }

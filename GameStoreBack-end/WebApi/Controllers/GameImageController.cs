@@ -16,16 +16,11 @@ namespace WebApi.Controllers
         private IWebHostEnvironment _appEnvironment;
         private IGameService _gameService;
         private IMapper _mapper;
-        public GameImageController(IGameService gameService, IWebHostEnvironment appEnvironment)
+        public GameImageController(IGameService gameService,IMapper mapper, IWebHostEnvironment appEnvironment)
         {
             _gameService = gameService;
             _appEnvironment = appEnvironment;
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<AutoMapperProfile>();
-            }
-            );
-            _mapper = new Mapper(config);
+            _mapper = mapper;
         }
 
         [HttpPut]

@@ -28,7 +28,9 @@ namespace BLL.Services
         }
         public SearchFilterService()
         {
-            var options = new DbContextOptionsBuilder<GameStoreDbContext>().UseSqlServer(@"Server=localhost\SQLEXPRESS;Database=GameStoreDb;Trusted_Connection=True;").Options;
+            var options = new DbContextOptionsBuilder<GameStoreDbContext>()
+                .UseSqlServer(@"Server=localhost\SQLEXPRESS;Database=GameStoreDb;Trusted_Connection=True;")
+                .Options;
             _unitOfWork = new UnitOfWork(options);
             var config = new MapperConfiguration(cfg => {
                 cfg.AddProfile<AutoMapperProfile>();

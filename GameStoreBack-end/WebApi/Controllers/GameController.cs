@@ -13,15 +13,10 @@ namespace WebApi.Controllers
     {
         private IMapper _mapper;
         private IGameService _gameService;
-        public GameController(IGameService gameService)
+        public GameController(IGameService gameService,IMapper mapper)
         {
             _gameService = gameService;
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<AutoMapperProfile>();
-            }
-            );
-            _mapper = new Mapper(config);
+            _mapper = mapper;
         }
 
         [HttpGet]

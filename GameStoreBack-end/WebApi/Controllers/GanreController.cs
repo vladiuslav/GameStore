@@ -13,15 +13,10 @@ namespace WebApi.Controllers
     {
         private IMapper _mapper;
         private IGanreService _ganreService;
-        public GanreController(IGanreService ganreService)
+        public GanreController(IGanreService ganreService, IMapper mapper)
         {
             _ganreService = ganreService;
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<AutoMapperProfile>();
-            }
-            );
-            _mapper = new Mapper(config);
+            _mapper = mapper;
         }
 
         [HttpGet]

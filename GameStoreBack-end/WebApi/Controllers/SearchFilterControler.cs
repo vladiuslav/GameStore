@@ -14,15 +14,11 @@ namespace WebApi.Controllers
         private IMapper _mapper;
         private ISearchFilterService _searchFilterService ;
         private IGameService _gameService ;
-        public SearchFilterControler(ISearchFilterService searchFilterService, IGameService gameService)
+        public SearchFilterControler(ISearchFilterService searchFilterService, IMapper mapper, IGameService gameService)
         {
             _searchFilterService = searchFilterService;
             _gameService = gameService;
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<AutoMapperProfile>();
-            });
-            _mapper = new Mapper(config);
+            _mapper = mapper;
         }
 
         [HttpPost("Search/{gameName}")]
