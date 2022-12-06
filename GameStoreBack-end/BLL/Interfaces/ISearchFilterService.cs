@@ -10,6 +10,6 @@ namespace BLL.Interfaces
     public interface ISearchFilterService
     {
         Task<IEnumerable<GameModel>> SearchGamesByName(string gameName);
-        Task<IEnumerable<GameModel>> FilterGameByGanres(IEnumerable<int> ganresIds);
+        Task<IEnumerable<GameModel>> FilterGameByGenres(IEnumerable<int> genresIds);
     }
 }

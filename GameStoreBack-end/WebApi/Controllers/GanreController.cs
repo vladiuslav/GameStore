@@ -9,13 +9,13 @@ namespace WebApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class GanreController : Controller
+    public class GenreController : Controller
     {
         private IMapper _mapper;
-        private IGanreService _ganreService;
-        public GanreController(IGanreService ganreService, IMapper mapper)
+        private IGenreService _genreService;
+        public GenreController(IGenreService genreService, IMapper mapper)
         {
-            _ganreService = ganreService;
+            _genreService = genreService;
             _mapper = mapper;
         }
 
@@ -23,29 +23,29 @@ namespace WebApi.Controllers
         [ProducesResponseType(200)]
         public async Task<IActionResult> Get()
         {
-            var ganres = _mapper.Map<IEnumerable<GanreViewModel>>(await _ganreService.GetAllAsync());
-            return new JsonResult(ganres);
+            var genres = _mapper.Map<IEnumerable<GenreViewModel>>(await _genreService.GetAllAsync());
+            return new JsonResult(genres);
         }
-        [HttpGet("{id}", Name = nameof(GetGanre))]
+        [HttpGet("{id}", Name = nameof(GetGenre))]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> GetGanre(int id)
+        public async Task<IActionResult> GetGenre(int id)
         {
-            var ganre = _mapper.Map<GanreViewModel>(await _ganreService.GetByIdAsync(id));
-            if (ganre == null)
+            var genre = _mapper.Map<GenreViewModel>(await _genreService.GetByIdAsync(id));
+            if (genre == null)
             {
                 return NotFound();
             }
-            return Ok(ganre);
+            return Ok(genre);
         }
 
         [HttpPost]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> CreateGame(GanreViewModel game)
+        public async Task<IActionResult> CreateGame(GenreViewModel game)
         {
-            var ganreModel = _mapper.Map<GanreModel>(game);
-            await _ganreService.AddAsync(ganreModel);
+            var genreModel = _mapper.Map<GenreModel>(game);
+            await _genreService.AddAsync(genreModel);
             return Ok();
         }
 
@@ -53,10 +53,10 @@ namespace WebApi.Controllers
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> Update(string id, [FromBody] GanreViewModel game)
+        public async Task<IActionResult> Update(string id, [FromBody] GenreViewModel game)
         {
-            var ganreModel = _mapper.Map<GanreModel>(game);
-            await _ganreService.UpdateAsync(ganreModel);
+            var genreModel = _mapper.Map<GenreModel>(game);
+            await _genreService.UpdateAsync(genreModel);
             return NoContent();
         }
 
@@ -66,7 +66,7 @@ namespace WebApi.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Delete(int id)
         {
-            await _ganreService.DeleteByIdAsync(id);
+            await _genreService.DeleteByIdAsync(id);
             return NoContent();
         }
     }

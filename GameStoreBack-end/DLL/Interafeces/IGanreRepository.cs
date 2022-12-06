@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace DLL.Interafeces
 {
-    public interface IGanreRepository : IRepository<Ganre>
+    public interface IGenreRepository : IRepository<Genre>
     {
-        Task<IEnumerable<Ganre>> GetAllWithDetailsAsync();
-        Task<Ganre> GetByIdWithDetailsAsync(int id);
+        Task<IEnumerable<Genre>> GetAllWithDetailsAsync();
+        Task<Genre> GetByIdWithDetailsAsync(int id);
     }
 }

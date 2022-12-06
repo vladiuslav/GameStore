@@ -13,11 +13,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BLL.Services
 {
-    public class GanreService : IGanreService
+    public class GenreService : IGenreService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly Mapper _mapper;
-        public GanreService(IUnitOfWork unitOfWork)
+        public GenreService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
             var config = new MapperConfiguration(cfg => {
@@ -26,7 +26,7 @@ namespace BLL.Services
             );
             _mapper = new Mapper(config);
         }
-        public GanreService()
+        public GenreService()
         {
             var options = new DbContextOptionsBuilder<GameStoreDbContext>()
                 .UseSqlServer(@"Server=localhost\SQLEXPRESS;Database=GameStoreDb;Trusted_Connection=True;")
@@ -39,9 +39,9 @@ namespace BLL.Services
             _mapper = new Mapper(config);
         }
 
-        public async Task AddAsync(GanreModel model)
+        public async Task AddAsync(GenreModel model)
         {
-            var ganre = _mapper.Map<Ganre>(model);
+            var genre = _mapper.Map<Genre>(model);
             ICollection<Game> games = new List<Game>();
             IEnumerable<Game> gamesDb = await _unitOfWork.GameRepository.GetAllWithDetailsAsync();
             foreach (var item in model.GamesIds)
@@ -52,31 +52,31 @@ namespace BLL.Services
                     games.Add(game);
                 }
             }
-            ganre.Games = games;
+            genre.Games = games;
 
-            await _unitOfWork.GanreRepository.AddAsync(ganre);
+            await _unitOfWork.GenreRepository.AddAsync(genre);
             await _unitOfWork.SaveAsync();
         }
 
         public async Task DeleteByIdAsync(int id)
         {
-            await _unitOfWork.GanreRepository.DeleteByIdAsync(id);
+            await _unitOfWork.GenreRepository.DeleteByIdAsync(id);
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task<IEnumerable<GanreModel>> GetAllAsync()
+        public async Task<IEnumerable<GenreModel>> GetAllAsync()
         {
-            return _mapper.Map<IEnumerable<GanreModel>>(await _unitOfWork.GanreRepository.GetAllWithDetailsAsync());
+            return _mapper.Map<IEnumerable<GenreModel>>(await _unitOfWork.GenreRepository.GetAllWithDetailsAsync());
         }
 
-        public async Task<GanreModel> GetByIdAsync(int id)
+        public async Task<GenreModel> GetByIdAsync(int id)
         {
-            return _mapper.Map<GanreModel>(await _unitOfWork.GanreRepository.GetByIdWithDetailsAsync(id));
+            return _mapper.Map<GenreModel>(await _unitOfWork.GenreRepository.GetByIdWithDetailsAsync(id));
         }
 
-        public async Task UpdateAsync(GanreModel model)
+        public async Task UpdateAsync(GenreModel model)
         {
-            await _unitOfWork.GanreRepository.UpdateAsync(_mapper.Map<Ganre>(model));
+            await _unitOfWork.GenreRepository.UpdateAsync(_mapper.Map<Genre>(model));
             await _unitOfWork.SaveAsync();
         }
     }

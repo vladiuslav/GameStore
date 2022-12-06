@@ -36,7 +36,7 @@ namespace DLL.Repositories
 
         public async Task<IEnumerable<Game>> GetAllWithDetailsAsync()
         {
-            return await _dbContext.Games.Include(g=>g.Ganres).ToListAsync();
+            return await _dbContext.Games.Include(g=>g.Genres).ToListAsync();
         }
 
         public async Task<Game> GetByIdAsync(int id)
@@ -46,7 +46,7 @@ namespace DLL.Repositories
 
         public async Task<Game> GetByIdWithDetailsAsync(int id)
         {
-            var game = await _dbContext.Games.Include(g => g.Ganres).FirstOrDefaultAsync(g => g.Id == id);
+            var game = await _dbContext.Games.Include(g => g.Genres).FirstOrDefaultAsync(g => g.Id == id);
             if (game != null)
             {
                 _dbContext.Entry(game).State = EntityState.Detached;
@@ -61,7 +61,7 @@ namespace DLL.Repositories
             game.Description = entity.Description;
             game.Price = entity.Price;
             game.ImageUrl = entity.ImageUrl;
-            game.Ganres = entity.Ganres;
+            game.Genres = entity.Genres;
 
         }
     }

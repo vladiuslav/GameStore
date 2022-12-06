@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BLL.Models
 {
-    public class GanreViewModel
+    public class GenreViewModel
     {
         public int Id { get; set; }
         public string Name { get; set; }

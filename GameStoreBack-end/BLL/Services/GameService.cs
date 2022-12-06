@@ -42,16 +42,16 @@ namespace BLL.Services
         public async Task AddAsync(GameModel model)
         {
             var game = _mapper.Map<Game>(model);
-            ICollection<Ganre> ganres= new List<Ganre>();
-            IEnumerable<Ganre> ganresDb = await _unitOfWork.GanreRepository.GetAllWithDetailsAsync();
-            foreach (var item in model.GanresIds)
+            ICollection<Genre> genres= new List<Genre>();
+            IEnumerable<Genre> genresDb = await _unitOfWork.GenreRepository.GetAllWithDetailsAsync();
+            foreach (var item in model.GenresIds)
             {
-                var ganre = ganresDb.FirstOrDefault(g => g.Id == item);
-                if (ganre!=null) {
-                    ganres.Add(ganre);
+                var genre = genresDb.FirstOrDefault(g => g.Id == item);
+                if (genre!=null) {
+                    genres.Add(genre);
                 }
             }
-            game.Ganres = ganres;
+            game.Genres = genres;
 
             await _unitOfWork.GameRepository.AddAsync(game);
             await _unitOfWork.SaveAsync();

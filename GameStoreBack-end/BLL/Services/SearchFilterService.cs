@@ -46,18 +46,18 @@ namespace BLL.Services
                 ).Where(g=>g.Name.Contains(gameName));
         }
 
-        public async Task<IEnumerable<GameModel>> FilterGameByGanres(IEnumerable<int> ganresIds)
+        public async Task<IEnumerable<GameModel>> FilterGameByGenres(IEnumerable<int> genresIds)
         {
             var games = await _unitOfWork.GameRepository.GetAllWithDetailsAsync();
-            var ganres = await _unitOfWork.GanreRepository.GetAllWithDetailsAsync();
+            var genres = await _unitOfWork.GenreRepository.GetAllWithDetailsAsync();
             var Rgames = new List<Game>();
             foreach (var game in games)
             {
                 bool feet = true;
-                foreach(var ganreId in ganresIds)
+                foreach(var genreId in genresIds)
                 {
-                    var ganre = ganres.FirstOrDefault(g => g.Id == ganreId);
-                    if (!ganre.Games.Select(g=>g.Id).Contains(game.Id))
+                    var genre = genres.FirstOrDefault(g => g.Id == genreId);
+                    if (!genre.Games.Select(g=>g.Id).Contains(game.Id))
                     {
                         feet = false;
                         break;

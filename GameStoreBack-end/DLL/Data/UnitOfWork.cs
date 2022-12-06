@@ -25,16 +25,16 @@ namespace DLL.Data
                 return gameRepository;
             }
         }
-        IGanreRepository ganreRepository;
-        public IGanreRepository GanreRepository
+        IGenreRepository genreRepository;
+        public IGenreRepository GenreRepository
         {
             get
             {
-                if (ganreRepository == null)
+                if (genreRepository == null)
                 {
-                    ganreRepository = new GanreRepository(db);
+                    genreRepository = new GenreRepository(db);
                 }
-                return ganreRepository;
+                return genreRepository;
             }
         }
         public async Task SaveAsync()

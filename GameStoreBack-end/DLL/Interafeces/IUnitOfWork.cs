@@ -9,7 +9,7 @@ namespace DLL.Interafeces
     public interface IUnitOfWork
     {
         IGameRepository GameRepository { get; }
-        IGanreRepository GanreRepository { get; }
+        IGenreRepository GenreRepository { get; }
         Task SaveAsync();
     }
 }

@@ -52,7 +52,7 @@ namespace WebApi.Controllers
         }
 
 
-        //ganres ids 
+        //genres ids 
         [HttpPut("{id:int}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]

@@ -7,6 +7,6 @@
         public string Description { get; set; }
         public string Price { get; set; }
         public string ImageUrl { get; set; }
-        public ICollection<int> GanresIds { get; set; }
+        public ICollection<int> GenresIds { get; set; }
     }
 }

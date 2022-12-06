@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BLL.Interfaces
 {
-    public interface IGanreService : ICrud<GanreModel>
+    public interface IGenreService : ICrud<GenreModel>
     {
         
     }

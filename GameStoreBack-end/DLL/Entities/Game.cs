@@ -12,6 +12,6 @@ namespace DLL.Entities
         public string Description { get; set; }
         public decimal Price { get; set; }
         public string? ImageUrl { get; set; }
-        public ICollection<Ganre> Ganres { get; set; }
+        public ICollection<Genre> Genres { get; set; }
     }
 }

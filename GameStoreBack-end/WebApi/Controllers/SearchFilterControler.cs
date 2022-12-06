@@ -40,9 +40,9 @@ namespace WebApi.Controllers
         [HttpPost("Filter")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> GetGamesByFilters(GanresIdsModel ganresIds)
+        public async Task<IActionResult> GetGamesByFilters(GenresIdsModel genresIds)
         {
-            var games = _mapper.Map<IEnumerable<GameViewModel>>(await _searchFilterService.FilterGameByGanres(ganresIds.ganresIds));
+            var games = _mapper.Map<IEnumerable<GameViewModel>>(await _searchFilterService.FilterGameByGenres(genresIds.genresIds));
             if (games == null)
             {
                 return NotFound();

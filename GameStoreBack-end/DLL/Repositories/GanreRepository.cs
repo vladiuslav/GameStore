@@ -5,54 +5,54 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DLL.Repositories
 {
-    public class GanreRepository : IGanreRepository
+    public class GenreRepository : IGenreRepository
     {
         private readonly GameStoreDbContext _dbContext;
-        public GanreRepository(GameStoreDbContext dbContext)
+        public GenreRepository(GameStoreDbContext dbContext)
         {
             _dbContext = dbContext;
         }
-        public async Task AddAsync(Ganre entity)
+        public async Task AddAsync(Genre entity)
         {
-            await _dbContext.Ganres.AddAsync(entity);
+            await _dbContext.Genres.AddAsync(entity);
         }
 
-        public void Delete(Ganre entity)
+        public void Delete(Genre entity)
         {
-            _dbContext.Ganres.Remove(entity);
+            _dbContext.Genres.Remove(entity);
         }
 
         public async Task DeleteByIdAsync(int id)
         {
-            var ganre = await _dbContext.Ganres.FirstAsync(g => g.Id == id);
-            _dbContext.Ganres.Remove(ganre);
+            var genre = await _dbContext.Genres.FirstAsync(g => g.Id == id);
+            _dbContext.Genres.Remove(genre);
         }
 
-        public async Task<IEnumerable<Ganre>> GetAllAsync()
+        public async Task<IEnumerable<Genre>> GetAllAsync()
         {
-            return await _dbContext.Ganres.ToListAsync();
+            return await _dbContext.Genres.ToListAsync();
         }
 
-        public async Task<IEnumerable<Ganre>> GetAllWithDetailsAsync()
+        public async Task<IEnumerable<Genre>> GetAllWithDetailsAsync()
         {
-            return await _dbContext.Ganres.Include(g=>g.Games).ToListAsync();
+            return await _dbContext.Genres.Include(g=>g.Games).ToListAsync();
         }
 
-        public async Task<Ganre> GetByIdAsync(int id)
+        public async Task<Genre> GetByIdAsync(int id)
         {
-            return await _dbContext.Ganres.FirstAsync(g => g.Id == id);
+            return await _dbContext.Genres.FirstAsync(g => g.Id == id);
         }
 
-        public async Task<Ganre> GetByIdWithDetailsAsync(int id)
+        public async Task<Genre> GetByIdWithDetailsAsync(int id)
         {
-            return await _dbContext.Ganres.Include(g=>g.Games).FirstOrDefaultAsync(g => g.Id == id);
+            return await _dbContext.Genres.Include(g=>g.Games).FirstOrDefaultAsync(g => g.Id == id);
         }
 
-        public async Task UpdateAsync(Ganre entity)
+        public async Task UpdateAsync(Genre entity)
         {
-            var ganre = await _dbContext.Ganres.FindAsync(entity.Id);
-            ganre.Name = entity.Name;
-            ganre.Games = entity.Games;
+            var genre = await _dbContext.Genres.FindAsync(entity.Id);
+            genre.Name = entity.Name;
+            genre.Games = entity.Games;
         }
     }
 }

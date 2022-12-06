@@ -1,7 +1,7 @@
 ﻿namespace WebApi.Models
 {
-    public class GanresIdsModel
+    public class GenresIdsModel
     {
-        public IEnumerable<int> ganresIds { get; set; }
+        public IEnumerable<int> genresIds { get; set; }
     }
 }

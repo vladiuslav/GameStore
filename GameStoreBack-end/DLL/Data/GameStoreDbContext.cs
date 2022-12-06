@@ -10,17 +10,17 @@ namespace DLL.Data
             Database.EnsureCreated();
         }
         public DbSet<Game> Games { get; set; }
-        public DbSet<Ganre> Ganres { get; set; }
+        public DbSet<Genre> Genres { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Game>()
-                .HasMany(g => g.Ganres)
+                .HasMany(g => g.Genres)
                 .WithMany(g => g.Games);
-            modelBuilder.Entity<Ganre>()
+            modelBuilder.Entity<Genre>()
                 .HasMany(g => g.Games)
-                .WithMany(g => g.Ganres);
+                .WithMany(g => g.Genres);
         }
     }
 }

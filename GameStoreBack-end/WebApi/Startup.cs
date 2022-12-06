@@ -31,7 +31,7 @@ namespace WEBAPI
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
             services.AddScoped<IGameService,GameService>();
-            services.AddScoped<IGanreService, GanreService>();
+            services.AddScoped<IGenreService, GenreService>();
             services.AddScoped<ISearchFilterService, SearchFilterService>();
             services.AddAutoMapper(typeof(AutoMapperProfile));
             services.AddControllers();
