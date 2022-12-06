@@ -2,7 +2,7 @@
 
 namespace DLL.Entities
 {
-    public class Ganre :BaseEntity
+    public class Genre :BaseEntity
     {
         [Required]
         [MinLength(3)]

@@ -42,11 +42,11 @@ namespace DLL.Repositories
         public async Task UpdateAsync(User entity)
         {
             var user = await _dbContext.Users.FindAsync(entity.Id);
-            user.FirstName=entity.FirstName;
-            user.LastName=entity.LastName;
-            user.Email=entity.Email;
-            user.Password=entity.Password;
-            user.AvatarImageUrl=entity.AvatarImageUrl;
+            user.FirstName = entity.FirstName;
+            user.LastName = entity.LastName;
+            user.Email = entity.Email;
+            user.Password = entity.Password;
+            user.AvatarImageUrl = entity.AvatarImageUrl;
         }
 
     }

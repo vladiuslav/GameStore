@@ -37,6 +37,18 @@ namespace DLL.Data
                 return genreRepository;
             }
         }
+        IUserRepository userRepository;
+        public IUserRepository UserRepository
+        {
+            get
+            {
+                if (userRepository == null)
+                {
+                    userRepository = new UserRepository(db);
+                }
+                return userRepository;
+            }
+        }
         public async Task SaveAsync()
         {
             await db.SaveChangesAsync();

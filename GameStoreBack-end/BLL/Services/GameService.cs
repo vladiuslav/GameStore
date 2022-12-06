@@ -3,11 +3,6 @@ using BLL.Models;
 using DLL.Data;
 using DLL.Interafeces;
 using DLL.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
