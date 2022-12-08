@@ -54,11 +54,16 @@ namespace BLL.Services
         {
             return _mapper.Map<UserModel>(await _unitOfWork.UserRepository.GetByIdAsync(id));
         }
+        public async Task<UserModel> GetUserByEmail(string email)
+        {
+            return _mapper.Map<UserModel>((await _unitOfWork.UserRepository.GetAllAsync()).FirstOrDefault(u=>u.Email==email));
+        }
 
         public async Task UpdateAsync(UserModel model)
         {
             await _unitOfWork.UserRepository.UpdateAsync(_mapper.Map<User>(model));
             await _unitOfWork.SaveAsync();
         }
+        
     }
 }

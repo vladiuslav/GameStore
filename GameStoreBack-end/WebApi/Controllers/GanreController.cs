@@ -21,7 +21,7 @@ namespace WebApi.Controllers
 
         [HttpGet]
         [ProducesResponseType(200)]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetGenres()
         {
             var genres = _mapper.Map<IEnumerable<GenreViewModel>>(await _genreService.GetAllAsync());
             return new JsonResult(genres);

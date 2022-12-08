@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using WebApi.Models;
 using System.IO;
+using DLL.Entities;
 
 namespace WebApi.Controllers
 {
@@ -26,7 +27,7 @@ namespace WebApi.Controllers
         [HttpPut]
         [Consumes("multipart/form-data")]
         [Route("{gameId}")]
-        public async Task<IActionResult> Image(int gameId,[FromForm]FileModel fileModel)
+        public async Task<IActionResult> Image(int gameId,[FromForm]FileUploadModel fileModel)
         {
             if (fileModel.UploadedFile != null)
             {
@@ -35,8 +36,8 @@ namespace WebApi.Controllers
                 // path to file
                 string path = "/img/" + fileModel.UploadedFile.FileName;
 
-                // delete previous imae if exist
-                if (game.ImageUrl != "Logo.png")
+                // delete previous image if exist
+                if (game.ImageUrl != "Logo.png"&& game.ImageUrl != "nonegame.jpg" && game.ImageUrl != "noneuser.png")
                 {
                     System.IO.File.Delete(_appEnvironment.WebRootPath + game.ImageUrl);
                 }
@@ -50,11 +51,6 @@ namespace WebApi.Controllers
                 }
             }
             return Ok();
-        }
-
-        public class FileModel
-        {
-            public IFormFile UploadedFile { get; set; }
         }
     }
 }

@@ -10,7 +10,7 @@ namespace DLL.Interafeces
     {
         IGameRepository GameRepository { get; }
         IGenreRepository GenreRepository { get; }
-        IUserRepository UserRepositoryUserRepository { get; }
+        IUserRepository UserRepository { get; }
         Task SaveAsync();
     }
 }

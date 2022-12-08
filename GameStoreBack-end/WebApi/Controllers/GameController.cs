@@ -21,7 +21,7 @@ namespace WebApi.Controllers
 
         [HttpGet]
         [ProducesResponseType(200)]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetGames()
         {
             var games = _mapper.Map<IEnumerable<GameViewModel>>(await _gameService.GetAllAsync());
             return new JsonResult(games);

@@ -9,11 +9,28 @@ namespace WebApi
         public AutoMapperProfile()
 		{
 			CreateMap<GameViewModel, GameModel>()
-				.ForMember(gm=>gm.Price,gmv=>gmv.MapFrom(g=>decimal.Parse(g.Price)));
+				.ForMember(
+					gameModel=>gameModel.Price,
+					gameViewModel=>gameViewModel.MapFrom(game=>decimal.Parse(game.Price))
+				);
+
 			CreateMap<GameModel,GameViewModel>()
-				.ForMember(gmv => gmv.Price, gm => gm.MapFrom(g => g.Price.ToString()));
+				.ForMember(
+                    gameViewModel => gameViewModel.Price,
+                    gameModel => gameModel.MapFrom(game => game.Price.ToString())
+				);
+
 			CreateMap<GenreViewModel, GenreModel>()
 				.ReverseMap();
-		}
+
+			CreateMap<UserFullViewModel,UserModel>()
+				.ReverseMap();
+
+			CreateMap<UserModel, UserViewModel>()
+				.ForMember(
+				uvm => uvm.FullName,
+				um => um.MapFrom(u => u.FirstName + ' ' + u.LastName)
+				);
+        }
 	}
 }

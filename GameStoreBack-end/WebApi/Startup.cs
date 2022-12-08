@@ -1,15 +1,7 @@
-﻿using AutoMapper;
-using BLL.Interfaces;
+﻿using BLL.Interfaces;
 using BLL.Services;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.SwaggerUI;
-using System.Runtime.CompilerServices;
 using WebApi;
 
 namespace WEBAPI
@@ -30,12 +22,29 @@ namespace WEBAPI
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
-            services.AddScoped<IGameService,GameService>();
+            services.AddScoped<IGameService, GameService>();
             services.AddScoped<IGenreService, GenreService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<ISearchFilterService, SearchFilterService>();
             services.AddAutoMapper(typeof(AutoMapperProfile));
             services.AddControllers();
             services.AddCors();
+            services.AddAuthorization();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = AuthOptions.ISSUER,
+                        ValidateAudience = true,
+                        ValidAudience = AuthOptions.AUDIENCE,
+                        ValidateLifetime = true,
+                        IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
+                        ValidateIssuerSigningKey = true
+                    };
+                });
+
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -53,7 +62,8 @@ namespace WEBAPI
                    .AllowAnyOrigin());
             app.UseStaticFiles();
             app.UseRouting();
-
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BLL.Models
+﻿namespace WebApi.Models
 {
-    public class UserModel
+    public class UserFullViewModel
     {
         public int Id { get; set; }
         public string FirstName { get; set; }
