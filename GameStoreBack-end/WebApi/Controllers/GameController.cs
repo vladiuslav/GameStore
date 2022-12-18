@@ -45,6 +45,7 @@ namespace WebApi.Controllers
         public async Task<IActionResult> CreateGame(GameViewModel game)
         {
             var gameModel = _mapper.Map<GameModel>(game);
+            game.ImageUrl = "nonegame.jpg";
             await _gameService.AddAsync(gameModel);
             var response = new JsonResult(game);
             response.StatusCode = 201;

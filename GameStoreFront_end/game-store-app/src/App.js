@@ -6,11 +6,11 @@ import Header from './components/Header';
 import About from './components/About';
 import Games from './components/Games';
 import Game from './components/Game';
+import User from './components/User';
 import Community from './components/Community';
 import Support from './components/Support';
 import Footer from './components/Footer';
 import ErrorPage from './components/ErrorPage';
-import SignIn from './components/SignIn';
 
 const App = () => {
       return (
@@ -34,8 +34,8 @@ const App = () => {
                                     path='/Game/:GameId'
                                     element={<Game />} />
                               <Route
-                                    path='/SignIn'
-                                    element={<SignIn />} />
+                                    path='/User'
+                                    element={<User />} />
                               <Route
                                     path='*'
                                     element={<ErrorPage />} />

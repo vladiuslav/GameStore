@@ -27,9 +27,17 @@ namespace WEBAPI
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ISearchFilterService, SearchFilterService>();
             services.AddAutoMapper(typeof(AutoMapperProfile));
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                    policy =>
+                    {
+                        policy.AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader();
+                    });
+            });
             services.AddControllers();
-            services.AddCors();
-            services.AddAuthorization();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -54,16 +62,15 @@ namespace WEBAPI
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
-            }
-            //app.UseHttpsRedirection();  
-            app.UseCors(x => x
-                   .AllowAnyMethod()
-                   .AllowAnyHeader()
-                   .AllowAnyOrigin());
+            } 
+            app.UseCors(MyAllowSpecificOrigins);
+
             app.UseStaticFiles();
             app.UseRouting();
+
             app.UseAuthentication();
             app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

@@ -1,0 +1,8 @@
+.user-image{
+    margin: 1em;
+    width: 20em;
+    height: 30em;
+    background-size: cover;
+    margin-left: auto;
+    margin-right: auto;
+}

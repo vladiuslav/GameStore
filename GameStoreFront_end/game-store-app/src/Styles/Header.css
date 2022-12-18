@@ -14,7 +14,7 @@ nav li {
     float: left;
 }
 
-nav li a {
+.nav-item {
     font-size: 1.2em;
     display: block;
     color: white;
@@ -22,8 +22,7 @@ nav li a {
     padding: 1em 2em;
     text-decoration: none;
 }
-
-nav li a:hover {
+nav-item:hover{
     background-color: #1e1e1e;
 }
 

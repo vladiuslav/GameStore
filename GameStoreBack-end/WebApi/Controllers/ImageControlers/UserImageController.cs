@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BLL.Interfaces;
 using DLL.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Models;
@@ -22,6 +23,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> Image( [FromForm] FileUploadModel fileModel)
         {

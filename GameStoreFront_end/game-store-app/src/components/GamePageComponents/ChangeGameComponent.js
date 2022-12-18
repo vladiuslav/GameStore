@@ -1,17 +1,42 @@
 import { useState, useEffect } from 'react'
+import { Link, useParams } from 'react-router-dom'
 import React from 'react'
-import fetchGanres from '../Fetches/fetchGanres';
-import fetchAddGame from '../Fetches/fetchAddGame';
-const AddGameComponent = () => {
 
+import fetchGame from '../Fetches/fetchGamesCRUD/fetchGetGames/fetchGame'
+import fetchGanres from '../Fetches/fetchGaneres/fetchGanres'
+import fetchChangeGame from '../Fetches/fetchGamesCRUD/fetchChangeGame'
+
+const ChangeGameComponent = () => {
 
     const [ganres, setGanres] = useState([]);
+    const [imageUrl, setImage] = useState('');
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
     const [checkedState, setCheckedState] = useState([]);
+    const { GameId } = useParams(0);
 
     useEffect(() => {
+        const getGame = async () => {
+            const gameFromServer = await fetchGame(GameId);
+
+            setName(gameFromServer.name);
+            setDescription(gameFromServer.description);
+            setPrice(gameFromServer.price);
+            setImage(gameFromServer.imageUrl);
+            let ganresChecks = [];
+            for (let index = 0, arrayIndex = 0; arrayIndex < gameFromServer.ganresIds.length; index++) {
+                if (gameFromServer.ganresIds[arrayIndex] == index) {
+                    ganresChecks.push(true);
+                    arrayIndex++;
+                } else {
+                    ganresChecks.push(false);
+                }
+            }
+            setCheckedState(ganresChecks);
+        }
+        getGame();
+        //get ganres
         const getGanres = async () => {
             const ganresFromServer = await fetchGanres();
             setGanres(ganresFromServer);
@@ -27,8 +52,14 @@ const AddGameComponent = () => {
         setCheckedState(updatedCheckedState);
     };
 
+    //File Picker
+    const changeHandler = (event) => {
+        setSelectedFile(event.target.files[0]);
+        setIsSelected(true);
+    };
+
     //CreateNewGame 
-    const createGame = (e) => {
+    const changeGame = (e) => {
         e.preventDefault()
 
         //add here new date check
@@ -37,19 +68,14 @@ const AddGameComponent = () => {
         //     return
         // }
 
-        fetchAddGame({ name, description, price, checkedState });
-
-        setName('');
-        setDescription('');
-        setPrice('');
-        setCheckedState([]);
+        fetchChangeGame({ name, description, price, checkedState, imageUrl, GameId });
     }
-
 
     //render
     return (
         <div className="game-add-form">
-            <div>
+            <h1>Change Game</h1>
+            <div >
                 <p>Name</p>
                 <input
                     type='text'
@@ -89,9 +115,9 @@ const AddGameComponent = () => {
                 />
             </div>
 
-            <button onClick={(e) => (createGame(e))}>CreateNewGame</button>
+            <button onClick={(e) => (changeGame(e))}>ChangeGame</button>
         </div>
     )
 }
 
-export default AddGameComponent
+export default ChangeGameComponent

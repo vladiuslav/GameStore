@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import AddGameComponent from "./GamePage/AddGameComponent";
-import fetchGames from "./Fetches/fetchGames/fetchGames";
-import fetchGamesByGanres from "./Fetches/fetchGames/fetchGamesByGanres";
-import fetchGamesByName from "./Fetches/fetchGames/fetchGamesByName";
-import fetchGanres from "./Fetches/fetchGanres";
-import GameImageSmall from "./GamePage/GameImageSmall";
+import AddGameComponent from "./GamePageComponents/AddGameComponent";
+import fetchGames from "./Fetches/fetchGamesCRUD/fetchGetGames/fetchGames";
+import fetchGamesByGanres from "./Fetches/fetchGamesCRUD/fetchGetGames/fetchGamesByGanres";
+import fetchGamesByName from "./Fetches/fetchGamesCRUD/fetchGetGames/fetchGamesByName";
+import fetchGanres from "./Fetches/fetchGaneres/fetchGanres";
+import GameImageSmall from "./GamePageComponents/GameImageSmall";
 const Games = () => {
   const [games, setGames] = useState([]);
   const [ganres, setGanres] = useState([]);

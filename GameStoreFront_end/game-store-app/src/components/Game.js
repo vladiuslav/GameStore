@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react'
-import { Link, useParams } from 'react-router-dom'
-import ChangeGameComponent from './GamePage/ChangeGameComponent';
-import ChangeGameImage from './GamePage/ChangeGameImage';
-import fetchGame from './Fetches/fetchGame';
-import fetchDeleteGame from './Fetches/fetchDeleteGame';
-import fetchGanres from './Fetches/fetchGanres';
-import GameImageBig from './GamePage/GameImageBig';
+import { useState, useEffect } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import ChangeGameComponent from './GamePageComponents/ChangeGameComponent';
+import ChangeGameImage from './GamePageComponents/ChangeGameImage';
+import fetchGame from './Fetches/fetchGamesCRUD/fetchGetGames/fetchGame';
+import fetchDeleteGame from './Fetches/fetchGamesCRUD/fetchDeleteGame';
+import fetchGanres from './Fetches/fetchGaneres/fetchGanres';
+import GameImageBig from './GamePageComponents/GameImageBig';
 const Game = () => {
   const [ganres, setGanres] = useState([]);
   const [game, setGame] = useState([]);
@@ -41,7 +41,7 @@ const Game = () => {
       });
       GanresString = GanresString.slice(0, GanresString.length - 1);
       return <div className="ganre-name"> {GanresString} </div>;
-    }
+    }  
     return <></>;
   };
 
@@ -64,4 +64,4 @@ const Game = () => {
   )
 }
 
-export default Game
+export default Game;

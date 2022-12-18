@@ -18,7 +18,7 @@ const fetchAddGame = async ({ name, description, price, checkedState }) => {
             "name": name,
             "description": description,
             "price": price,
-            "imageUrl": "None.jpg",
+            "imageUrl": "none",
             "ganresIds": ganresIds
         })
     });

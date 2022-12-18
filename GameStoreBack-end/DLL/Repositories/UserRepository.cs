@@ -44,6 +44,7 @@ namespace DLL.Repositories
             var user = await _dbContext.Users.FindAsync(entity.Id);
             user.FirstName = entity.FirstName;
             user.LastName = entity.LastName;
+            user.UserName = entity.UserName;
             user.Email = entity.Email;
             user.Password = entity.Password;
             user.AvatarImageUrl = entity.AvatarImageUrl;

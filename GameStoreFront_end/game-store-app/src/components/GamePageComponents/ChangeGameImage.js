@@ -9,18 +9,20 @@ const ChangeGameImage = () => {
     const { GameId } = useParams();
 
     const fetchImage = async () => {
-        var data = new FormData()
-        data.append("UploadedFile", image);
-        console.log(data);
 
-        const res = await fetch('https://localhost:7025/api/GameImage/' + GameId, {
-            method: 'PUT',
-            headers: {
-                'Accept': '*/*',
-                'Content-Type': "multipart/form-data"
-            },
-            body: JSON.stringify(data),
-        });
+        var formdata = new FormData();
+        formdata.append("UploadedFile", image[0]);
+
+        var requestOptions = {
+        method: 'PUT',
+        body: formdata,
+        redirect: 'follow'
+        };
+
+        fetch("https://localhost:7025/api/GameImage/1", requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
 
     }
 
@@ -29,7 +31,7 @@ const ChangeGameImage = () => {
             <label>Image of game</label>
             <input
                 type='file'
-                onChange={(e) => setImage(e.target.files[0])}
+                onChange={(e) => setImage(e.target.files)}
             />
             <button onClick={() => fetchImage()}>Change game image</button>
         </div>

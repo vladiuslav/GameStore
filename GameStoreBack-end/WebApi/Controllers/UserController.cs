@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BLL.Interfaces;
 using BLL.Models;
+using DLL.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -99,6 +100,7 @@ namespace WebApi.Controllers
         public async Task<IActionResult> CreateUser(UserFullViewModel user)
         {
             var userModel = _mapper.Map<UserModel>(user);
+            userModel.AvatarImageUrl = "noneuser.jpg";
             await _userService.AddAsync(userModel);
             var response = new JsonResult(user);
             response.StatusCode = 201;
@@ -110,10 +112,12 @@ namespace WebApi.Controllers
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> Update([FromBody] UserViewModel user)
+        public async Task<IActionResult> Update([FromBody] UserFullViewModel user)
         {
             var userModel = _mapper.Map<UserModel>(user);
-            userModel.Id = (await _userService.GetUserByEmail(User.Identity.Name)).Id;
+            var userByEmail = await _userService.GetUserByEmail(User.Identity.Name);
+            userModel.Id = userByEmail.Id;
+            userModel.AvatarImageUrl = userByEmail.AvatarImageUrl;
             await _userService.UpdateAsync(userModel);
             return NoContent();
         }
