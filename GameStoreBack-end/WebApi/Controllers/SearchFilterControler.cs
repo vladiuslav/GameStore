@@ -28,7 +28,7 @@ namespace WebApi.Controllers
         {
             IEnumerable<GameViewModel> games;
 
-            games = _mapper.Map<IEnumerable<GameViewModel>>(await _searchFilterService.SearchGamesByName(gameName));
+            games = _mapper.Map<IEnumerable<GameViewModel>>(await _searchFilterService.SearchGamesByNameAsync(gameName));
                 
             if (games == null)
             {
@@ -42,7 +42,7 @@ namespace WebApi.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> GetGamesByFilters(GenresIdsModel genresIds)
         {
-            var games = _mapper.Map<IEnumerable<GameViewModel>>(await _searchFilterService.FilterGameByGenres(genresIds.genresIds));
+            var games = _mapper.Map<IEnumerable<GameViewModel>>(await _searchFilterService.FilterGameByGenresAsync(genresIds.genresIds));
             if (games == null)
             {
                 return NotFound();

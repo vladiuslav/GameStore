@@ -52,12 +52,6 @@ namespace BLL.Services
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task DeleteByIdAsync(int id)
-        {
-            await _unitOfWork.GameRepository.DeleteByIdAsync(id);
-            await _unitOfWork.SaveAsync();
-        }
-
         public async Task<IEnumerable<GameModel>> GetAllAsync()
         {
             return _mapper.Map<IEnumerable<GameModel>>(await _unitOfWork.GameRepository.GetAllWithDetailsAsync());
@@ -68,7 +62,18 @@ namespace BLL.Services
             return _mapper.Map<GameModel>(await _unitOfWork.GameRepository.GetByIdWithDetailsAsync(id));
 
         }
-
+        public async Task<GameModel> GetByGameNameAsync(string name)
+        {
+            return _mapper.Map<GameModel>(
+                    (await _unitOfWork.GameRepository.GetAllWithDetailsAsync())
+                    .FirstOrDefault(g => g.Name == name)
+                );
+        }
+        public async Task DeleteByIdAsync(int id)
+        {
+            await _unitOfWork.GameRepository.DeleteByIdAsync(id);
+            await _unitOfWork.SaveAsync();
+        }
         public async Task UpdateAsync(GameModel model)
         {
             await _unitOfWork.GameRepository.UpdateAsync(_mapper.Map<Game>(model));

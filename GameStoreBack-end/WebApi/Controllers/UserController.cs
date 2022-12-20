@@ -52,7 +52,7 @@ namespace WebApi.Controllers
         public async Task<IActionResult> GetCurrentUser()
         {
 
-            var user = _mapper.Map<UserFullViewModel>(await _userService.GetUserByEmail(User.Identity.Name));
+            var user = _mapper.Map<UserFullViewModel>(await _userService.GetUserByEmailAsync(User.Identity.Name));
             return Ok(user);
 
         }
@@ -65,11 +65,9 @@ namespace WebApi.Controllers
             IEnumerable<UserModel> users = await _userService.GetAllAsync();
             UserModel? user = users.FirstOrDefault(u => u.Email == loginData.Login && u.Password == loginData.Password);
 
-            var response = new JsonResult(user);
             if (user is null)
             {
-                response.StatusCode = 401;
-                return response;
+                return NotFound();
             }
             var claims = new List<Claim> { new Claim(ClaimTypes.Name, user.Email) };
             var jwt = new JwtSecurityToken(
@@ -84,7 +82,7 @@ namespace WebApi.Controllers
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
 
-            response = new JsonResult(new
+            var response = new JsonResult(new
             {
                 access_token = encodedJwt,
                 email = user.Email
@@ -99,12 +97,30 @@ namespace WebApi.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> CreateUser(UserFullViewModel user)
         {
-            var userModel = _mapper.Map<UserModel>(user);
-            userModel.AvatarImageUrl = "noneuser.jpg";
-            await _userService.AddAsync(userModel);
-            var response = new JsonResult(user);
-            response.StatusCode = 201;
-            return response;
+            if (ModelState.IsValid)
+            {
+                var userByName = await _userService.GetUserByEmailAsync(user.Email);
+                if(userByName != null) {
+                    return BadRequest();
+                }
+
+                var userByEmail = await _userService.GetUserByUserNameAsync(user.UserName);
+                if (userByEmail != null)
+                {
+                    return BadRequest();
+                }
+
+                var userModel = _mapper.Map<UserModel>(user);
+                userModel.AvatarImageUrl=null;
+                await _userService.AddAsync(userModel);
+                var response = new JsonResult(user);
+                response.StatusCode = 201;
+                return response;
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
         [HttpPut()]
@@ -114,12 +130,19 @@ namespace WebApi.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Update([FromBody] UserFullViewModel user)
         {
-            var userModel = _mapper.Map<UserModel>(user);
-            var userByEmail = await _userService.GetUserByEmail(User.Identity.Name);
-            userModel.Id = userByEmail.Id;
-            userModel.AvatarImageUrl = userByEmail.AvatarImageUrl;
-            await _userService.UpdateAsync(userModel);
-            return NoContent();
+            if (ModelState.IsValid)
+            {
+                var userModel = _mapper.Map<UserModel>(user);
+                var userByEmail = await _userService.GetUserByEmailAsync(User.Identity.Name);
+                userModel.Id = userByEmail.Id;
+                userModel.AvatarImageUrl = userByEmail.AvatarImageUrl;
+                await _userService.UpdateAsync(userModel);
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
         [HttpDelete("{id}")]

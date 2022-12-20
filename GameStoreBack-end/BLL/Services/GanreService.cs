@@ -58,12 +58,6 @@ namespace BLL.Services
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task DeleteByIdAsync(int id)
-        {
-            await _unitOfWork.GenreRepository.DeleteByIdAsync(id);
-            await _unitOfWork.SaveAsync();
-        }
-
         public async Task<IEnumerable<GenreModel>> GetAllAsync()
         {
             return _mapper.Map<IEnumerable<GenreModel>>(await _unitOfWork.GenreRepository.GetAllWithDetailsAsync());
@@ -73,11 +67,23 @@ namespace BLL.Services
         {
             return _mapper.Map<GenreModel>(await _unitOfWork.GenreRepository.GetByIdWithDetailsAsync(id));
         }
-
+        public async Task<GameModel> GetByGenreNameAsync(string name)
+        {
+            return _mapper.Map<GameModel>(
+                    (await _unitOfWork.GenreRepository.GetAllWithDetailsAsync())
+                    .FirstOrDefault(g => g.Name == name)
+                );
+        }
+        public async Task DeleteByIdAsync(int id)
+        {
+            await _unitOfWork.GenreRepository.DeleteByIdAsync(id);
+            await _unitOfWork.SaveAsync();
+        }
         public async Task UpdateAsync(GenreModel model)
         {
             await _unitOfWork.GenreRepository.UpdateAsync(_mapper.Map<Genre>(model));
             await _unitOfWork.SaveAsync();
         }
+
     }
 }

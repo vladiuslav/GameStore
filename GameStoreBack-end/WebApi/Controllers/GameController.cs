@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using AutoMapper;
-using BLL.Services;
+﻿using AutoMapper;
 using BLL.Interfaces;
 using BLL.Models;
+using Microsoft.AspNetCore.Mvc;
 using WebApi.Models;
 
 namespace WebApi.Controllers
@@ -13,7 +12,7 @@ namespace WebApi.Controllers
     {
         private IMapper _mapper;
         private IGameService _gameService;
-        public GameController(IGameService gameService,IMapper mapper)
+        public GameController(IGameService gameService, IMapper mapper)
         {
             _gameService = gameService;
             _mapper = mapper;
@@ -26,7 +25,8 @@ namespace WebApi.Controllers
             var games = _mapper.Map<IEnumerable<GameViewModel>>(await _gameService.GetAllAsync());
             return new JsonResult(games);
         }
-        [HttpGet("{id}", Name = nameof(GetGame))]
+
+        [HttpGet("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> GetGame(int id)
@@ -44,39 +44,69 @@ namespace WebApi.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> CreateGame(GameViewModel game)
         {
+            if (!ModelState.IsValid)
+            {
+
+                return BadRequest();
+
+            }
+            
+            if((await _gameService.GetByGameNameAsync(game.Name)) != null)
+            {
+                return BadRequest();
+            }
+
             var gameModel = _mapper.Map<GameModel>(game);
-            game.ImageUrl = "nonegame.jpg";
+            game.ImageUrl = null;
             await _gameService.AddAsync(gameModel);
-            var response = new JsonResult(game);
-            response.StatusCode = 201;
-            return response;
+
+            return Created(game.Name, gameModel);
+       
         }
 
-
-        //genres ids 
-        [HttpPut("{id:int}")]
+        [HttpPut]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> Update([FromRoute]int id, [FromBody] GameViewModel game)
+        public async Task<IActionResult> Update([FromBody] GameViewModel game)
         {
-            var gameModel = _mapper.Map<GameModel>(game);
-            gameModel.Id = id;
-            await _gameService.UpdateAsync(gameModel);
-            return NoContent();
+            if (ModelState.IsValid)
+            {
+
+                if ((await _gameService.GetByIdAsync(game.Id)) == null)
+                {
+                    return NotFound(game.Name);
+                }
+
+                var gameByName = await _gameService.GetByGameNameAsync(game.Name);
+                if (game.Name != null && gameByName.Id != game.Id)
+                {
+                    return BadRequest();
+                }
+
+                var gameModel = _mapper.Map<GameModel>(game);
+                await _gameService.UpdateAsync(gameModel);
+                return Ok(game);
+            }
+            else {
+                return BadRequest();
+            }
         }
 
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> Delete(int id)
         {
-            await _gameService.DeleteByIdAsync(id);
-            var result = new JsonResult("");
-            result.StatusCode=204;
-            result.ContentType="application/json";
-            return result;
+            var game = await _gameService.GetByIdAsync(id);
+            if (game == null)
+            {
+                return NotFound();
+            }
+            else { 
+                await _gameService.DeleteByIdAsync(id);
+                return Ok();
+            }
         }
     }
 }

@@ -9,6 +9,7 @@ namespace BLL.Interfaces
 {
     public interface IUserService : ICrud<UserModel>
     {
-        Task<UserModel> GetUserByEmail(string email);
+        Task<UserModel> GetUserByEmailAsync(string email);
+        Task<UserModel> GetUserByUserNameAsync(string userName);
     }
 }

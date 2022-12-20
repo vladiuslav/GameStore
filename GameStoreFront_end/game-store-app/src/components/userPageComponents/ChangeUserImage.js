@@ -17,7 +17,7 @@ const ChangeUserImage = () => {
             />
             <button onClick={() => {
                 const token = getCookie("access_token");
-                fetchChangeUserImage(image[0],token)
+                fetchChangeUserImage(image[0],token);
             }}>Change user image</button>
         </div>
     )

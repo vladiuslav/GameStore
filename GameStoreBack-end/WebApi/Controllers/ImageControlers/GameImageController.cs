@@ -17,7 +17,7 @@ namespace WebApi.Controllers
         private IWebHostEnvironment _appEnvironment;
         private IGameService _gameService;
         private IMapper _mapper;
-        public GameImageController(IGameService gameService,IMapper mapper, IWebHostEnvironment appEnvironment)
+        public GameImageController(IGameService gameService, IMapper mapper, IWebHostEnvironment appEnvironment)
         {
             _gameService = gameService;
             _appEnvironment = appEnvironment;
@@ -27,17 +27,22 @@ namespace WebApi.Controllers
         [HttpPut]
         [Consumes("multipart/form-data")]
         [Route("{gameId}")]
-        public async Task<IActionResult> Image(int gameId,[FromForm]FileUploadModel fileModel)
+        public async Task<IActionResult> setImage(int gameId, [FromForm] FileUploadModel fileModel)
         {
             if (fileModel.UploadedFile != null)
             {
                 var game = await _gameService.GetByIdAsync(gameId);
 
+                // take file type
+                string fileName = fileModel.UploadedFile.FileName;
+                int indexOfLastDot = fileName.LastIndexOf('.');
+                string filetype = fileName.Remove(0, indexOfLastDot);
+
                 // path to file
-                string path = "/img/" + fileModel.UploadedFile.FileName;
+                string path = "/img/" + game.Id + filetype;
 
                 // delete previous image if exist
-                if (game.ImageUrl != "Logo.png"&& game.ImageUrl != "nonegame.jpg" && game.ImageUrl != "noneuser.png")
+                if (game.ImageUrl != null)
                 {
                     System.IO.File.Delete(_appEnvironment.WebRootPath + game.ImageUrl);
                 }
@@ -46,11 +51,27 @@ namespace WebApi.Controllers
                 using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
                 {
                     await fileModel.UploadedFile.CopyToAsync(fileStream);
-                    game.ImageUrl= fileModel.UploadedFile.FileName;
+                    game.ImageUrl = game.Id + filetype;
                     await _gameService.UpdateAsync(game);
                 }
             }
             return Ok();
+        }
+        [HttpDelete]
+        [Route("{gameId}")]
+        public async Task<IActionResult> deleteImage(int gameId)
+        {
+            try
+            {
+                var game = await _gameService.GetByIdAsync(gameId);
+                game.ImageUrl = null;
+                await _gameService.UpdateAsync(game);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

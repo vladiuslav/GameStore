@@ -39,14 +39,14 @@ namespace BLL.Services
             _mapper = new Mapper(config);
         }
 
-        public async Task<IEnumerable<GameModel>> SearchGamesByName(string gameName)
+        public async Task<IEnumerable<GameModel>> SearchGamesByNameAsync(string gameName)
         {
             return _mapper.Map<IEnumerable<GameModel>>(
                 await _unitOfWork.GameRepository.GetAllWithDetailsAsync()
                 ).Where(g=>g.Name.Contains(gameName));
         }
 
-        public async Task<IEnumerable<GameModel>> FilterGameByGenres(IEnumerable<int> genresIds)
+        public async Task<IEnumerable<GameModel>> FilterGameByGenresAsync(IEnumerable<int> genresIds)
         {
             var games = await _unitOfWork.GameRepository.GetAllWithDetailsAsync();
             var genres = await _unitOfWork.GenreRepository.GetAllWithDetailsAsync();

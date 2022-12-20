@@ -9,6 +9,6 @@ namespace BLL.Interfaces
 {
     public interface IGenreService : ICrud<GenreModel>
     {
-        
+        Task<GameModel> GetByGenreNameAsync(string name);
     }
 }

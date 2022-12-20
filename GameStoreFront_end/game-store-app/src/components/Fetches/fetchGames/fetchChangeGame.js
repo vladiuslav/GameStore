@@ -7,7 +7,7 @@ const fetchChangeGame = async ({ name, description, price, checkedState, imageUr
         }
 
     }
-    const res = await fetch('https://localhost:7025/api/Game/' + GameId, {
+    const res = await fetch('https://localhost:7025/api/Game', {
         method: 'PUT',
         headers: {
             'mode': "no-cors",
@@ -15,6 +15,7 @@ const fetchChangeGame = async ({ name, description, price, checkedState, imageUr
             'Content-Type': "application/json;charset=utf-8"
         },
         body: JSON.stringify({
+            "id":GameId,
             "name": name,
             "description": description,
             "price": price,
