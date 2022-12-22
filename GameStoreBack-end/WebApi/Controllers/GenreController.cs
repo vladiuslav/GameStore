@@ -70,8 +70,13 @@ namespace WebApi.Controllers
         {
             if (ModelState.IsValid)
             {
-                var gameByName = await _genreService.GetByGenreNameAsync(genre.Name);
-                if (gameById.Name != null && gameByName.Id != gameById.Id)
+                if ((await _genreService.GetByIdAsync(genre.Id)) == null)
+                {
+                    return NotFound(genre.Name);
+                }
+
+                var genreByName = await _genreService.GetByGenreNameAsync(genre.Name);
+                if (genre.Name != null && genreByName.Id != genre.Id)
                 {
                     return BadRequest();
                 }

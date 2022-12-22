@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import React from 'react'
 import fetchGanres from '../Fetches/fetchGaneres/fetchGanres';
-import fetchAddGame from '../Fetches/fetchGamesCRUD/fetchAddGame';
+import fetchAddGame from '../Fetches/fetchGames/fetchAddGame';
 const AddGameComponent = () => {
 
 

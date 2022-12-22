@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import ChangeGameComponent from './GamePageComponents/ChangeGameComponent';
 import ChangeGameImage from './GamePageComponents/ChangeGameImage';
-import fetchGame from './Fetches/fetchGamesCRUD/fetchGetGames/fetchGame';
-import fetchDeleteGame from './Fetches/fetchGamesCRUD/fetchDeleteGame';
+import fetchGame from './Fetches/fetchGames/fetchGetGames/fetchGame';
+import fetchDeleteGame from './Fetches/fetchGames/fetchDeleteGame';
 import fetchGanres from './Fetches/fetchGaneres/fetchGanres';
 import GameImageBig from './GamePageComponents/GameImageBig';
 const Game = () => {

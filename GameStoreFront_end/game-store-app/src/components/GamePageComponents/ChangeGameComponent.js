@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import React from 'react'
 
-import fetchGame from '../Fetches/fetchGamesCRUD/fetchGetGames/fetchGame'
+import fetchGame from '../Fetches/fetchGames/fetchGetGames/fetchGame'
 import fetchGanres from '../Fetches/fetchGaneres/fetchGanres'
-import fetchChangeGame from '../Fetches/fetchGamesCRUD/fetchChangeGame'
+import fetchChangeGame from '../Fetches/fetchGames/fetchChangeGame'
 
 const ChangeGameComponent = () => {
 

@@ -6,7 +6,7 @@ const GameImageSmall = (props) => {
     if(props.GameImageUrl === null){
         imageUrl="nonegame.jpg";
     }else{
-        imageUrl = props.backgroundImage;
+        imageUrl = props.GameImageUrl;
     }
   const ganreStyle = {
     backgroundImage: 'url(https://localhost:7025/img/' + imageUrl + ')'
