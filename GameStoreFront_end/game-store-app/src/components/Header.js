@@ -7,15 +7,17 @@ import fetchUserLogin from './Fetches/fetchUsers/fetchUserLogin';
 import fetchUserGetCurrent from './Fetches/fetchUsers/fetchUsersGet/fetchUserGetCurrent';
 import setCookie from './JsFunctions/setCookie';
 import getCookie from './JsFunctions/getCookie';
+import FlashBlock from './FlashBlock';
 
 const Header = () => {
+
   const [isLogged, setIsLogged] = useState(false);
   const [userName, setUserName] = useState(false);
   const [isOpenForm,setIsOpenForm] = useState(false);
   const [isOpenLoginForm,setIsOpenLoginForm] = useState(false);
+
   useEffect(() => {
     checkIsLogged();
-
   }, [])
 
   const logOut = ()=>{
@@ -31,8 +33,9 @@ const Header = () => {
     const access_token = getCookie("access_token");
     if(email!=null){
       setIsLogged(true);
-      const data = await fetchUserGetCurrent(access_token);
-      setUserName(data.firstName+" "+data.lastName);
+      const result = await fetchUserGetCurrent(access_token);
+      let resultjson = await result.json();
+      setUserName(resultjson.firstName+" "+resultjson.lastName);
     }
   }
 
@@ -41,7 +44,9 @@ const Header = () => {
   };
 
   const SignIn = () => {
-
+    const [isShowErrorBlock,setIsShowErrorBlock] = useState(false);
+    const [errorText,setErrorText] = useState('');
+    
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [userName, setUserName] = useState('');
@@ -50,20 +55,45 @@ const Header = () => {
 
     const createAccount = (e) => {
       e.preventDefault()
-  
-      //add here new date check
-      // if (!text) {
-      //     alert('Please add a task')
-      //     return
-      // }
-  
-      let data = fetchUserRegestration({ firstName, lastName, userName, email, password });
-      alert("account created");
-      changeIsOpenForm();
+
+        if(firstName.length<3 || lastName.length<3 || userName.length<3|| email.length<3){
+            setErrorText('Some input is empty or have less then 3 letters');
+            setIsShowErrorBlock(true);
+            return;
+        }
+        if(password.length<8){
+            setErrorText('Input is empty or have less 1then 8 letters');
+            setIsShowErrorBlock(true);
+            return;
+        }
+
+      const processFetch = async()=> {
+        let result = await fetchUserRegestration({ firstName,lastName,userName,email,password });
+            if(result.status === 200){
+                window.location.reload();
+                return;
+            }else if(result.status === 400){
+                setErrorText('Wrong input.');
+                setIsShowErrorBlock(true);
+                return;
+            }else{
+                setErrorText('Error'+result.status);
+                setIsShowErrorBlock(true);
+                return;
+            }
+      }
+      processFetch();
+
     }
 
     return (
         <div className='central-form'>
+          <div onClick={(e)=>{
+                e.preventDefault();
+                setIsShowErrorBlock(false);
+            }}>
+                <FlashBlock massage={errorText} isShow={isShowErrorBlock}/>
+            </div>
           <div onClick={() => {changeIsOpenForm()}}>close</div>
 
           <div className="game-add-form">
@@ -119,28 +149,58 @@ const Header = () => {
   }
   
   const LogIn = () => {
+    const [isShowErrorBlock,setIsShowErrorBlock] = useState(false);
+    const [errorText,setErrorText] = useState('');
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [rememberMe,setRememberMe] = useState(false);
 
     const loginAccount = async (e) => {
       e.preventDefault()
-  
-      //add here new date check
-      // if (!text) {
-      //     alert('Please add a task')
-      //     return
-      // }
-  
-      let data = await fetchUserLogin({email, password,rememberMe});
-      setCookie('access_token',data.access_token,(rememberMe)?720:2);
-      setCookie('email',data.email,(rememberMe)?720:2);
-      checkIsLogged();
-      changeIsOpenForm();
+
+        if(email.length<3){
+            setErrorText('Some input is empty or have less then 3 letters');
+            setIsShowErrorBlock(true);
+            return;
+        }
+        if(password.length<8){
+            setErrorText('Input is empty or have less 1then 8 letters');
+            setIsShowErrorBlock(true);
+            return;
+        }
+
+      const processFetch = async()=> {
+        let result = await fetchUserLogin({email, password,rememberMe});
+            if(result.status === 200){
+                let resultJson = await result.json();
+                setCookie('access_token',resultJson.access_token,(rememberMe)?720:2);
+                setCookie('email',resultJson.email,(rememberMe)?720:2);
+                checkIsLogged();
+                changeIsOpenForm();
+                return;
+            }else if(result.status === 400){
+                setErrorText('Wrong input or user don`t exist.');
+                setIsShowErrorBlock(true);
+                return;
+            }else{
+                setErrorText('Error'+result.status);
+                setIsShowErrorBlock(true);
+                return;
+            }
+      }
+      processFetch();
+
     }
 
     return (
       <div className='central-form'>
+        <div onClick={(e)=>{
+                e.preventDefault();
+                setIsShowErrorBlock(false);
+            }}>
+                <FlashBlock massage={errorText} isShow={isShowErrorBlock}/>
+            </div>
         <div onClick={() => {changeIsOpenForm()}}>close</div>
 
         <div className="game-add-form">

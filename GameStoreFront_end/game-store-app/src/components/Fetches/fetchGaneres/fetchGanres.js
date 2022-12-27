@@ -1,9 +1,8 @@
 const fetchGanres = async () => {
 
-    const res = await fetch(`https://localhost:7025/api/Genre`);
-    const data = await res.json();
-
-    return data;
+    let result = await fetch(`https://localhost:7025/api/Genre`);
+    return result;
+    
 };
 
 export default fetchGanres;

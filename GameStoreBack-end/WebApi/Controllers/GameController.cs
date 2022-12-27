@@ -65,7 +65,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPut]
-        [ProducesResponseType(204)]
+        [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> Update([FromBody] GameViewModel game)
@@ -73,18 +73,24 @@ namespace WebApi.Controllers
             if (ModelState.IsValid)
             {
 
-                if ((await _gameService.GetByIdAsync(game.Id)) == null)
+                var gameById = await _gameService.GetByIdAsync(game.Id);
+                if (gameById == null)
                 {
                     return NotFound(game.Name);
                 }
 
                 var gameByName = await _gameService.GetByGameNameAsync(game.Name);
-                if (game.Name != null && gameByName.Id != game.Id)
+                if (gameByName == null)
+                {
+
+                }
+                else if (game.Name != null && gameByName.Id != game.Id)
                 {
                     return BadRequest();
                 }
 
                 var gameModel = _mapper.Map<GameModel>(game);
+                gameModel.ImageUrl = gameById.ImageUrl;
                 await _gameService.UpdateAsync(gameModel);
                 return Ok(game);
             }

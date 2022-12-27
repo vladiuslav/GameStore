@@ -6,38 +6,39 @@ import fetchGamesByGanres from "./Fetches/fetchGames/fetchGetGames/fetchGamesByG
 import fetchGamesByName from "./Fetches/fetchGames/fetchGetGames/fetchGamesByName";
 import fetchGanres from "./Fetches/fetchGaneres/fetchGanres";
 import GameImageSmall from "./GamePageComponents/GameImageSmall";
+
 const Games = () => {
+  
   const [games, setGames] = useState([]);
   const [ganres, setGanres] = useState([]);
   const [searchName, setSearchName] = useState("");
-  const [checkedState, setCheckedState] = useState([]);
+  const [checkedState, setCheckedState] = useState(new Map());
   const [showResults, setShowResults] = useState(false);
+
   useEffect(() => {
     //get games
     const getGames = async () => {
       const gamesFromServer = await fetchGames();
-      setGames(gamesFromServer);
+      let gamesJson = await gamesFromServer.json();
+      setGames(gamesJson);
     };
     getGames();
 
-    //get ganres
-    const getGanres = async () => {
-      const ganresFromServer = await fetchGanres();
-      setGanres(ganresFromServer);
-      return await ganresFromServer;
-    };
-    let ganresFromServer = getGanres();
+    const setStarterGanres=async()=>{
 
-    const getChecks = async (ganresFromServer) => {
-      let ganresChecks = [];
-      await ganresFromServer.then((value) => {
-        ganresChecks = Array(value.length).fill(false);
-      });
-
+      const result = await fetchGanres();
+      let ganresJson = await result.json();
+      await setGanres(ganresJson);
+      let ganresChecks=checkedState;
+      for (let index = 0; index < ganresJson.length; index++) {
+        ganresChecks.set(ganresJson[index].name,false);
+      }
       setCheckedState(ganresChecks);
-    };
 
-    getChecks(ganresFromServer);
+    }
+
+    setStarterGanres();
+
   }, []);
 
   const showGanresOnClick = () => {
@@ -45,24 +46,28 @@ const Games = () => {
   };
 
   // CheckedFunction
-  const handleOnChange = (position) => {
-    const updatedCheckedState = checkedState.map((item, index) =>
-      index === position ? !item : item
-    );
+  const handleOnChange = (name) => {
+
+    let updatedCheckedState =checkedState;
+    let IsPressed = updatedCheckedState.get(name);
+    updatedCheckedState.set(name,!IsPressed);
     setCheckedState(updatedCheckedState);
   };
 
   const FindByName = () => {
     const getGames = async () => {
       const gamesFromServer = await fetchGamesByName(searchName);
-      setGames(gamesFromServer);
+      let jsonResult = await gamesFromServer.json();
+      setGames(jsonResult);
     };
     getGames();
   };
+  
   const FindByGanres = () => {
     const getGames = async () => {
-      const gamesFromServer = await fetchGamesByGanres(checkedState);
-      setGames(gamesFromServer);
+      const gamesFromServer = await fetchGamesByGanres(checkedState,ganres);
+      let jsonResult = await gamesFromServer.json();
+      setGames(jsonResult);
     };
     getGames();
   };
@@ -70,21 +75,23 @@ const Games = () => {
   const clearFilters = () => {
     const getGames = async () => {
       const gamesFromServer = await fetchGames();
-      setGames(gamesFromServer);
+      let jsonResult = await gamesFromServer.json();
+      setGames(jsonResult);
     };
     getGames();
   };
 
-  const getGanres = (ids) => {
-    if (ganres.length != 0) {
+  const getGanresBlock = (ids) => {
+    if (ganres.length != 0&& ids.length != 0) {
       let GanresString = "";
-      ganres.forEach((element) => {
-        if (ids.find((id) => id == element.id) != null) {
-          GanresString += element.name + "/";
-        }
-      });
-      GanresString = GanresString.slice(0, GanresString.length - 1);
-      return <div className="ganre-name"> {GanresString} </div>;
+        ganres.forEach((element) => {
+          if (ids.find((id) => id == element.id) != null) {
+            GanresString += element.name + "/";
+          }
+        });
+        GanresString = GanresString.slice(0, GanresString.length - 1);
+        return <div className="ganre-name"> {GanresString} </div>;
+        
     }
     return <></>;
   };
@@ -122,8 +129,8 @@ const Games = () => {
                 <li key={item.id}>
                   <input
                     type="checkbox"
-                    value={checkedState[item.id]}
-                    onChange={() => handleOnChange(item.id)}
+                    value={checkedState.get(item.name)}
+                    onChange={() => handleOnChange(item.name)}
                   />
                   <label>{item.name}</label>
                 </li>
@@ -150,14 +157,16 @@ const Games = () => {
         </li>
       </ul>
       <div className="games">
-        {games.map((game) => (
+        {
+        (games.length>=1)?
+        games.map((game) => (
           <div className="game-container" key={game.id}>
             <Link to={"/Game/" + game.id}>
               <GameImageSmall GameImageUrl={game.imageUrl} />
               <p>
                 {game.name} {game.price}$
               </p>
-              <div>{getGanres(game.ganresIds)}</div>
+              <div>{getGanresBlock(game.genresIds)}</div>
               <p>
                 {game.description.length < 20
                   ? game.description
@@ -165,7 +174,9 @@ const Games = () => {
               </p>
             </Link>
           </div>
-        ))}
+        ))
+      :<></>
+      }
       </div>
       <AddGameComponent />
     </>

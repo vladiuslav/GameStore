@@ -1,8 +1,10 @@
 const fetchGamesByName = async (searchName) => {
-    const res = await fetch('https://localhost:7025/api/SearchFilterControler/Search/' + searchName, {
-        method: 'POST'
-    })
-    const data = await res.json();
-    return data;
+    var requestOptions = {
+        method: 'POST',
+        redirect: 'follow'
+      };
+      
+    let result = await fetch("https://localhost:7025/api/SearchFilterControler/Search/"+searchName, requestOptions);
+    return result;
 };
 export default fetchGamesByName;

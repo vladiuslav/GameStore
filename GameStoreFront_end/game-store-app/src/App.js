@@ -10,7 +10,7 @@ import User from './components/User';
 import Community from './components/Community';
 import Support from './components/Support';
 import Footer from './components/Footer';
-import ErrorPage from './components/ErrorPage';
+import ErrorPage from './components/FlashBlock';
 
 const App = () => {
       return (
@@ -36,9 +36,6 @@ const App = () => {
                               <Route
                                     path='/User'
                                     element={<User />} />
-                              <Route
-                                    path='*'
-                                    element={<ErrorPage />} />
                         </Routes>
                   </article>
                   <Footer />

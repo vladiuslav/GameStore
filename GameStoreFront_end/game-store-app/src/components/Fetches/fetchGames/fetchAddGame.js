@@ -1,28 +1,30 @@
-const fetchAddGame = async ({ name, description, price, checkedState }) => {
-    let ganresIds = [];
-    for (let index = 0; index < checkedState.length; index++) {
-        if (checkedState[index] !== false) {
-            ganresIds.push(index + 1);
+const fetchAddGame = async ({ name, description, price, checkedState,genres }) => {
+    
+    let genresIds = [];
+    checkedState.forEach(function(value, key) {
+        if(value){
+        genresIds.push(genres.find(ganre=>ganre.name==key).id);
         }
+    })
 
-    }
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
 
-    const res = await fetch('https://localhost:7025/api/Game', {
-        method: 'POST',
-        headers: {
-            'mode': "no-cors",
-            'Accept': "application/json, text/plain, */*",
-            'Content-Type': "application/json;charset=utf-8"
-        },
-        body: JSON.stringify({
-            "name": name,
-            "description": description,
-            "price": price,
-            "imageUrl": "none",
-            "ganresIds": ganresIds
-        })
+    var raw = JSON.stringify({
+    "name": name,
+    "description": description,
+    "price": price,
+    "genresIds": genresIds
     });
-    const data = await res.json();
-    return data;
+
+    var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+    };
+    
+    let result = await fetch("https://localhost:7025/api/Game", requestOptions);
+    return result;
 };
 export default fetchAddGame;

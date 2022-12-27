@@ -1,8 +1,8 @@
 const fetchGame = async (GameId) => {
-    const res = await fetch(`https://localhost:7025/api/Game/` + GameId);
-    const data = await res.json();
+    
+    const result = await fetch(`https://localhost:7025/api/Game/` + GameId);
+    return result;
 
-    return data;
 };
 
 export default fetchGame;

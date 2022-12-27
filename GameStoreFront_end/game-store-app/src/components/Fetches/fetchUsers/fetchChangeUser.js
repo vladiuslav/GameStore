@@ -21,9 +21,8 @@ const fetchChangeUser = async ({ firstName, lastName, userName,email,password}) 
     redirect: 'follow'
   };
 
-  fetch("https://localhost:7025/api/User", requestOptions)
-    .catch(error => console.log('error', error));
-
+  let result = await fetch("https://localhost:7025/api/User", requestOptions);
+  return result;
 }
 
 export default fetchChangeUser;

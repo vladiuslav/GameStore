@@ -76,7 +76,17 @@ namespace BLL.Services
         }
         public async Task UpdateAsync(GameModel model)
         {
-            await _unitOfWork.GameRepository.UpdateAsync(_mapper.Map<Game>(model));
+            var game = _mapper.Map<Game>(model);
+            var allGenres = await _unitOfWork.GenreRepository.GetAllWithDetailsAsync();
+            var ganresForGame= new List<Genre>();
+            foreach (var genre in allGenres)
+            {
+                if (model.GenresIds.Contains(genre.Id)){
+                    ganresForGame.Add(genre);
+                }
+            }
+            game.Genres= ganresForGame;
+            await _unitOfWork.GameRepository.UpdateAsync(game);
             await _unitOfWork.SaveAsync();
         }
     }

@@ -1,7 +1,7 @@
 
 const fetchUserGetAll = async ({access_token}) => {
 
-    const res = await fetch('https://localhost:7025/api/User/current', {
+    const result = await fetch('https://localhost:7025/api/User/current', {
         method: 'GET',
         headers: {
 
@@ -11,8 +11,6 @@ const fetchUserGetAll = async ({access_token}) => {
             'Authorization': 'Bearer '+ access_token
         }
     });
-    console.log(res);
-    const data = await res.json();
-    return data;
+    return result;
 };
 export default fetchUserGetAll;

@@ -5,7 +5,12 @@ import React from 'react'
 import fetchUserGetCurrent from '../Fetches/fetchUsers/fetchUsersGet/fetchUserGetCurrent'
 import fetchChangeUser from '../Fetches/fetchUsers/fetchChangeUser'
 import getCookie from '../JsFunctions/getCookie'
+import FlashBlock from '../FlashBlock'
+
 const ChangeUser = () => {
+
+    const [isShowErrorBlock,setIsShowErrorBlock] = useState(false);
+    const [errorText,setErrorText] = useState('');
 
     const [email, setEmail] = useState('');
     const [firstName, setFirstName] = useState('');
@@ -16,7 +21,8 @@ const ChangeUser = () => {
     useEffect(() => {
         const getUser = async () => {
             const token = getCookie("access_token");
-            const userFromServer = await fetchUserGetCurrent(token);
+            const result = await fetchUserGetCurrent(token);
+            let userFromServer = await result.json();
             setEmail(userFromServer.email);
             setFirstName(userFromServer.firstName);
             setLastName(userFromServer.lastName);
@@ -30,18 +36,40 @@ const ChangeUser = () => {
     const changeUser = (e) => {
         e.preventDefault()
 
-        //add here new date check
-        // if (!text) {
-        //     alert('Please add a task')
-        //     return
-        // }
-
-        fetchChangeUser({ firstName, lastName, userName,email,password });
+        if(firstName.length<3 || lastName.length<3 || userName.length<3|| email.length<3){
+            setErrorText('Some input is empty or have less then 3 letters');
+            setIsShowErrorBlock(true);
+            return;
+        }
+        if(password.length<8){
+            setErrorText('Input is empty or have less 1then 8 letters');
+            setIsShowErrorBlock(true);
+            return;
+        }
+        
+        const processFetch = async()=> {
+            let result = await fetchChangeUser({ firstName,lastName,userName,email,password });
+                if(result.status === 200){
+                    window.location.reload();
+                    return;
+                }else if(result.status === 400){
+                    setErrorText('Wrong input.');
+                    setIsShowErrorBlock(true);
+                    return;
+                }else{
+                    setErrorText('Error'+result.status);
+                    setIsShowErrorBlock(true);
+                    return;
+                }
+        }
+        processFetch();
+        
         window.location.reload(false);
     }
     //render
     return (
         <div>
+            <FlashBlock massage={errorText} isShow={isShowErrorBlock}/>
             <h1>Change User</h1>
             <div>
                 <p>First name</p>

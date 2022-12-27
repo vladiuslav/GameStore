@@ -1,6 +1,6 @@
 const fetchUserGetCurrent = async (access_token) => {
     
-    const res = await fetch('https://localhost:7025/api/User/current', {
+    const result = await fetch('https://localhost:7025/api/User/current', {
         method: 'GET',
         headers: {
             'Access-Control-Allow-Origin': '*',
@@ -9,7 +9,6 @@ const fetchUserGetCurrent = async (access_token) => {
             'Authorization': 'Bearer '+ access_token
         }
     });
-    const data = await res.json();
-    return data;
+    return result;
 };
 export default fetchUserGetCurrent;

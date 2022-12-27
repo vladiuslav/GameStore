@@ -1,4 +1,4 @@
-const fetchChangeUserImage=(file,token)=>{
+const fetchChangeUserImage=async (file,token)=>{
     var myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer "+ token);
 
@@ -12,7 +12,7 @@ const fetchChangeUserImage=(file,token)=>{
     redirect: 'follow'
     };
 
-    fetch("https://localhost:7025/api/UserImage/", requestOptions)
-    .catch(error => console.log('error', error));
+    let result = await fetch("https://localhost:7025/api/UserImage/", requestOptions);
+    return result;
 }
 export default fetchChangeUserImage;

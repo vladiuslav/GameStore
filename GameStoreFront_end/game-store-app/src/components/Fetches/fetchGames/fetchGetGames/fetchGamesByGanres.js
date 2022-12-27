@@ -1,25 +1,29 @@
-const fetchGamesByGanres = async (checkedState) => {
+const fetchGamesByGanres = async (checkedState,genres) => {
 
-    let ganresIds = [];
-    for (let index = 0; index < checkedState.length; index++) {
-        if (checkedState[index] !== false) {
-            ganresIds.push(index);
+    
+    let genresIds = [];
+    checkedState.forEach(function(value, key) {
+        if(value){
+        genresIds.push(genres.find(ganre=>ganre.name==key).id);
         }
-    }
+    })
 
-    const res = await fetch('https://localhost:7025/api/SearchFilterControler/Filter', {
-        method: 'POST',
-        headers: {
-            'mode': "no-cors",
-            'Accept': "application/json, text/plain, */*",
-            'Content-Type': "application/json;charset=utf-8"
-        },
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
 
-        body: JSON.stringify({
-            ganresIds
-        })
+    var raw = JSON.stringify({
+    "genresIds": genresIds
     });
-    const data = await res.json();
-    return data;
+
+    var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+    };
+
+    let result = await fetch("https://localhost:7025/api/SearchFilterControler/Filter", requestOptions)
+    return result;
+
 };
 export default fetchGamesByGanres;

@@ -6,21 +6,25 @@ import fetchGame from './Fetches/fetchGames/fetchGetGames/fetchGame';
 import fetchDeleteGame from './Fetches/fetchGames/fetchDeleteGame';
 import fetchGanres from './Fetches/fetchGaneres/fetchGanres';
 import GameImageBig from './GamePageComponents/GameImageBig';
+
 const Game = () => {
-  const [ganres, setGanres] = useState([]);
-  const [game, setGame] = useState([]);
+
+  const [genres, setGenres] = useState([]);
+  const [game, setGame] = useState(undefined);
   const { GameId } = useParams();
 
   useEffect(() => {
     const getGame = async () => {
-      const gameFromServer = await fetchGame(GameId);
-      setGame(gameFromServer);
+      const result = await fetchGame(GameId);
+      let resultJson = await result.json();
+      setGame(resultJson);
     };
     getGame();
 
     const getGanres = async () => {
-      const ganresFromServer = await fetchGanres();
-      setGanres(ganresFromServer);
+      const result = await fetchGanres();
+      let resultJson = await result.json();
+      setGenres(resultJson);
     };
     getGanres();
 
@@ -32,24 +36,24 @@ const Game = () => {
   }
 
   const getGanres = (ids) => {
-    if (ganres.length != 0) {
+    if (genres.length != 0) {
       let GanresString = "";
-      ganres.forEach((element) => {
+      genres.forEach((element) => {
         if (ids.find((id) => id == element.id) != null) {
           GanresString += element.name + "/";
         }
       });
       GanresString = GanresString.slice(0, GanresString.length - 1);
       return <div className="ganre-name"> {GanresString} </div>;
-    }  
+    }
     return <></>;
   };
 
   return (
-    <div className='game-page'>
+    (game!=undefined)?<div className='game-page'>
       <GameImageBig GameImageUrl={game.imageUrl} />
       <div className='game-info'>
-        <div className="game-ganres">{getGanres(game.ganresIds)}</div>
+        <div className='game-ganres'>{getGanres(game.genresIds)}</div>
         <div className='game-price'>{game.price + "$"}</div>
         <div className='game-name'><h1>{game.name}</h1></div>
       </div>
@@ -61,6 +65,7 @@ const Game = () => {
       <button onClick={() => deleteGame()}>Delete game</button>
       <ChangeGameImage />
     </div>
+    :<></>
   )
 }
 

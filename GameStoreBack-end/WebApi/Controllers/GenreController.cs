@@ -48,7 +48,7 @@ namespace WebApi.Controllers
             if (ModelState.IsValid)
             {
                 var genreByName = await _genreService.GetByGenreNameAsync(genre.Name);
-                if(genreByName == null)
+                if(genreByName != null)
                 {
                     return BadRequest();
                 }
@@ -76,7 +76,11 @@ namespace WebApi.Controllers
                 }
 
                 var genreByName = await _genreService.GetByGenreNameAsync(genre.Name);
-                if (genre.Name != null && genreByName.Id != genre.Id)
+                if(genreByName==null)
+                {
+
+                }
+                else if (genre.Name != null && genreByName.Id != genre.Id)
                 {
                     return BadRequest();
                 }

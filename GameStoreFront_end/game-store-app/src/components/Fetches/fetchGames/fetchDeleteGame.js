@@ -1,10 +1,11 @@
 const fetchDeleteGame = async (gameid) => {
 
-    const res = await fetch('https://localhost:7025/api/Game/' + gameid, {
-        method: 'DELETE'
-    });
-    const data = await res.json();
+    var requestOptions = {
+        method: 'DELETE',
+        redirect: 'follow'
+      };
+    const result = await fetch("https://localhost:7025/api/Game/" + gameid, requestOptions)
+    return result;
 
-    return data;
 };
 export default fetchDeleteGame;

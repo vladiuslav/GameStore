@@ -1,39 +1,57 @@
-import { useState, useEffect } from 'react'
-import { json, Link, useParams } from 'react-router-dom'
-import React from 'react'
+import { useState, useEffect } from 'react';
+import { json, Link, useParams } from 'react-router-dom';
+import React from 'react';
 import Game from '../Game';
+import fetchChangeGameImage from '../Fetches/fetchGames/fetchChangeGameImage';
+
+import FlashBlock from '../FlashBlock';
 
 const ChangeGameImage = () => {
-
+    const [isShowErrorBlock,setIsShowErrorBlock] = useState(false);
+    const [errorText,setErrorText] = useState('');
     const [image, setImage] = useState(null);
     const { GameId } = useParams();
+    const changeGame = (e) => {
+        e.preventDefault()
 
-    const fetchImage = async () => {
+        if(image.length<1){
+            setErrorText('Image empty');
+            setIsShowErrorBlock(true);
+            return ;
+        }
 
-        var formdata = new FormData();
-        formdata.append("UploadedFile", image[0]);
-
-        var requestOptions = {
-        method: 'PUT',
-        body: formdata,
-        redirect: 'follow'
-        };
-
-        fetch("https://localhost:7025/api/GameImage/1", requestOptions)
-        .then(response => response.text())
-        .then(result => console.log(result))
-        .catch(error => console.log('error', error));
-
+        const processFetch = async()=> {
+            let result = await fetchChangeGameImage(image[0], GameId);
+                if(result.status === 200){
+                    window.location.reload();
+                    return;
+                }else if(result.status === 400){
+                    setErrorText('Game name exist or wrong price number.');
+                    setIsShowErrorBlock(true);
+                    return;
+                }else{
+                    setErrorText('Error'+result.status);
+                    setIsShowErrorBlock(true);
+                    return;
+                }
+        }
+        processFetch();
     }
 
     return (
-        <div >
+        <div>
+            <div onClick={(e)=>{
+                e.preventDefault();
+                setIsShowErrorBlock(false);
+            }}>
+            <FlashBlock massage={errorText} isShow={isShowErrorBlock}/>
+            </div>
             <label>Image of game</label>
             <input
                 type='file'
                 onChange={(e) => setImage(e.target.files)}
             />
-            <button onClick={() => fetchImage()}>Change game image</button>
+            <button onClick={() => changeGame()}>Change game image</button>
         </div>
     )
 }

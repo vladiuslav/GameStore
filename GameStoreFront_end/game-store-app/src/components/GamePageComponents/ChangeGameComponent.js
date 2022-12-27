@@ -6,74 +6,103 @@ import fetchGame from '../Fetches/fetchGames/fetchGetGames/fetchGame'
 import fetchGanres from '../Fetches/fetchGaneres/fetchGanres'
 import fetchChangeGame from '../Fetches/fetchGames/fetchChangeGame'
 
-const ChangeGameComponent = () => {
+import FlashBlock from '../FlashBlock';
 
-    const [ganres, setGanres] = useState([]);
-    const [imageUrl, setImage] = useState('');
+const ChangeGameComponent = () => {
+    const [isShowErrorBlock,setIsShowErrorBlock] = useState(false);
+    const [errorText,setErrorText] = useState('');
+    const [genres, setGenres] = useState([]);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
-    const [checkedState, setCheckedState] = useState([]);
+    const [checkedState, setCheckedState] = useState(new Map());
     const { GameId } = useParams(0);
 
     useEffect(() => {
         const getGame = async () => {
-            const gameFromServer = await fetchGame(GameId);
+            const result = await fetchGame(GameId);
+            let gameJson = await result.json();
 
-            setName(gameFromServer.name);
-            setDescription(gameFromServer.description);
-            setPrice(gameFromServer.price);
-            setImage(gameFromServer.imageUrl);
-            let ganresChecks = [];
-            for (let index = 0, arrayIndex = 0; arrayIndex < gameFromServer.ganresIds.length; index++) {
-                if (gameFromServer.ganresIds[arrayIndex] == index) {
-                    ganresChecks.push(true);
-                    arrayIndex++;
-                } else {
-                    ganresChecks.push(false);
-                }
+            setName(gameJson.name);
+            setDescription(gameJson.description);
+            setPrice(gameJson.price);
+            
+
+            const result2 = await fetchGanres();
+            const ganresJson = await result2.json();
+            setGenres(ganresJson);
+            let ganresChecks=checkedState;
+            for (let index = 0; index < ganresJson.length; index++) {
+                ganresChecks.set
+                (
+                    ganresJson[index].name,
+                    (gameJson.genresIds.some(genreId=>genreId==ganresJson[index].id)) ? true : false 
+                );
             }
+            
             setCheckedState(ganresChecks);
+
         }
         getGame();
-        //get ganres
-        const getGanres = async () => {
-            const ganresFromServer = await fetchGanres();
-            setGanres(ganresFromServer);
-        }
-        getGanres();
     }, [])
 
     // CheckedFunction
-    const handleOnChange = (position) => {
-        const updatedCheckedState = checkedState.map((item, index) =>
-            index === position ? !item : item
-        );
+    const handleOnChange = (name) => {
+        let updatedCheckedState =checkedState;
+        let IsPressed = updatedCheckedState.get(name);
+        updatedCheckedState.set(name,!IsPressed);
         setCheckedState(updatedCheckedState);
     };
 
-    //File Picker
-    const changeHandler = (event) => {
-        setSelectedFile(event.target.files[0]);
-        setIsSelected(true);
-    };
-
-    //CreateNewGame 
     const changeGame = (e) => {
-        e.preventDefault()
+        e.preventDefault();
 
-        //add here new date check
-        // if (!text) {
-        //     alert('Please add a task')
-        //     return
-        // }
+        if(name.length<1 || description.length<1 || price.length<1){
+            setErrorText('Some input is empty');
+            setIsShowErrorBlock(true);
+            return ;
+        }
 
-        fetchChangeGame({ name, description, price, checkedState, imageUrl, GameId });
+        if(name.length<3||name.length>40){
+            setErrorText('Name too short or too long');
+            setIsShowErrorBlock(true);
+            return ;
+        }
+        if(description.length<10||description.length>400){
+            setErrorText('Description too short or too long');
+            setIsShowErrorBlock(true);
+            return ;
+        }
+        const processFetch = async()=> {
+            let result = await fetchChangeGame({ name, description, price, checkedState , genres, GameId });
+                if(result.status === 200){
+                    window.location.reload();
+                    return;
+                }else if(result.status === 400){
+                    setErrorText('Game name exist or wrong price number.');
+                    setIsShowErrorBlock(true);
+                    return;
+                }else if(result.status === 404){
+                    setErrorText('Game doesn`t exist');
+                    setIsShowErrorBlock(true);
+                    return;
+                }else{
+                    setErrorText('Error'+result.status);
+                    setIsShowErrorBlock(true);
+                    return;
+                }
+        }
+        processFetch();
     }
 
-    //render
     return (
         <div className="game-add-form">
+            <div onClick={(e)=>{
+                e.preventDefault();
+                setIsShowErrorBlock(false);
+            }}>
+            <FlashBlock massage={errorText} isShow={isShowErrorBlock}/>
+            </div>
             <h1>Change Game</h1>
             <div >
                 <p>Name</p>
@@ -96,11 +125,11 @@ const ChangeGameComponent = () => {
             <div>
                 <p>Game ganres</p>
                 <ul>
-                    {ganres.map((item) => (
+                    {genres.map((item) => (
                         <li key={item.id}>
                             <input type="checkbox"
-                                checked={checkedState[item.id]}
-                                onChange={() => handleOnChange(item.id)}
+                                value={checkedState.get(item.name)}
+                                onChange={() => handleOnChange(item.name)}
                             /><label>{item.name}</label></li>
                     ))}
                 </ul>

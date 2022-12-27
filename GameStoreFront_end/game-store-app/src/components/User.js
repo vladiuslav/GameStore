@@ -12,10 +12,12 @@ const User = () => {
     useEffect(() => {
         const getUser = async () => {
             const token=getCookie("access_token");
-            const userFromServer = await fetchUserGetCurrent(token);
-            setUser(userFromServer);    
+            const result = await fetchUserGetCurrent(token);
+            let resultJson= await result.json();
+            setUser(resultJson);   
         };
         getUser();
+
     }, []);
 
 

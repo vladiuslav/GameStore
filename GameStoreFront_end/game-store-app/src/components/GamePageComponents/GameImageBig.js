@@ -1,8 +1,6 @@
 
 
 const GameImageBig = (props) => {
-
-    console.log(props.GameImageUrl);
     let imageUrl;
     if(props.GameImageUrl === null){
         imageUrl="nonegame.jpg";

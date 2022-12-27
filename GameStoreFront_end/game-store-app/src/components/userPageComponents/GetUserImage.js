@@ -1,14 +1,15 @@
 const GetUserImage = (props) => {
 
-  if(props.avatarImageUrl === null){
-      imageUrl="noneuser.png";
-  }else{
-      imageUrl = props.avatarImageUrl;
-  }
+    let imageUrl;
+    if(props.avatarImageUrl === null){
+        imageUrl="noneuser.png";
+    }else{
+        imageUrl = props.avatarImageUrl;
+    }
     const imageStyle = {
       backgroundImage: 'url(https://localhost:7025/img/' + imageUrl + ')'
     };
-  
+
     return (
       <div className='user-image' style={imageStyle}></div>
     )
