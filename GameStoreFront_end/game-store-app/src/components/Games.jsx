@@ -192,17 +192,21 @@ const Games = () => {
                   }
                   GameImageUrl={game.imageUrl}
                 />
-                <div className="games-container-part">
-                  <div className="games-left-price">{game.price}$</div>
-                  <div className="games-right-buy">
-                    <button className="green-button">BUY</button>
+                <div
+                  className={game.id % 4 > 0 ? "" : "games-gray-baground-part"}
+                >
+                  <div className="games-container-part">
+                    <div className="games-left-price">{game.price}$</div>
+                    <div className="games-right-buy">
+                      <button className="green-button">BUY</button>
+                    </div>
                   </div>
-                </div>
-                <div>
-                  <div className="games-container-genres">
-                    {getGenresBlock(game.genresIds)}
+                  <div>
+                    <div className="games-container-genres">
+                      {getGenresBlock(game.genresIds)}
+                    </div>
+                    <div className="games-container-name">{game.name}</div>
                   </div>
-                  <div className="games-container-name">{game.name}</div>
                 </div>
               </Link>
             </div>
