@@ -93,7 +93,7 @@ namespace WebApi.Controllers
 
 
         [HttpPost]
-        [ProducesResponseType(201)]
+        [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> CreateUser(UserFullViewModel user)
         {

@@ -2,15 +2,16 @@ body {
   margin: 0;
   background-color: #000;
   color: white;
+  font-family: "Open Sans", sans-serif;
 }
 
 article {
-  margin-left: 10%;
-  width: 80%;
+  margin-left: 15%;
+  width: 70%;
   padding: 1em;
   background-color: #1e1e1e;
 }
-.background-gray{
+.background-gray {
   position: fixed;
   margin: 0px;
   top: 50%;
@@ -20,7 +21,7 @@ article {
   height: 100%;
   background-color: rgba(30, 30, 30, 0.8);
 }
-.central-form{
+.central-form {
   position: fixed;
   padding: 5em;
   top: 50%;
@@ -34,3 +35,4 @@ article {
 @import "./Styles/Footer.css";
 @import "./Styles/Game.css";
 @import "./Styles/User.css";
+@import "./Styles/Buttons.css";

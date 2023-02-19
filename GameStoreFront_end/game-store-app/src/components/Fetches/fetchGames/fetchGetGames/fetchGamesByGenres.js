@@ -1,14 +1,8 @@
-const fetchAddGame = async ({
-  name,
-  description,
-  price,
-  checkedState,
-  genres,
-}) => {
+const fetchGamesByGenres = async (checkedState, genres) => {
   let genresIds = [];
   checkedState.forEach(function (value, key) {
     if (value) {
-      genresIds.push(genres.find((genre) => genre.name == key).id);
+      genresIds.push(genres.find((genre) => gaere.name == key).id);
     }
   });
 
@@ -16,9 +10,6 @@ const fetchAddGame = async ({
   myHeaders.append("Content-Type", "application/json");
 
   var raw = JSON.stringify({
-    name: name,
-    description: description,
-    price: price,
     genresIds: genresIds,
   });
 
@@ -29,7 +20,10 @@ const fetchAddGame = async ({
     redirect: "follow",
   };
 
-  let result = await fetch("https://localhost:7025/api/Game", requestOptions);
+  let result = await fetch(
+    "https://localhost:7025/api/SearchFilterControler/Filter",
+    requestOptions
+  );
   return result;
 };
-export default fetchAddGame;
+export default fetchGamesByGenres;

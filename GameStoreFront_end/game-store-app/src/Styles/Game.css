@@ -1,61 +1,64 @@
-
 .game-page {
-    display: blcok;
-    margin-left: auto;
-    margin-right: auto;
+  display: blcok;
+  margin-left: auto;
+  margin-right: auto;
 }
-.game-info{
-    padding: 0.5em;
-    background-color: #1e1e1e;
-    border: none;
-    border-radius: 4px;
-    height: 3em;
+.game-page-image {
+  width: 66em;
+  height: 30em;
+  display: block;
+  object-fit: cover;
+  object-position: 40% 35%;
 }
-.game-ganres{
-    display: inline;
-    float: left;
-    width: auto;
-    padding: 0.5em;
-        margin-top: 0.5em;
-        padding-top: 1.5em;
-        height: 1.5em;
-    background-color: #4554a0;
-    border: none;
-    border-radius: 4px;
-}
-.game-price {
-    display: block;
-    float: right;
-    width: auto;
-    padding: 0.5em;
-    margin-top: 0.5em;
-    padding-top: 1.5em;
-    height: 1.5em;
-    background-color: #45a049;
-    border: none;
-    border-radius: 4px;
-}
+
 .game-name {
-    display: block;
-    margin: auto;
-    height: 3em;
-    width: 5em;
-    padding: 0.5em;
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+  font-size: 2.5em;
+  font-weight: bold;
 }
-.game-description{
-    margin-top: 1em;
-    margin-bottom: 1em;
-    display: block;
-    padding: 1em;
-    background-color: #1e1e1e;
-    border: none;
-    border-radius: 4px;
+.game-price-buy-block {
+  height: 5em;
 }
-.game-image-big {
-    margin: 1em;
-    width: 60em;
-    height: 45em;
-    background-size: cover;
-    margin-left: auto;
-    margin-right: auto;
+
+.game-price {
+  font-size: 1.5em;
+  float: left;
+  padding: 1em;
+}
+.game-buy {
+  float: right;
+}
+.game-buy button {
+  color: white;
+  background-color: #45a049;
+  padding: 1em;
+  width: 7em;
+  font-size: 1em;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.green-button:hover {
+  background-color: #2d672f;
+}
+
+.game-genres {
+  height: 3.25em;
+}
+
+.game-genres-item {
+  float: left;
+  padding: 0.5em;
+  margin: 0.5em;
+  background-color: #4554a0;
+  border: none;
+  border-radius: 15px;
+}
+
+.game-description {
+  margin: 1em 0;
+  font-size: 1.25em;
 }
