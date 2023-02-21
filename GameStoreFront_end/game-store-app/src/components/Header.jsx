@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import logo from "../Images/Logo.jpg";
 import fetchUserRegestration from "./Fetches/fetchUsers/fetchUserRegestration";
 import fetchUserLogin from "./Fetches/fetchUsers/fetchUserLogin";
@@ -11,6 +11,7 @@ import FlashBlock from "./FlashBlock";
 import GetUserImage from "./userPageComponents/GetUserImage";
 
 const Header = () => {
+  const navigate = useNavigate();
   const [isLogged, setIsLogged] = useState(false);
   const [user, setUser] = useState(false);
   const [isOpenForm, setIsOpenForm] = useState(false);
@@ -20,11 +21,20 @@ const Header = () => {
     checkIsLogged();
   }, []);
 
+  const getName = () => {
+    if ((user.firstName + user.lastName).length > 20) {
+      return (user.firstName + user.lastName).slice(0, 20);
+    } else {
+      return user.firstName + " " + user.lastName;
+    }
+  };
+
   const logOut = () => {
     setCookie("access_token", " ", 0);
     setCookie("email", " ", 0);
     setIsLogged(false);
     checkIsLogged();
+    navigate("/");
   };
 
   const checkIsLogged = async () => {
@@ -36,10 +46,6 @@ const Header = () => {
       let resultjson = await result.json();
       setUser(resultjson);
     }
-  };
-
-  const changeIsOpenForm = () => {
-    setIsOpenForm(!isOpenForm);
   };
 
   const SignIn = () => {
@@ -80,7 +86,7 @@ const Header = () => {
           password,
         });
         if (result.status === 200) {
-          window.location.reload();
+          navigate("/");
           return;
         } else if (result.status === 400) {
           setErrorText("Wrong input.");
@@ -108,10 +114,10 @@ const Header = () => {
         <div className="user-form">
           <div
             onClick={() => {
-              changeIsOpenForm();
+              setIsOpenForm(!isOpenForm);
             }}
           >
-            <i class="fa-solid fa-xmark"></i>
+            <i className="fa-solid fa-xmark"></i>
           </div>
           <h1>User registration</h1>
           <div className="user-form-part">
@@ -207,7 +213,7 @@ const Header = () => {
           );
           setCookie("email", resultJson.email, rememberMe ? 720 : 2);
           checkIsLogged();
-          changeIsOpenForm();
+          setIsOpenForm(!isOpenForm);
           return;
         } else if (result.status === 400) {
           setErrorText("Wrong input or user don`t exist.");
@@ -239,10 +245,10 @@ const Header = () => {
         <div className="user-form">
           <div
             onClick={() => {
-              changeIsOpenForm();
+              setIsOpenForm(!isOpenForm);
             }}
           >
-            <i class="fa-solid fa-xmark"></i>
+            <i className="fa-solid fa-xmark"></i>
           </div>
           <h1>Please Login</h1>
           <div className="user-form-part">
@@ -326,7 +332,7 @@ const Header = () => {
                   className="nav-item"
                   href="#"
                   onClick={() => {
-                    changeIsOpenForm();
+                    setIsOpenForm(!isOpenForm);
                     setIsOpenLoginForm(false);
                   }}
                 >
@@ -338,7 +344,7 @@ const Header = () => {
                   className="nav-item"
                   href="#"
                   onClick={() => {
-                    changeIsOpenForm();
+                    setIsOpenForm(!isOpenForm);
                     setIsOpenLoginForm(true);
                   }}
                 >
@@ -350,15 +356,15 @@ const Header = () => {
             <>
               <li>
                 <Link to="/User" className="nav-item">
-                  <div class="user-small-image">
+                  <div className="user-small-image">
                     <GetUserImage avatarImageUrl={user.avatarImageUrl} />
                   </div>
-                  {user.firstName + " " + user.lastName}
+                  {getName()}
                 </Link>
               </li>
               <li>
                 <a className="nav-item" href="#">
-                  <i class="fa-solid fa-cart-shopping"></i>
+                  <i className="fa-solid fa-cart-shopping"></i>
                 </a>
               </li>
               <li>
@@ -369,7 +375,7 @@ const Header = () => {
                     logOut();
                   }}
                 >
-                  <i class="fa-solid fa-right-from-bracket"></i>
+                  <i className="fa-solid fa-right-from-bracket"></i>
                 </a>
               </li>
             </>

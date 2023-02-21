@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
-import { json, Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import React from "react";
 import Game from "../Game";
 import fetchChangeUserImage from "../Fetches/fetchUsers/fetchChangeUserImage";
 import getCookie from "../JsFunctions/getCookie";
+import User from "../User";
 
 const ChangeUserImage = () => {
+  const navigate = useNavigate();
   const [image, setImage] = useState(null);
 
   return (
@@ -17,6 +19,7 @@ const ChangeUserImage = () => {
         onClick={() => {
           const token = getCookie("access_token");
           fetchChangeUserImage(image[0], token);
+          navigate("/");
         }}
       >
         Change user image

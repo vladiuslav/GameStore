@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import React from "react";
 import ChangeUserImage from "./userPageComponents/ChangeUserImage";
 import fetchUserGetCurrent from "./Fetches/fetchUsers/fetchUsersGet/fetchUserGetCurrent";
@@ -8,6 +8,7 @@ import getCookie from "./JsFunctions/getCookie";
 import FlashBlock from "./FlashBlock";
 
 const ChangeUser = () => {
+  const navigate = useNavigate();
   const [isShowErrorBlock, setIsShowErrorBlock] = useState(false);
   const [errorText, setErrorText] = useState("");
 
@@ -59,7 +60,7 @@ const ChangeUser = () => {
         password,
       });
       if (result.status === 200) {
-        window.location.reload();
+        navigate("/");
         return;
       } else if (result.status === 400) {
         setErrorText("Wrong input.");
@@ -72,8 +73,6 @@ const ChangeUser = () => {
       }
     };
     processFetch();
-
-    window.location.reload(false);
   };
   //render
   return (

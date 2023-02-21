@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import React from "react";
 import fetchGenres from "./Fetches/fetchGaneres/fetchGenres";
 import fetchAddGame from "./Fetches/fetchGames/fetchAddGame";
 import FlashBlock from "./FlashBlock";
 const AddGame = () => {
+  const navigate = useNavigate();
   const [isShowErrorBlock, setIsShowErrorBlock] = useState(false);
   const [errorText, setErrorText] = useState("");
   const [genres, setGenres] = useState([]);
@@ -55,7 +57,9 @@ const AddGame = () => {
       setIsShowErrorBlock(true);
       return;
     }
-
+    if (price.includes(".")) {
+      setPrice(price.replace(/\./g, ","));
+    }
     const processFetch = async () => {
       let result = await fetchAddGame({
         name,
@@ -69,7 +73,7 @@ const AddGame = () => {
         setDescription("");
         setPrice("");
         setCheckedState([]);
-        window.location.reload();
+        navigate("/Games");
         return;
       } else if (result.status === 400) {
         setErrorText("Game name exist or wrong price number.");
@@ -125,6 +129,7 @@ const AddGame = () => {
                 <input
                   type="checkbox"
                   value={checkedState.get(item.name)}
+                  checked={checkedState.get(item.name)}
                   onChange={() => handleOnChange(item.name)}
                 />
                 <label>{item.name}</label>

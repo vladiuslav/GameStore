@@ -102,6 +102,12 @@ const Games = () => {
       <div className="game-genres">
         {filteredGenres.map((genre) => (
           <div key={genre.id} className="game-genres-item">
+            <i
+              onClick={() => {
+                handleOnChange(genre.name);
+              }}
+              className="fa-solid fa-xmark"
+            ></i>
             {genre.name}
           </div>
         ))}
@@ -132,6 +138,7 @@ const Games = () => {
                       <input
                         type="checkbox"
                         value={checkedState.get(item.name)}
+                        checked={checkedState.get(item.name)}
                         onChange={() => handleOnChange(item.name)}
                       />
                       <label>{item.name}</label>
@@ -151,6 +158,11 @@ const Games = () => {
               placeholder="Search"
               value={searchName}
               onChange={(e) => setSearchName(e.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  FindByName();
+                }
+              }}
             />
             <button
               className="games-filters-button"

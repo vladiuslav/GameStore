@@ -15,6 +15,7 @@ const fetchChangeUser = async ({
     firstName: firstName,
     lastName: lastName,
     userName: userName,
+    avatarImageUrl: "",
     email: email,
     password: password,
   });

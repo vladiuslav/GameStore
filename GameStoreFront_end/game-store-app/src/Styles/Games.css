@@ -17,7 +17,7 @@
 .games-container-small {
   display: inline-block;
   grid-template-rows: auto;
-  width: 15em;
+  width: 16.7em;
   height: 23em;
   margin: 0.5em;
   background-color: rgba(0, 0, 0, 0);
@@ -35,7 +35,7 @@
   height: 15em;
 }
 .game-image-small {
-  width: 15em;
+  width: 16.7em;
   height: 15em;
   display: block;
   object-fit: cover;
@@ -51,9 +51,8 @@
 }
 .game-functional-block-small {
   position: relative;
-  width: 15em;
+  width: 16.7em;
   top: -15em;
-  z-index: 10;
   height: 15em;
   background-color: rgba(255, 255, 255, 0.8);
   color: black;
@@ -61,9 +60,8 @@
 .game-functional-block-big {
   position: relative;
   width: 30em;
-  top: -23.5em;
-  z-index: 10;
-  height: 15em;
+  top: -22.9em;
+  height: 15.1em;
   background-color: rgba(255, 255, 255, 0.8);
   color: black;
 }
@@ -117,7 +115,6 @@
 .games-gray-baground-part {
   background-color: rgba(0, 0, 0, 0.5);
   position: relative;
-  z-index: 10;
 }
 .games-container-genres {
   padding-left: 0.5em;

@@ -135,21 +135,15 @@ namespace WebApi.Controllers
                 var userByIdentity = await _userService.GetUserByEmailAsync(User.Identity.Name);
 
                 var userByEmail = await _userService.GetUserByEmailAsync(user.Email);
-                if (userByEmail==null)
-                {
-
-                }
-                else if (userByEmail != null && userByEmail.Id != userByIdentity.Id)
+                if(userByEmail== null) { return BadRequest(); }
+                
+                if (userByEmail.Id != userByIdentity.Id)
                 {
                     return BadRequest();
                 }
 
                 var userByName = await _userService.GetUserByUserNameAsync(user.UserName);
-                if (userByName == null)
-                {
-
-                }
-                else if (userByName != null && userByName.Id != userByIdentity.Id)
+                if (userByName != null && userByName.Id != userByIdentity.Id)
                 {
                     return BadRequest();
                 }

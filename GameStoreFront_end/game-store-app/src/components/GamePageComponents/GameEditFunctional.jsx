@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import GameImage from "./GameImage";
 import fetchDeleteGame from "../Fetches/fetchGames/fetchDeleteGame";
 import FlashBlock from "../FlashBlock";
 const GameEditFunctional = (props) => {
+  const navigate = useNavigate();
   const [isShownFunctionalBlock, setIsShownFunctionalBlock] = useState(false);
   const [isShowErrorBlock, setIsShowErrorBlock] = useState(false);
   const [errorText, setErrorText] = useState("");
@@ -13,7 +14,7 @@ const GameEditFunctional = (props) => {
     const processFetch = async () => {
       let result = await fetchDeleteGame(props.gameId);
       if (result.status === 200) {
-        window.location.reload();
+        navigate("/Game/" + GameId);
         return;
       } else if (result.status === 404) {
         setErrorText("Game doesn`t exist");
