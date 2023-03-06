@@ -4,7 +4,7 @@ import React from "react";
 import ChangeUserImage from "./userPageComponents/ChangeUserImage";
 import fetchUserGetCurrent from "./Fetches/fetchUsers/fetchUsersGet/fetchUserGetCurrent";
 import fetchChangeUser from "./Fetches/fetchUsers/fetchChangeUser";
-import getCookie from "./JsFunctions/getCookie";
+import getCookie from "./CokieFunctions/getCookie";
 import FlashBlock from "./FlashBlock";
 
 const ChangeUser = () => {

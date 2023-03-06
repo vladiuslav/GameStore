@@ -1,4 +1,4 @@
-import getCookie from "../../JsFunctions/getCookie";
+import getCookie from "../../CokieFunctions/getCookie";
 const fetchChangeUser = async ({
   firstName,
   lastName,
