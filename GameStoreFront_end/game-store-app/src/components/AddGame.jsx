@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import React from "react";
 import fetchGenres from "./Fetches/fetchGaneres/fetchGenres";
 import fetchAddGame from "./Fetches/fetchGames/fetchAddGame";

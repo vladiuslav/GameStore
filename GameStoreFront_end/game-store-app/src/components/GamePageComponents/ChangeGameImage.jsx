@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import React from "react";
-import Game from "../Game";
 import fetchChangeGameImage from "../Fetches/fetchGames/fetchChangeGameImage";
 
 import FlashBlock from "../FlashBlock";

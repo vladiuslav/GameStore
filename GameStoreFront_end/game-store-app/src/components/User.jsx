@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
-
+import { Link } from "react-router-dom";
 import fetchUserGetCurrent from "./Fetches/fetchUsers/fetchUsersGet/fetchUserGetCurrent";
 import getCookie from "./CokieFunctions/getCookie";
 import GetUserImage from "./userPageComponents/GetUserImage";
+
 const User = () => {
   const [user, setUser] = useState([]);
   const [isShowPassword, setIsShowPassword] = useState(false);

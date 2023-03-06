@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import AddGameComponent from "./AddGame";
 import fetchGames from "./Fetches/fetchGames/fetchGetGames/fetchGames";
 import fetchGamesByGenres from "./Fetches/fetchGames/fetchGetGames/fetchGamesByGenres";
 import fetchGamesByName from "./Fetches/fetchGames/fetchGetGames/fetchGamesByName";
@@ -36,7 +35,6 @@ const Games = () => {
     setStarterGenres();
   }, []);
 
-  // CheckedFunction
   const handleOnChange = (name) => {
     let updatedCheckedState = checkedState;
     let IsPressed = updatedCheckedState.get(name);
@@ -63,14 +61,15 @@ const Games = () => {
     getGames();
   };
 
-  const clearFilters = () => {
-    const getGames = async () => {
-      const gamesFromServer = await fetchGames();
-      let jsonResult = await gamesFromServer.json();
-      setGames(jsonResult);
-    };
-    getGames();
-  };
+  //
+  // const clearFilters = () => {
+  //   const getGames = async () => {
+  //     const gamesFromServer = await fetchGames();
+  //     let jsonResult = await gamesFromServer.json();
+  //     setGames(jsonResult);
+  //   };
+  //   getGames();
+  // };
 
   const getGenresBlock = (ids) => {
     if (genres.length != 0 && ids.length != 0) {

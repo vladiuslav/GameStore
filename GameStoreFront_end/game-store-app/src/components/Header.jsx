@@ -8,6 +8,7 @@ import getCookie from "./CokieFunctions/getCookie";
 import GetUserImage from "./userPageComponents/GetUserImage";
 import SignIn from "./SignIn";
 import LogIn from "./LogIn";
+
 const Header = () => {
   const navigate = useNavigate();
   const [isLogged, setIsLogged] = useState(false);

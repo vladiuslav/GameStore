@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import GameImage from "./GameImage";
 import fetchDeleteGame from "../Fetches/fetchGames/fetchDeleteGame";
 import FlashBlock from "../FlashBlock";

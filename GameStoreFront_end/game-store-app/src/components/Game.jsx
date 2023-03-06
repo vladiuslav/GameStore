@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import fetchGame from "./Fetches/fetchGames/fetchGetGames/fetchGame";
-import fetchDeleteGame from "./Fetches/fetchGames/fetchDeleteGame";
 import fetchGenres from "./Fetches/fetchGaneres/fetchGenres";
 import GameImage from "./GamePageComponents/GameImage.jsx";
 
@@ -25,11 +24,6 @@ const Game = () => {
     };
     getGenres();
   }, []);
-
-  //Delete Game
-  const deleteGame = () => {
-    fetchDeleteGame(GameId);
-  };
 
   const getGenres = (ids) => {
     const filteredGenres = genres.filter((element) => ids.includes(element.id));

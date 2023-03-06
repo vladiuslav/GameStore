@@ -1,10 +1,8 @@
-import { useState, useEffect } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import React from "react";
-import Game from "../Game";
 import fetchChangeUserImage from "../Fetches/fetchUsers/fetchChangeUserImage";
 import getCookie from "../CokieFunctions/getCookie";
-import User from "../User";
 
 const ChangeUserImage = () => {
   const navigate = useNavigate();
