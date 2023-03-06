@@ -16,27 +16,12 @@ namespace BLL.Services
     public class SearchFilterService : ISearchFilterService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly Mapper _mapper;
-        public SearchFilterService(IUnitOfWork unitOfWork)
+        private readonly IMapper _mapper;
+
+        public SearchFilterService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
-            var config = new MapperConfiguration(cfg => {
-                cfg.AddProfile<AutoMapperProfile>();
-            }
-            );
-            _mapper = new Mapper(config);
-        }
-        public SearchFilterService()
-        {
-            var options = new DbContextOptionsBuilder<GameStoreDbContext>()
-                .UseSqlServer(@"Server=localhost\SQLEXPRESS;Database=GameStoreDb;Trusted_Connection=True;")
-                .Options;
-            _unitOfWork = new UnitOfWork(options);
-            var config = new MapperConfiguration(cfg => {
-                cfg.AddProfile<AutoMapperProfile>();
-            }
-            );
-            _mapper = new Mapper(config);
+            _mapper = mapper;
         }
 
         public async Task<IEnumerable<GameModel>> SearchGamesByNameAsync(string gameName)

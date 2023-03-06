@@ -1,6 +1,12 @@
-﻿using BLL.Interfaces;
+﻿using AutoMapper;
+using BLL;
+using BLL.Interfaces;
 using BLL.Services;
+using DLL.Data;
+using DLL.Interafeces;
+using DLL.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using WebApi;
 
@@ -13,20 +19,29 @@ namespace WEBAPI
             Configuration = configuration;
         }
         public IConfiguration Configuration { get; }
-        private string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+        private readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add services to the container.
-
             services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
+
+            services.AddDbContext<GameStoreDbContext>(options =>
+                options.UseSqlServer(@"Server=localhost\SQLEXPRESS;Database=GameStoreDB;Trusted_Connection=True;"));
+
+            services.AddScoped<IGameRepository, GameRepository>();
+            services.AddScoped<IGenreRepository, GenreRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
             services.AddScoped<IGameService, GameService>();
             services.AddScoped<IGenreService, GenreService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ISearchFilterService, SearchFilterService>();
-            services.AddAutoMapper(typeof(AutoMapperProfile));
+
+            services.AddAutoMapper(typeof(AutoMapperProfile),typeof(AutoMapperProfileBll));
+
             services.AddCors(options =>
             {
                 options.AddPolicy(name: MyAllowSpecificOrigins,

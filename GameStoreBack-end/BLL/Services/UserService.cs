@@ -11,27 +11,12 @@ namespace BLL.Services
     public class UserService : IUserService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly Mapper _mapper;
-        public UserService(IUnitOfWork unitOfWork)
+        private readonly IMapper _mapper;
+
+        public UserService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
-            var config = new MapperConfiguration(cfg => {
-                cfg.AddProfile<AutoMapperProfile>();
-            }
-            );
-            _mapper = new Mapper(config);
-        }
-        public UserService()
-        {
-            var options = new DbContextOptionsBuilder<GameStoreDbContext>()
-                .UseSqlServer(@"Server=localhost\SQLEXPRESS;Database=GameStoreDB;Trusted_Connection=True;")
-                .Options;
-            _unitOfWork = new UnitOfWork(options);
-            var config = new MapperConfiguration(cfg => {
-                cfg.AddProfile<AutoMapperProfile>();
-            }
-            );
-            _mapper = new Mapper(config);
+            _mapper = mapper;
         }
         public async Task AddAsync(UserModel model)
         {

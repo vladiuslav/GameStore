@@ -1,9 +1,9 @@
-﻿using BLL.Interfaces;
+﻿using AutoMapper;
+using BLL.Interfaces;
 using BLL.Models;
 using DLL.Data;
-using DLL.Interafeces;
 using DLL.Entities;
-using AutoMapper;
+using DLL.Interafeces;
 using Microsoft.EntityFrameworkCore;
 
 namespace BLL.Services
@@ -11,38 +11,23 @@ namespace BLL.Services
     public class GameService : IGameService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly Mapper _mapper;
-        public GameService(IUnitOfWork unitOfWork)
+        private readonly IMapper _mapper;
+
+        public GameService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
-            var config = new MapperConfiguration(cfg => {
-                cfg.AddProfile<AutoMapperProfile>();
-                }
-            );
-            _mapper = new Mapper(config);
+            _mapper = mapper;
         }
-        public GameService()
-        {
-            var options = new DbContextOptionsBuilder<GameStoreDbContext>()
-                .UseSqlServer(@"Server=localhost\SQLEXPRESS;Database=GameStoreDB;Trusted_Connection=True;")
-                .Options;
-            _unitOfWork = new UnitOfWork(options);
-            var config = new MapperConfiguration(cfg => {
-                cfg.AddProfile<AutoMapperProfile>();
-            }
-            );
-            _mapper = new Mapper(config);
-        }
-
         public async Task AddAsync(GameModel model)
         {
             var game = _mapper.Map<Game>(model);
-            ICollection<Genre> genres= new List<Genre>();
+            ICollection<Genre> genres = new List<Genre>();
             IEnumerable<Genre> genresDb = await _unitOfWork.GenreRepository.GetAllWithDetailsAsync();
             foreach (var item in model.GenresIds)
             {
                 var genre = genresDb.FirstOrDefault(g => g.Id == item);
-                if (genre!=null) {
+                if (genre != null)
+                {
                     genres.Add(genre);
                 }
             }
@@ -78,14 +63,15 @@ namespace BLL.Services
         {
             var game = _mapper.Map<Game>(model);
             var allGenres = await _unitOfWork.GenreRepository.GetAllWithDetailsAsync();
-            var ganresForGame= new List<Genre>();
+            var ganresForGame = new List<Genre>();
             foreach (var genre in allGenres)
             {
-                if (model.GenresIds.Contains(genre.Id)){
+                if (model.GenresIds.Contains(genre.Id))
+                {
                     ganresForGame.Add(genre);
                 }
             }
-            game.Genres= ganresForGame;
+            game.Genres = ganresForGame;
             await _unitOfWork.GameRepository.UpdateAsync(game);
             await _unitOfWork.SaveAsync();
         }

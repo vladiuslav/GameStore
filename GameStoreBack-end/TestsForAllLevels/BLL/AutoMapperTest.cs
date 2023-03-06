@@ -15,7 +15,7 @@ namespace TestsForAllLevels.BLL
         public void AutomapperConfiguration_ReturnsIsVaid()
         {
             var config = new MapperConfiguration(cfg => {
-                cfg.AddProfile<AutoMapperProfile>();
+                cfg.AddProfile<AutoMapperProfileBll>();
             });
 
             config.AssertConfigurationIsValid();    

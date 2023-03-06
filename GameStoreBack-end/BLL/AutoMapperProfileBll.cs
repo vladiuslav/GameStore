@@ -4,9 +4,9 @@ using DLL.Entities;
 
 namespace BLL
 {
-    public class AutoMapperProfile : Profile
+    public class AutoMapperProfileBll : Profile
     {
-        public AutoMapperProfile()
+        public AutoMapperProfileBll()
         {
             CreateMap<Game, GameModel>()
                 .ForMember(
