@@ -14,14 +14,12 @@ namespace WebApi.Controllers
     [ApiController]
     public class GameImageController : ControllerBase
     {
-        private IWebHostEnvironment _appEnvironment;
-        private IGameService _gameService;
-        private IMapper _mapper;
-        public GameImageController(IGameService gameService, IMapper mapper, IWebHostEnvironment appEnvironment)
+        private readonly IWebHostEnvironment _appEnvironment;
+        private readonly IGameService _gameService;
+        public GameImageController(IGameService gameService, IWebHostEnvironment appEnvironment)
         {
             _gameService = gameService;
             _appEnvironment = appEnvironment;
-            _mapper = mapper;
         }
 
         [HttpPut]

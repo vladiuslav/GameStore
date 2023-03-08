@@ -45,7 +45,7 @@ namespace DLL.Repositories
 
         public async Task<Genre> GetByIdWithDetailsAsync(int id)
         {
-            return await _dbContext.Genres.Include(g=>g.Games).FirstOrDefaultAsync(g => g.Id == id);
+            return await _dbContext.Genres.Include(g => g.Games).FirstOrDefaultAsync(g => g.Id == id);
         }
 
         public async Task UpdateAsync(Genre entity)

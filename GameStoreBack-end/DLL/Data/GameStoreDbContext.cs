@@ -9,6 +9,7 @@ namespace DLL.Data
         {
             Database.EnsureCreated();
         }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<Game> Games { get; set; }
         public DbSet<Genre> Genres { get; set; }
         public DbSet<User> Users { get; set; }
@@ -22,6 +23,7 @@ namespace DLL.Data
             modelBuilder.Entity<Genre>()
                 .HasMany(g => g.Games)
                 .WithMany(g => g.Genres);
+                
         }
     }
 }

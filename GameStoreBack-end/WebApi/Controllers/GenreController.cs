@@ -12,8 +12,8 @@ namespace WebApi.Controllers
     [Route("api/[controller]")]
     public class GenreController : Controller
     {
-        private IMapper _mapper;
-        private IGenreService _genreService;
+        private readonly IMapper _mapper;
+        private readonly IGenreService _genreService;
         public GenreController(IGenreService genreService, IMapper mapper)
         {
             _genreService = genreService;

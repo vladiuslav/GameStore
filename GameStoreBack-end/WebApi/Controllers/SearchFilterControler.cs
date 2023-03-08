@@ -11,13 +11,11 @@ namespace WebApi.Controllers
     [ApiController]
     public class SearchFilterControler : ControllerBase
     {
-        private IMapper _mapper;
-        private ISearchFilterService _searchFilterService ;
-        private IGameService _gameService ;
-        public SearchFilterControler(ISearchFilterService searchFilterService, IMapper mapper, IGameService gameService)
+        private readonly IMapper _mapper;
+        private readonly ISearchFilterService _searchFilterService ;
+        public SearchFilterControler(ISearchFilterService searchFilterService, IMapper mapper)
         {
             _searchFilterService = searchFilterService;
-            _gameService = gameService;
             _mapper = mapper;
         }
 

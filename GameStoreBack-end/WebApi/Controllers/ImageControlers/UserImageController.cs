@@ -13,14 +13,12 @@ namespace WebApi.Controllers
     [ApiController]
     public class UserImageController : ControllerBase
     {
-        private IWebHostEnvironment _appEnvironment;
-        private IUserService _userService;
-        private IMapper _mapper;
-        public UserImageController(IUserService userService, IMapper mapper, IWebHostEnvironment appEnvironment)
+        private readonly IWebHostEnvironment _appEnvironment;
+        private readonly IUserService _userService;
+        public UserImageController(IUserService userService, IWebHostEnvironment appEnvironment)
         {
             _userService = userService;
             _appEnvironment = appEnvironment;
-            _mapper = mapper;
         }
 
         [HttpPut]

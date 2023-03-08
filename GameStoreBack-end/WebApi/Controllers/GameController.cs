@@ -10,8 +10,8 @@ namespace WebApi.Controllers
     [Route("api/[controller]")]
     public class GameController : Controller
     {
-        private IMapper _mapper;
-        private IGameService _gameService;
+        private readonly IMapper _mapper;
+        private readonly IGameService _gameService;
         public GameController(IGameService gameService, IMapper mapper)
         {
             _gameService = gameService;
@@ -80,11 +80,7 @@ namespace WebApi.Controllers
                 }
 
                 var gameByName = await _gameService.GetByGameNameAsync(game.Name);
-                if (gameByName == null)
-                {
-
-                }
-                else if (game.Name != null && gameByName.Id != game.Id)
+                if (game.Name != null && gameByName.Id != game.Id)
                 {
                     return BadRequest();
                 }

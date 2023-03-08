@@ -9,12 +9,14 @@ namespace DLL.Data
         public IGameRepository GameRepository { get; }
         public IGenreRepository GenreRepository { get; }
         public IUserRepository UserRepository { get; }
-        public UnitOfWork(IGameRepository gameRepository, IGenreRepository genreRepository, IUserRepository userRepository, GameStoreDbContext context)
+        public IRefreshTokenRepository RefreshTokenRepository { get; }
+        public UnitOfWork(IGameRepository gameRepository, IGenreRepository genreRepository, IUserRepository userRepository ,IRefreshTokenRepository refreshTokenRepository, GameStoreDbContext context)
         {
             _context = context;
             GameRepository = gameRepository;
             GenreRepository = genreRepository;
             UserRepository = userRepository;
+            RefreshTokenRepository = refreshTokenRepository;
         }
         public async Task SaveAsync()
         {
