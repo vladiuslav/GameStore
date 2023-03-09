@@ -1,11 +1,10 @@
-const fetchUserLogin = async ({ email, password, rememberMe }) => {
+const fetchUserLogin = async ({ email, password }) => {
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
   var raw = JSON.stringify({
     login: email,
     password: password,
-    rememberMe: rememberMe,
   });
 
   var requestOptions = {
@@ -18,4 +17,5 @@ const fetchUserLogin = async ({ email, password, rememberMe }) => {
   let result = await fetch("https://localhost:7025/login", requestOptions);
   return result;
 };
+
 export default fetchUserLogin;
