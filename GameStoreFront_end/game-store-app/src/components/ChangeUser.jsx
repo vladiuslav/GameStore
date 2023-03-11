@@ -20,7 +20,7 @@ const ChangeUser = () => {
 
   useEffect(() => {
     const getUser = async () => {
-      const token = getCookie("access_token");
+      const token = getCookie("token");
       const result = await fetchUserGetCurrent(token);
       let userFromServer = await result.json();
       setEmail(userFromServer.email);

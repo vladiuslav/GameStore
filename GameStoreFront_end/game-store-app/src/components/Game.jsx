@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import fetchGame from "./Fetches/fetchGames/fetchGetGames/fetchGame";
@@ -41,7 +42,7 @@ const Game = () => {
     );
   };
 
-  return game != undefined ? (
+  return game !== undefined ? (
     <div className="game-page">
       <GameImage className="game-page-image" GameImageUrl={game.imageUrl} />
       <div className="game-name">{game.name}</div>

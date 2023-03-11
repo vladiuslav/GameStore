@@ -3,7 +3,7 @@ const fetchUserLogin = async ({ email, password }) => {
   myHeaders.append("Content-Type", "application/json");
 
   var raw = JSON.stringify({
-    login: email,
+    email: email,
     password: password,
   });
 

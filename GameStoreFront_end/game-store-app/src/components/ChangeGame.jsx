@@ -36,7 +36,7 @@ const ChangeGame = () => {
       for (let index = 0; index < genresJson.length; index++) {
         genresChecks.set(
           genresJson[index].name,
-          gameJson.genresIds.some((genreId) => genreId == genresJson[index].id)
+          gameJson.genresIds.some((genreId) => genreId === genresJson[index].id)
             ? true
             : false
         );

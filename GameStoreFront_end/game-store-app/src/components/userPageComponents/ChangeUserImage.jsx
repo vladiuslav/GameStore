@@ -15,7 +15,7 @@ const ChangeUserImage = () => {
       <button
         className="green-button"
         onClick={() => {
-          const token = getCookie("access_token");
+          const token = getCookie("token");
           fetchChangeUserImage(image[0], token);
           navigate("/");
         }}

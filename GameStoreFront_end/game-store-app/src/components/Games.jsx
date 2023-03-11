@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import fetchGames from "./Fetches/fetchGames/fetchGetGames/fetchGames";
@@ -72,10 +73,10 @@ const Games = () => {
   // };
 
   const getGenresBlock = (ids) => {
-    if (genres.length != 0 && ids.length != 0) {
+    if (genres.length !== 0 && ids.length !== 0) {
       let genresString = "";
       genres.forEach((element) => {
-        if (ids.find((id) => id == element.id) != null) {
+        if (ids.find((id) => id === element.id) !== null) {
           genresString += element.name + "/";
         }
       });

@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import fetchUserGetCurrent from "./Fetches/fetchUsers/fetchUsersGet/fetchUserGetCurrent";
@@ -9,7 +10,7 @@ const User = () => {
   const [isShowPassword, setIsShowPassword] = useState(false);
   useEffect(() => {
     const getUser = async () => {
-      const token = getCookie("access_token");
+      const token = getCookie("token");
       const result = await fetchUserGetCurrent(token);
       let resultJson = await result.json();
       setUser(resultJson);

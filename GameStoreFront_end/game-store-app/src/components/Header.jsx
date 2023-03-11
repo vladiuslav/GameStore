@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../Images/Logo.jpg";
 import fetchUserGetCurrent from "./Fetches/fetchUsers/fetchUsersGet/fetchUserGetCurrent";
 import setCookie from "./CokieFunctions/setCookie";
@@ -28,7 +28,7 @@ const Header = () => {
   };
 
   const logOut = () => {
-    setCookie("access_token", " ", 0);
+    setCookie("token", " ", 0);
     setCookie("email", " ", 0);
     setIsLogged(false);
     checkIsLogged();
@@ -37,10 +37,10 @@ const Header = () => {
 
   const checkIsLogged = async () => {
     const email = getCookie("email");
-    const access_token = getCookie("access_token");
+    const token = getCookie("token");
     if (email != null) {
       setIsLogged(true);
-      const result = await fetchUserGetCurrent(access_token);
+      const result = await fetchUserGetCurrent(token);
       let resultjson = await result.json();
       setUser(resultjson);
     }
@@ -54,7 +54,7 @@ const Header = () => {
     <nav>
       <ul>
         <li>
-          <img src={logo} className="site-logo" />
+          <img alt="Logo" src={logo} className="site-logo" />
         </li>
         <li>
           <Link className="site-name">Game store</Link>

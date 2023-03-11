@@ -55,8 +55,9 @@ namespace WebApi.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> GetCurrentUser()
         {
-
-            var user = _mapper.Map<UserFullViewModel>(await _userService.GetUserByEmailAsync(User.Identity.Name));
+            
+            var email = User.Claims.First(claim => claim.Type == ClaimTypes.Email).Value;
+            var user = _mapper.Map<UserFullViewModel>(await _userService.GetUserByEmailAsync(email));
             return Ok(user);
 
         }
@@ -174,9 +175,7 @@ namespace WebApi.Controllers
             var authClaims = new List<Claim>()
             {
                 new Claim(ClaimTypes.Name, user.UserName),
-                //new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+                new Claim(ClaimTypes.Email, user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
@@ -263,8 +262,8 @@ namespace WebApi.Controllers
         {
             if (ModelState.IsValid)
             {
-
-                var userByIdentity = await _userService.GetUserByEmailAsync(User.Identity.Name);
+                var email = User.Claims.First(claim => claim.Type == ClaimTypes.Email).Value;
+                var userByIdentity = await _userService.GetUserByEmailAsync(email);
 
                 var userByEmail = await _userService.GetUserByEmailAsync(user.Email);
                 if (userByEmail == null) { return BadRequest(); }

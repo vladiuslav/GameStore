@@ -10,6 +10,7 @@ const GameImage = (props) => {
 
   return (
     <img
+      alt="Game"
       className={props.className}
       src={"https://localhost:7025/img/" + imageUrl}
     />

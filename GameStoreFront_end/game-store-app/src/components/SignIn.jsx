@@ -1,8 +1,11 @@
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import FlashBlock from "./FlashBlock";
 import fetchUserRegestration from "./Fetches/fetchUsers/fetchUserRegestration";
 
 const SignIn = (props) => {
+  const navigate = useNavigate();
   const [isShowErrorBlock, setIsShowErrorBlock] = useState(false);
   const [errorText, setErrorText] = useState("");
 

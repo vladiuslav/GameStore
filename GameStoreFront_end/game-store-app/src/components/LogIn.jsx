@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from "react";
 import FlashBlock from "./FlashBlock";
 import fetchUserLogin from "./Fetches/fetchUsers/fetchUserLogin";
@@ -9,7 +10,6 @@ const LogIn = (props) => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
 
   const loginAccount = async (e) => {
     e.preventDefault();
@@ -26,15 +26,12 @@ const LogIn = (props) => {
     }
 
     const processFetch = async () => {
-      let result = await fetchUserLogin({ email, password, rememberMe });
+      let result = await fetchUserLogin({ email, password });
       if (result.status === 200) {
         let resultJson = await result.json();
-        setCookie(
-          "access_token",
-          resultJson.access_token,
-          rememberMe ? 720 : 2
-        );
-        setCookie("email", resultJson.email, rememberMe ? 720 : 2);
+        setCookie("token", resultJson.token, 5);
+        setCookie("email", email, 5);
+        setCookie("refresh_token", resultJson.refreshToken, 100000);
         props.checkIsLogged();
         props.setIsOpenForm();
         return;
@@ -92,16 +89,6 @@ const LogIn = (props) => {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <div className="user-form-part">
-          Remember me
-          <input
-            type="checkbox"
-            value={rememberMe}
-            onChange={(e) => {
-              setRememberMe(!rememberMe);
-            }}
           />
         </div>
         <div className="user-form-part">

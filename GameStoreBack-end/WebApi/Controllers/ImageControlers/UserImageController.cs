@@ -5,6 +5,7 @@ using DLL.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using WebApi.Models;
 
 namespace WebApi.Controllers
@@ -28,7 +29,8 @@ namespace WebApi.Controllers
         {
             if (fileModel.UploadedFile != null)
             {
-                var user = await _userService.GetUserByEmailAsync(User.Identity.Name);
+                var email = User.Claims.First(claim => claim.Type == ClaimTypes.Email).Value;
+                var user = await _userService.GetUserByEmailAsync(email);
 
                 // take file type
                 string fileName = fileModel.UploadedFile.FileName;
@@ -59,7 +61,8 @@ namespace WebApi.Controllers
         {
             try
             {
-                var user = await _userService.GetUserByEmailAsync(User.Identity.Name);
+                var email = User.Claims.First(claim => claim.Type == ClaimTypes.Email).Value;
+                var user = await _userService.GetUserByEmailAsync(email);
                 user.AvatarImageUrl = null;
                 await _userService.UpdateAsync(user);
                 return NoContent();

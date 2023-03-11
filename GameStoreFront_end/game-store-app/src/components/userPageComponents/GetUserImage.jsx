@@ -1,3 +1,5 @@
+import React from "react";
+
 const GetUserImage = (props) => {
   let imageUrl;
   if (props.avatarImageUrl === null) {
@@ -8,6 +10,7 @@ const GetUserImage = (props) => {
 
   return (
     <img
+      alt="User"
       className={props.className}
       src={"https://localhost:7025/img/" + imageUrl}
     />

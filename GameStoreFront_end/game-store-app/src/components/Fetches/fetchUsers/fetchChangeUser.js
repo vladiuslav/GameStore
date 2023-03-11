@@ -7,7 +7,7 @@ const fetchChangeUser = async ({
   password,
 }) => {
   var myHeaders = new Headers();
-  const token = getCookie("access_token");
+  const token = getCookie("token");
   myHeaders.append("Authorization", "Bearer " + token);
   myHeaders.append("Content-Type", "application/json");
 
