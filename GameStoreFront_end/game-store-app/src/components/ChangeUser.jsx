@@ -4,7 +4,6 @@ import React from "react";
 import ChangeUserImage from "./userPageComponents/ChangeUserImage";
 import fetchUserGetCurrent from "./Fetches/fetchUsers/fetchUsersGet/fetchUserGetCurrent";
 import fetchChangeUser from "./Fetches/fetchUsers/fetchChangeUser";
-import getCookie from "./CokieFunctions/getCookie";
 import FlashBlock from "./FlashBlock";
 
 const ChangeUser = () => {
@@ -20,7 +19,7 @@ const ChangeUser = () => {
 
   useEffect(() => {
     const getUser = async () => {
-      const token = getCookie("token");
+      const token = localStorage.getItem("token");
       const result = await fetchUserGetCurrent(token);
       let userFromServer = await result.json();
       setEmail(userFromServer.email);

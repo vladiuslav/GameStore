@@ -1,4 +1,3 @@
-import getCookie from "../../CokieFunctions/getCookie";
 const fetchChangeUser = async ({
   firstName,
   lastName,
@@ -7,7 +6,7 @@ const fetchChangeUser = async ({
   password,
 }) => {
   var myHeaders = new Headers();
-  const token = getCookie("token");
+  const token = localStorage.getItem("token");
   myHeaders.append("Authorization", "Bearer " + token);
   myHeaders.append("Content-Type", "application/json");
 

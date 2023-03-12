@@ -1,11 +1,12 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import fetchGame from "./Fetches/fetchGames/fetchGetGames/fetchGame";
 import fetchGenres from "./Fetches/fetchGaneres/fetchGenres";
 import GameImage from "./GamePageComponents/GameImage.jsx";
 
 const Game = () => {
+  const navigate = useNavigate();
   const [genres, setGenres] = useState([]);
   const [game, setGame] = useState(undefined);
   const { GameId } = useParams();
@@ -13,6 +14,9 @@ const Game = () => {
   useEffect(() => {
     const getGame = async () => {
       const result = await fetchGame(GameId);
+      if (result.status !== 200) {
+        navigate("/");
+      }
       let resultJson = await result.json();
       setGame(resultJson);
     };

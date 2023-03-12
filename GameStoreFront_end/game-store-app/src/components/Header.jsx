@@ -3,8 +3,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../Images/Logo.jpg";
 import fetchUserGetCurrent from "./Fetches/fetchUsers/fetchUsersGet/fetchUserGetCurrent";
-import setCookie from "./CokieFunctions/setCookie";
-import getCookie from "./CokieFunctions/getCookie";
+import fetchGenerateToken from "./Fetches/fetchUsers/fetchGenerateToken";
 import GetUserImage from "./userPageComponents/GetUserImage";
 import SignIn from "./SignIn";
 import LogIn from "./LogIn";
@@ -28,17 +27,29 @@ const Header = () => {
   };
 
   const logOut = () => {
-    setCookie("token", " ", 0);
-    setCookie("email", " ", 0);
+    localStorage.removeItem("token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("expiredTokenTime");
+    localStorage.removeItem("email");
     setIsLogged(false);
     checkIsLogged();
     navigate("/");
   };
 
   const checkIsLogged = async () => {
-    const email = getCookie("email");
-    const token = getCookie("token");
-    if (email != null) {
+    let expiresTime = new Date(localStorage.getItem("expiredTokenTime"));
+    if (expiresTime.getTime() < Date.now()) {
+      let result = await fetchGenerateToken();
+      if (result.status === 200) {
+        let resultJson = await result.json();
+
+        localStorage.setItem("token", resultJson.token);
+        localStorage.setItem("refresh_token", resultJson.refreshToken);
+        localStorage.setItem("expiredTokenTime", resultJson.expiresAt);
+      }
+    }
+    const token = localStorage.getItem("token");
+    if (token !== null) {
       setIsLogged(true);
       const result = await fetchUserGetCurrent(token);
       let resultjson = await result.json();
@@ -112,7 +123,11 @@ const Header = () => {
               <li>
                 <Link to="/User" className="nav-item">
                   <div className="user-small-image">
-                    <GetUserImage avatarImageUrl={user.avatarImageUrl} />
+                    {user !== undefined ? (
+                      <GetUserImage avatarImageUrl={user.avatarImageUrl} />
+                    ) : (
+                      <></>
+                    )}
                   </div>
                   {getName()}
                 </Link>

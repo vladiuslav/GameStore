@@ -1,10 +1,6 @@
-import getCookie from "../../CokieFunctions/getCookie";
-import setCookie from "../../CokieFunctions/setCookie";
-
 const fetchGenerateToken = async () => {
-  let refreshToken = getCookie("refresh_token");
-  let token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+  let refreshToken = localStorage.getItem("refresh_token");
+  let token = localStorage.getItem("token");
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 

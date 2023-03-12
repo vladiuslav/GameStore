@@ -19,11 +19,25 @@ namespace BLL.Services
         {
             _unitOfWork = unitOfWork;
         }
-
+        private async Task<bool> checkIsUserTokenExist(int userId)
+        {
+            var tokens = await _unitOfWork.RefreshTokenRepository.GetAllAsync();
+            return tokens.Any(t => t.UserId == userId);
+        }
         public async Task AddAsync(RefreshToken model)
         {
-            await _unitOfWork.RefreshTokenRepository.AddAsync(model);
-            await _unitOfWork.SaveAsync();
+            if (await checkIsUserTokenExist(model.UserId))
+            {
+                var tokens = await _unitOfWork.RefreshTokenRepository.GetAllAsync();
+                await _unitOfWork.RefreshTokenRepository.DeleteByIdAsync(tokens.First(t => t.UserId == model.UserId).Id);
+                await _unitOfWork.RefreshTokenRepository.AddAsync(model);
+                await _unitOfWork.SaveAsync();
+            }
+            else
+            {
+                await _unitOfWork.RefreshTokenRepository.AddAsync(model);
+                await _unitOfWork.SaveAsync();
+            }
         }
 
         public async Task<RefreshToken> GetTokenByToken(string token)

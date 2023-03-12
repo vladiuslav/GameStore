@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import React from "react";
 import fetchChangeUserImage from "../Fetches/fetchUsers/fetchChangeUserImage";
-import getCookie from "../CokieFunctions/getCookie";
 
 const ChangeUserImage = () => {
   const navigate = useNavigate();
@@ -15,7 +14,7 @@ const ChangeUserImage = () => {
       <button
         className="green-button"
         onClick={() => {
-          const token = getCookie("token");
+          const token = localStorage.getItem("token");
           fetchChangeUserImage(image[0], token);
           navigate("/");
         }}

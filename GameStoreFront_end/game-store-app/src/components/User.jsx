@@ -2,16 +2,27 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import fetchUserGetCurrent from "./Fetches/fetchUsers/fetchUsersGet/fetchUserGetCurrent";
-import getCookie from "./CokieFunctions/getCookie";
 import GetUserImage from "./userPageComponents/GetUserImage";
+import fetchGenerateToken from "./Fetches/fetchUsers/fetchGenerateToken";
 
 const User = () => {
   const [user, setUser] = useState([]);
   const [isShowPassword, setIsShowPassword] = useState(false);
   useEffect(() => {
     const getUser = async () => {
-      const token = getCookie("token");
-      const result = await fetchUserGetCurrent(token);
+      let expiresTime = new Date(localStorage.getItem("expiredTokenTime"));
+      if (expiresTime.getTime() < Date.now()) {
+        let result = await fetchGenerateToken();
+        if (result.status === 200) {
+          let resultJson = await result.json();
+
+          localStorage.setItem("token", resultJson.token);
+          localStorage.setItem("refresh_token", resultJson.refreshToken);
+          localStorage.setItem("expiredTokenTime", resultJson.expiresAt);
+        }
+      }
+      const token = localStorage.getItem("token");
+      let result = await fetchUserGetCurrent(token);
       let resultJson = await result.json();
       setUser(resultJson);
     };

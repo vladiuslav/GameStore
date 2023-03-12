@@ -55,7 +55,7 @@ namespace WebApi.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> GetCurrentUser()
         {
-            
+
             var email = User.Claims.First(claim => claim.Type == ClaimTypes.Email).Value;
             var user = _mapper.Map<UserFullViewModel>(await _userService.GetUserByEmailAsync(email));
             return Ok(user);
@@ -83,15 +83,16 @@ namespace WebApi.Controllers
         private async Task<AuthResultViewModel> VerifyAndGenerateTokenAsync(AuthResultViewModel tokenRequestVM)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
+
             var storedToken = await _refreshTokenService.GetTokenByToken(tokenRequestVM.RefreshToken);
-            
             if (storedToken == null)
             {
                 return null;
             }
             
+
             var dbUser = await _userService.GetByIdAsync(storedToken.UserId);
-            
+
             try
             {
                 jwtTokenHandler.ValidateToken(tokenRequestVM.Token, _tokenValidationParameters, out var validatedToken);
@@ -114,46 +115,6 @@ namespace WebApi.Controllers
         [HttpPost("/login")]
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
-        /*public async Task<IActionResult> LoginUser(LoginData loginData)
-        {
-            IEnumerable<UserModel> users = await _userService.GetAllAsync();
-            UserModel? user = users.FirstOrDefault(u => u.Email == loginData.Email && u.Password == loginData.Password);
-
-            if (user is null)
-            {
-                return NotFound();
-            }
-            var claims = new List<Claim> { new Claim(ClaimTypes.Name, user.Email) };
-            var jwt = new JwtSecurityToken(
-                issuer: AuthOptions.ISSUER, audience: AuthOptions.AUDIENCE,
-                claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(5),
-                signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256)
-            );
-            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
-
-            var refreshToken = new RefreshToken()
-            {
-                JwtId = jwt.Id,
-                IsRevoked = false,
-                UserId = user.Id,
-                DateAdded = DateTime.UtcNow,
-                DateExpire = DateTime.UtcNow.AddMonths(6),
-                Token = Guid.NewGuid().ToString() + "-" + Guid.NewGuid().ToString()
-            };
-
-            await _refreshTokenService.AddAsync(refreshToken);
-
-            var response = new AuthResultViewModel()
-            {
-                Token = encodedJwt,
-                RefreshToken = refreshToken.Token,
-                ExpiresAt = jwt.ValidTo
-            };
-
-            return response;
-        }
-*/
         public async Task<IActionResult> Login(LoginData loginVM)
         {
             if (!ModelState.IsValid)

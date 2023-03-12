@@ -2,7 +2,6 @@ import React from "react";
 import { useState } from "react";
 import FlashBlock from "./FlashBlock";
 import fetchUserLogin from "./Fetches/fetchUsers/fetchUserLogin";
-import setCookie from "./CokieFunctions/setCookie";
 
 const LogIn = (props) => {
   const [isShowErrorBlock, setIsShowErrorBlock] = useState(false);
@@ -29,9 +28,10 @@ const LogIn = (props) => {
       let result = await fetchUserLogin({ email, password });
       if (result.status === 200) {
         let resultJson = await result.json();
-        setCookie("token", resultJson.token, 5);
-        setCookie("email", email, 5);
-        setCookie("refresh_token", resultJson.refreshToken, 100000);
+        localStorage.setItem("token", resultJson.token);
+        localStorage.setItem("refresh_token", resultJson.refreshToken);
+        localStorage.setItem("expiredTokenTime", resultJson.expiresAt);
+        localStorage.setItem("email", email);
         props.checkIsLogged();
         props.setIsOpenForm();
         return;
