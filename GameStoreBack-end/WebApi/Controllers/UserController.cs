@@ -227,9 +227,7 @@ namespace WebApi.Controllers
                 var userByIdentity = await _userService.GetUserByEmailAsync(email);
 
                 var userByEmail = await _userService.GetUserByEmailAsync(user.Email);
-                if (userByEmail == null) { return BadRequest(); }
-
-                if (userByEmail.Id != userByIdentity.Id)
+                if(userByEmail!= null&& userByEmail.Id != userByIdentity.Id)
                 {
                     return BadRequest();
                 }
@@ -241,8 +239,8 @@ namespace WebApi.Controllers
                 }
 
                 var userModel = _mapper.Map<UserModel>(user);
-                userModel.Id = userByEmail.Id;
-                userModel.AvatarImageUrl = userByEmail.AvatarImageUrl;
+                userModel.Id = userByIdentity.Id;
+                userModel.AvatarImageUrl = userByIdentity.AvatarImageUrl;
                 await _userService.UpdateAsync(userModel);
                 return Ok();
             }
