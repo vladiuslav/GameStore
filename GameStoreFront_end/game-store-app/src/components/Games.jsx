@@ -62,16 +62,6 @@ const Games = () => {
     getGames();
   };
 
-  //
-  // const clearFilters = () => {
-  //   const getGames = async () => {
-  //     const gamesFromServer = await fetchGames();
-  //     let jsonResult = await gamesFromServer.json();
-  //     setGames(jsonResult);
-  //   };
-  //   getGames();
-  // };
-
   const getGenresBlock = (ids) => {
     if (genres.length !== 0 && ids.length !== 0) {
       let genresString = "";
@@ -84,6 +74,48 @@ const Games = () => {
       return <> {genresString} </>;
     }
     return <></>;
+  };
+
+  const gamesmaped = () => {
+    let next = 0;
+
+    return games.map((game) => (
+      <div
+        className={
+          next % 4 > 0 ? "games-container-small" : "games-container-big"
+        }
+        key={game.id}
+      >
+        <Link className="games-container-link" to={"/Game/" + game.id}>
+          <GameEditFunctional
+            gameId={game.id}
+            classNameForOverideBlock={
+              next % 4 > 0
+                ? "game-functional-block-small"
+                : "game-functional-block-big"
+            }
+            classNameForImage={
+              next % 4 > 0 ? "game-image-small" : "game-image-big"
+            }
+            GameImageUrl={game.imageUrl}
+          />
+          <div className={next++ % 4 > 0 ? "" : "games-gray-baground-part"}>
+            <div className="games-container-part">
+              <div className="games-left-price">{game.price}$</div>
+              <div className="games-right-buy">
+                <button className="green-button">BUY</button>
+              </div>
+            </div>
+            <div>
+              <div className="games-container-genres">
+                {getGenresBlock(game.genresIds)}
+              </div>
+              <div className="games-container-name">{game.name}</div>
+            </div>
+          </div>
+        </Link>
+      </div>
+    ));
   };
 
   const getActiveGenres = () => {
@@ -180,53 +212,7 @@ const Games = () => {
           </div>
         </div>
       </div>
-      <div className="games">
-        {games.length >= 1 ? (
-          games.map((game) => (
-            <div
-              className={
-                game.id % 4 > 0
-                  ? "games-container-small"
-                  : "games-container-big"
-              }
-              key={game.id}
-            >
-              <Link className="games-container-link" to={"/Game/" + game.id}>
-                <GameEditFunctional
-                  gameId={game.id}
-                  classNameForOverideBlock={
-                    game.id % 4 > 0
-                      ? "game-functional-block-small"
-                      : "game-functional-block-big"
-                  }
-                  classNameForImage={
-                    game.id % 4 > 0 ? "game-image-small" : "game-image-big"
-                  }
-                  GameImageUrl={game.imageUrl}
-                />
-                <div
-                  className={game.id % 4 > 0 ? "" : "games-gray-baground-part"}
-                >
-                  <div className="games-container-part">
-                    <div className="games-left-price">{game.price}$</div>
-                    <div className="games-right-buy">
-                      <button className="green-button">BUY</button>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="games-container-genres">
-                      {getGenresBlock(game.genresIds)}
-                    </div>
-                    <div className="games-container-name">{game.name}</div>
-                  </div>
-                </div>
-              </Link>
-            </div>
-          ))
-        ) : (
-          <></>
-        )}
-      </div>
+      <div className="games">{games.length >= 1 ? gamesmaped() : <></>}</div>
     </>
   );
 };

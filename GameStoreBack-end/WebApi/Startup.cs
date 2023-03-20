@@ -33,6 +33,7 @@ namespace WEBAPI
             services.AddScoped<IGenreRepository, GenreRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+            services.AddScoped<IPassswordWithSaltRepository, PasswordWithSaltRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 

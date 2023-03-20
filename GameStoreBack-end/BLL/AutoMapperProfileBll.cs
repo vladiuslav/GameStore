@@ -19,9 +19,6 @@ namespace BLL
                     gm => gm.GamesIds,
                     g => g.MapFrom(g => g.Games.Select(g => g.Id)))
                 .ReverseMap();
-
-            CreateMap<User, UserModel>()
-                .ReverseMap();
         }
 
     }

@@ -62,7 +62,7 @@ namespace WebApi.Controllers
 
         }
 
-        [HttpPost("/refreshToken")]
+        [HttpPost("refreshToken")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> refreshToken(AuthResultViewModel tokenRequestVM)
@@ -112,7 +112,7 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpPost("/login")]
+        [HttpPost("login")]
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
         public async Task<IActionResult> Login(LoginData loginVM)
@@ -121,9 +121,8 @@ namespace WebApi.Controllers
             {
                 return BadRequest("Please, provide all required fields");
             }
-
-            var user = await _userService.GetUserByEmailAsync(loginVM.Email);
-            if (user != null && loginVM.Password == user.Password)
+            var user = await _userService.GetUserByLoginData(loginVM);
+            if (user != null)
             {
                 var tokenValue = await GenerateJWTTokenAsync(user, null);
                 return Ok(tokenValue);
@@ -227,7 +226,7 @@ namespace WebApi.Controllers
                 var userByIdentity = await _userService.GetUserByEmailAsync(email);
 
                 var userByEmail = await _userService.GetUserByEmailAsync(user.Email);
-                if(userByEmail!= null&& userByEmail.Id != userByIdentity.Id)
+                if(userByEmail!= null && userByEmail.Id != userByIdentity.Id)
                 {
                     return BadRequest();
                 }

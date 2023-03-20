@@ -2,7 +2,7 @@
 
 namespace DLL.Entities
 {
-    public class Game: BaseEntity
+    public class Game : BaseEntity
     {
         [Required]
         [MinLength(3)]
@@ -10,7 +10,8 @@ namespace DLL.Entities
         [Required]
         [MinLength(3)]
         public string Description { get; set; }
-        public decimal Price { get; set; }
+        [DataType("")]
+        public decimal Price { get; set; } = 0;
         public string? ImageUrl { get; set; }
         public ICollection<Genre> Genres { get; set; }
     }
