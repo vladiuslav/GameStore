@@ -117,8 +117,6 @@ namespace WebApi.Controllers
         [ProducesResponseType(401)]
         public async Task<IActionResult> Login(LoginData loginVM)
         {
-            throw new NotImplementedException();
-
             if (!ModelState.IsValid)
             {
                 return BadRequest("Please, provide all required fields");
