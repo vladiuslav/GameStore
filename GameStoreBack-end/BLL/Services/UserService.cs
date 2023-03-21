@@ -94,8 +94,8 @@ namespace BLL.Services
             {
                 return null;
             }
-
-            return _mapper.Map<UserModel>(user);
+            var userModel = _mapper.Map<UserModel>(user);
+            return userModel;
         }
 
         private string GenerateSalt(int length)

@@ -30,9 +30,9 @@ namespace DLL.Data
             UserRepository = userRepository;
             RefreshTokenRepository = refreshTokenRepository;
             PassswordWithSaltRepository = passswordWithSaltRepository;
-            if (context.Games.Count() == 0&&
-                context.Genres.Count()==0&&
-                context.Users.Count()==0)
+            if (context.Games.Count() == 0 &&
+                context.Genres.Count() == 0 &&
+                context.Users.Count() == 0)
             {
                 seedDate(_context);
             }
@@ -129,8 +129,8 @@ namespace DLL.Data
                 LastName = "LastName1",
                 UserName = "UserName1",
                 Email = "Email1@mail.com",
-                PasswordSaltId=1,
-                PasswordWithSalt= passwordWithSalt
+                PasswordSaltId = 1,
+                PasswordWithSalt = passwordWithSalt
 
             });
             context.SaveChanges();

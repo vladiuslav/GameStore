@@ -7,7 +7,6 @@ import fetchGenerateToken from "./Fetches/fetchUsers/fetchGenerateToken";
 
 const User = () => {
   const [user, setUser] = useState([]);
-  const [isShowPassword, setIsShowPassword] = useState(false);
   useEffect(() => {
     const getUser = async () => {
       let expiresTime = new Date(localStorage.getItem("expiredTokenTime"));
@@ -35,18 +34,6 @@ const User = () => {
       <hr className="user-hr-max-width" />
       <div className="user-central-item">
         User full name: {user.firstName + " " + user.lastName}
-      </div>
-      <hr className="user-hr-max-width" />
-      <div className="user-central-item">
-        Password: {isShowPassword ? user.password : "*****"}
-        <button
-          onClick={() => {
-            setIsShowPassword(!isShowPassword);
-          }}
-          className="green-button-margin"
-        >
-          {isShowPassword ? "Hide password" : "Show password"}
-        </button>
       </div>
       <hr className="user-hr-max-width" />
       <GetUserImage

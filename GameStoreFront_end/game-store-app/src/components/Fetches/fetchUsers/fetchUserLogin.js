@@ -14,7 +14,10 @@ const fetchUserLogin = async ({ email, password }) => {
     redirect: "follow",
   };
 
-  let result = await fetch("https://localhost:7025/login", requestOptions);
+  let result = await fetch(
+    "https://localhost:7025/api/User/login",
+    requestOptions
+  );
   return result;
 };
 
