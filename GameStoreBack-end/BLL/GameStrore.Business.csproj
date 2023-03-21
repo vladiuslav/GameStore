@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DLL\DLL.csproj" />
+    <ProjectReference Include="..\DLL\GameStore.DataLogic.csproj" />
   </ItemGroup>
 
 </Project>

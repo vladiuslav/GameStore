@@ -23,9 +23,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BLL\BLL.csproj" />
-    <ProjectReference Include="..\DLL\DLL.csproj" />
-    <ProjectReference Include="..\WebApi\WebApi.csproj" />
+    <ProjectReference Include="..\BLL\GameStrore.Business.csproj" />
+    <ProjectReference Include="..\DLL\GameStore.DataLogic.csproj" />
+    <ProjectReference Include="..\WebApi\GameStore.WebApi.csproj" />
   </ItemGroup>
 
   <ItemGroup>

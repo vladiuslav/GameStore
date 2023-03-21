@@ -8,7 +8,10 @@ using DLL.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Logging;
 using WebApi;
+using Serilog;
+using GameStore.WebApi.Middleware;
 
 namespace WEBAPI
 {
@@ -80,13 +83,14 @@ namespace WEBAPI
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseMiddleware<ExceptionMiddleware>();
 
-            // Configure the HTTP request pipeline.
             if (env.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
-            } 
+            }
+
             app.UseCors(MyAllowSpecificOrigins);
 
             app.UseStaticFiles();
