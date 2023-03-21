@@ -8,24 +8,21 @@ using DLL.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.Extensions.Logging;
 using WebApi;
-using Serilog;
 using GameStore.WebApi.Middleware;
 using Microsoft.OpenApi.Models;
-using System.Reflection;
-using Swashbuckle.Swagger;
+using Microsoft.Extensions.Configuration;
 
 namespace WEBAPI
 {
     public class Startup
     {
+
+        public IConfiguration Configuration { get; }
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
-        public IConfiguration Configuration { get; }
-        private readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins"; // move this to json configure
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
@@ -39,7 +36,7 @@ namespace WEBAPI
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.Http,
                     Scheme = JwtBearerDefaults.AuthenticationScheme,
-                    Description = "Put **_ONLY_** your JWT Bearer token on textbox below!",
+                    Description = "Put your JWT Bearer token on textbox below!",
 
                     Reference = new OpenApiReference
                     {
@@ -56,8 +53,7 @@ namespace WEBAPI
                 });
             });
 
-            services.AddDbContext<GameStoreDbContext>(options =>
-                options.UseSqlServer(@"Server=localhost\SQLEXPRESS;Database=GameStoreDB;Trusted_Connection=True;")); // move this to json configure.
+            services.AddDbContext<GameStoreDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("MyDatabase")));
 
             services.AddScoped<IGameRepository, GameRepository>();
             services.AddScoped<IGenreRepository, GenreRepository>();
@@ -77,7 +73,7 @@ namespace WEBAPI
 
             services.AddCors(options =>
             {
-                options.AddPolicy(name: MyAllowSpecificOrigins,
+                options.AddPolicy(name: Configuration.GetValue<string>("MyAllowSpecificOrigins"),
                     policy =>
                     {
                         policy.AllowAnyOrigin()
@@ -118,7 +114,7 @@ namespace WEBAPI
                 app.UseSwaggerUI();
             }
 
-            app.UseCors(MyAllowSpecificOrigins);
+            app.UseCors(Configuration.GetValue<string>("MyAllowSpecificOrigins"));
 
             app.UseStaticFiles();
             app.UseRouting();
