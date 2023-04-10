@@ -1,4 +1,5 @@
 ﻿using DLL.Entities;
+using GameStore.DataLogic.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
@@ -15,6 +16,7 @@ namespace DLL.Data
         public DbSet<Game> Games { get; set; }
         public DbSet<Genre> Genres { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Comment> Comments { get; set; }
         public DbSet<PasswordWithSalt> PasswordWithSalts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

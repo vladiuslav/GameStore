@@ -7,6 +7,7 @@ import fetchGenerateToken from "./Fetches/fetchUsers/fetchGenerateToken";
 import GetUserImage from "./userPageComponents/GetUserImage";
 import SignIn from "./SignIn";
 import LogIn from "./LogIn";
+import CheckIsTokenExpired from "./JsFunctions/CheckIsTokenExpired";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -37,23 +38,15 @@ const Header = () => {
   };
 
   const checkIsLogged = async () => {
-    let expiresTime = new Date(localStorage.getItem("expiredTokenTime"));
-    if (expiresTime.getTime() < Date.now()) {
-      let result = await fetchGenerateToken();
-      if (result.status === 200) {
-        let resultJson = await result.json();
-
-        localStorage.setItem("token", resultJson.token);
-        localStorage.setItem("refresh_token", resultJson.refreshToken);
-        localStorage.setItem("expiredTokenTime", resultJson.expiresAt);
-      }
-    }
+    CheckIsTokenExpired();
     const token = localStorage.getItem("token");
     if (token !== null) {
       setIsLogged(true);
       const result = await fetchUserGetCurrent(token);
-      let resultjson = await result.json();
-      setUser(resultjson);
+      if (result.status === 200) {
+        let resultjson = await result.json();
+        setUser(resultjson);
+      }
     }
   };
 

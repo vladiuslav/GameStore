@@ -1,36 +1,34 @@
 import CheckIsTokenExpired from "../../JsFunctions/CheckIsTokenExpired";
 
-const fetchChangeUser = async ({
-  firstName,
-  lastName,
-  userName,
-  email,
-  password,
+const fetchCreateComment = async ({
+  commentText,
+  gameId,
+  repliedCommentId,
 }) => {
-  var myHeaders = new Headers();
   CheckIsTokenExpired();
   const token = localStorage.getItem("token");
+  var myHeaders = new Headers();
+
   myHeaders.append("Authorization", "Bearer " + token);
   myHeaders.append("Content-Type", "application/json");
 
   var raw = JSON.stringify({
-    firstName: firstName,
-    lastName: lastName,
-    userName: userName,
-    avatarImageUrl: "",
-    email: email,
-    password: password,
+    text: commentText,
+    gameId: gameId,
+    repliedCommentId: repliedCommentId,
   });
 
   var requestOptions = {
-    method: "PUT",
+    method: "POST",
     headers: myHeaders,
     body: raw,
     redirect: "follow",
   };
 
-  let result = await fetch("https://localhost:7025/api/User", requestOptions);
+  let result = await fetch(
+    "https://localhost:7025/api/Comment",
+    requestOptions
+  );
   return result;
 };
-
-export default fetchChangeUser;
+export default fetchCreateComment;

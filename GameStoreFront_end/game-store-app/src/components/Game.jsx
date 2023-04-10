@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import fetchGame from "./Fetches/fetchGames/fetchGetGames/fetchGame";
 import fetchGenres from "./Fetches/fetchGaneres/fetchGenres";
 import GameImage from "./GamePageComponents/GameImage.jsx";
-
+import GameComments from "./GamePageComponents/GameComments";
 const Game = () => {
   const navigate = useNavigate();
   const [genres, setGenres] = useState([]);
@@ -61,21 +61,7 @@ const Game = () => {
       <div className="game-description">{game.description}</div>
 
       <div>
-        Comments
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam,
-          repellendus? Saepe obcaecati laborum doloremque enim magni incidunt
-          molestiae voluptates dolore! Sunt minima dolorem inventore saepe
-          obcaecati, fuga omnis ducimus est! Officia aliquid molestias natus
-          quam nam, incidunt suscipit blanditiis sit.
-        </p>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam,
-          repellendus? Saepe obcaecati laborum doloremque enim magni incidunt
-          molestiae voluptates dolore! Sunt minima dolorem inventore saepe
-          obcaecati, fuga omnis ducimus est! Officia aliquid molestias natus
-          quam nam, incidunt suscipit blanditiis sit.
-        </p>
+        <GameComments gameId={game.id} />
       </div>
     </div>
   ) : (

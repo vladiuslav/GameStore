@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using GameStore.DataLogic.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace DLL.Entities
 {
@@ -14,5 +15,6 @@ namespace DLL.Entities
         public decimal Price { get; set; } = 0;
         public string? ImageUrl { get; set; }
         public ICollection<Genre> Genres { get; set; }
+        public ICollection<Comment> Comments { get; set; }
     }
 }

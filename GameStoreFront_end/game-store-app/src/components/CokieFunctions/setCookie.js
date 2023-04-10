@@ -1,8 +1,0 @@
-const setCookie = (cname, cvalue, minutes) => {
-  const d = new Date();
-  d.setTime(d.getTime() + minutes * 60 * 1000);
-  let expires = "expires=" + d.toUTCString();
-  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-};
-
-export default setCookie;

@@ -31,7 +31,7 @@ const AddGame = () => {
 
   // CheckedFunction
   const handleOnChange = (name) => {
-    let updatedCheckedState = checkedState;
+    let updatedCheckedState = new Map(checkedState);
     let IsPressed = updatedCheckedState.get(name);
     updatedCheckedState.set(name, !IsPressed);
     setCheckedState(updatedCheckedState);

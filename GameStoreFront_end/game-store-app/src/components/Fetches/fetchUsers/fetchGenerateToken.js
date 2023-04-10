@@ -17,7 +17,7 @@ const fetchGenerateToken = async () => {
   };
 
   let result = await fetch(
-    "https://localhost:7025/refreshToken",
+    "https://localhost:7025/api/User/refreshToken",
     requestOptions
   );
   return result;

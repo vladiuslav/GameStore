@@ -15,5 +15,6 @@ namespace BLL.Models
         public string Email { get; set; }
         public string Password { get; set; }
         public string? AvatarImageUrl { get; set; }
+        public ICollection<int> CommentsIds { get; set; }
     }
 }

@@ -12,6 +12,10 @@ using WebApi;
 using GameStore.WebApi.Middleware;
 using Microsoft.OpenApi.Models;
 using Microsoft.Extensions.Configuration;
+using GameStore.DataLogic.Interafeces;
+using GameStore.DataLogic.Repositories;
+using GameStrore.BusinessLogic.Interfaces;
+using GameStrore.BusinessLogic.Services;
 
 namespace WEBAPI
 {
@@ -60,6 +64,7 @@ namespace WEBAPI
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             services.AddScoped<IPassswordWithSaltRepository, PasswordWithSaltRepository>();
+            services.AddScoped<ICommentRepository, CommentRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -68,6 +73,7 @@ namespace WEBAPI
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRefreshTokenService, RefreshTokenService>();
             services.AddScoped<ISearchFilterService, SearchFilterService>();
+            services.AddScoped<ICommentService, CommentService>();
 
             services.AddAutoMapper(typeof(AutoMapperProfile),typeof(AutoMapperProfileBll));
 

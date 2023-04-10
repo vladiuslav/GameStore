@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using BLL.Models;
+using GameStore.WebAPI.Models;
+using GameStrore.BusinessLogic.Models;
 using WebApi.Models;
 
 namespace WebApi
@@ -31,6 +33,10 @@ namespace WebApi
 				uvm => uvm.FullName,
 				um => um.MapFrom(u => u.FirstName + ' ' + u.LastName)
 				);
+			CreateMap<CommentModel, CommentViewModel>()
+				.ReverseMap();
+            CreateMap<CommentModel, CommentCreateModel>()
+				.ReverseMap();
         }
 	}
 }

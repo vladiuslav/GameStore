@@ -3,7 +3,7 @@ import React from "react";
 const GameImage = (props) => {
   let imageUrl;
   if (props.GameImageUrl === null) {
-    imageUrl = "nonegame.jpg";
+    imageUrl = "nonegame.png";
   } else {
     imageUrl = props.GameImageUrl;
   }

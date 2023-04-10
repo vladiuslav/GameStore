@@ -26,5 +26,6 @@ namespace WebApi.Models
         [MaxLength(80)]
         public string Password { get; set; }
         public string? AvatarImageUrl { get; set; }
+        public ICollection<int> CommentsIds { get; set; }
     }
 }

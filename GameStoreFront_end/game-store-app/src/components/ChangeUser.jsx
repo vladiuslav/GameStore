@@ -5,6 +5,7 @@ import ChangeUserImage from "./userPageComponents/ChangeUserImage";
 import fetchUserGetCurrent from "./Fetches/fetchUsers/fetchUsersGet/fetchUserGetCurrent";
 import fetchChangeUser from "./Fetches/fetchUsers/fetchChangeUser";
 import FlashBlock from "./FlashBlock";
+import CheckIsTokenExpired from "./JsFunctions/CheckIsTokenExpired";
 
 const ChangeUser = () => {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ const ChangeUser = () => {
 
   useEffect(() => {
     const getUser = async () => {
+      CheckIsTokenExpired();
       const token = localStorage.getItem("token");
       const result = await fetchUserGetCurrent(token);
       let userFromServer = await result.json();

@@ -1,5 +1,6 @@
 ﻿using DLL.Entities;
 using DLL.Interafeces;
+using GameStore.DataLogic.Interafeces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Security.Cryptography;
@@ -15,12 +16,13 @@ namespace DLL.Data
         public IUserRepository UserRepository { get; }
         public IRefreshTokenRepository RefreshTokenRepository { get; }
         public IPassswordWithSaltRepository PassswordWithSaltRepository { get; }
-
+        public ICommentRepository CommentRepository { get; }
         public UnitOfWork(IGameRepository gameRepository, 
             IGenreRepository genreRepository,
             IUserRepository userRepository ,
             IRefreshTokenRepository refreshTokenRepository,
-            IPassswordWithSaltRepository passswordWithSaltRepository,
+            IPassswordWithSaltRepository passswordWithSaltRepository, 
+            ICommentRepository commentRepository,
             GameStoreDbContext context
             )
         {
@@ -30,6 +32,7 @@ namespace DLL.Data
             UserRepository = userRepository;
             RefreshTokenRepository = refreshTokenRepository;
             PassswordWithSaltRepository = passswordWithSaltRepository;
+            CommentRepository = commentRepository;
             if (context.Games.Count() == 0 &&
                 context.Genres.Count() == 0 &&
                 context.Users.Count() == 0)

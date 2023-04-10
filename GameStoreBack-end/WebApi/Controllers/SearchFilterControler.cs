@@ -7,8 +7,8 @@ using WebApi.Models;
 
 namespace WebApi.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class SearchFilterControler : ControllerBase
     {
         private readonly IMapper _mapper;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GameStore.DataLogic.Entities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -22,5 +23,7 @@ namespace DLL.Entities
         public int PasswordSaltId { get; set; }
         [Required]
         public PasswordWithSalt PasswordWithSalt { get; set; }
+
+        public ICollection<Comment> Comments { get; set; }
     }
 }

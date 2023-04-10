@@ -19,5 +19,6 @@ namespace WebApi.Models
         public string Price { get; set; }
         public string? ImageUrl { get; set; }
         public ICollection<int> GenresIds { get; set; }
+        public ICollection<int> CommentsIds { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GameStore.DataLogic.Interafeces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,7 @@ namespace DLL.Interafeces
         IUserRepository UserRepository { get; }
         IPassswordWithSaltRepository PassswordWithSaltRepository { get; }
         IRefreshTokenRepository RefreshTokenRepository { get; }
+        ICommentRepository CommentRepository { get; }
         Task SaveAsync();
     }
 }

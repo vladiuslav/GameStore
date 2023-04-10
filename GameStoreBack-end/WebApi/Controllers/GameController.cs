@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using BLL.Interfaces;
 using BLL.Models;
+using GameStore.WebAPI.Models;
+using GameStrore.BusinessLogic.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Models;
 
@@ -12,10 +14,12 @@ namespace WebApi.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IGameService _gameService;
-        public GameController(IGameService gameService, IMapper mapper)
+        private readonly ICommentService _commentService;
+        public GameController(IGameService gameService, IMapper mapper , ICommentService commentService)
         {
             _gameService = gameService;
             _mapper = mapper;
+            _commentService = commentService;
         }
 
         [HttpGet]
@@ -37,6 +41,24 @@ namespace WebApi.Controllers
                 return NotFound();
             }
             return Ok(game);
+        }
+
+        [HttpGet("{id}/comments")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> GetGameComments(int id)
+        {
+
+            var game = await _gameService.GetByIdAsync(id);
+            if (game == null)
+            {
+                return NotFound();
+            }
+
+            var commentsFiltered = await _commentService.GetCommentsByGameIdAsync(id);
+            var comments = _mapper.Map<IEnumerable<CommentViewModel>>(commentsFiltered);
+            return Ok(comments);
+
         }
 
         [HttpPost]
@@ -70,29 +92,28 @@ namespace WebApi.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Update([FromBody] GameViewModel game)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-
-                var gameById = await _gameService.GetByIdAsync(game.Id);
-                if (gameById == null)
-                {
-                    return NotFound(game.Name);
-                }
-
-                var gameByName = await _gameService.GetByGameNameAsync(game.Name);
-                if (game.Name != null && gameByName.Id != game.Id)
-                {
-                    return BadRequest();
-                }
-
-                var gameModel = _mapper.Map<GameModel>(game);
-                gameModel.ImageUrl = gameById.ImageUrl;
-                await _gameService.UpdateAsync(gameModel);
-                return Ok(game);
-            }
-            else {
                 return BadRequest();
             }
+            var gameById = await _gameService.GetByIdAsync(game.Id);
+            if (gameById == null)
+            {
+                return NotFound(game.Name);
+            }
+
+            var gameByName = await _gameService.GetByGameNameAsync(game.Name);
+            if (game.Name != null && gameByName.Id != game.Id)
+            {
+                return BadRequest();
+            }   
+
+            var gameModel = _mapper.Map<GameModel>(game);
+            gameModel.CommentsIds = gameById.CommentsIds;
+            gameModel.ImageUrl = gameById.ImageUrl;
+            await _gameService.UpdateAsync(gameModel);
+            return Ok(game);
+            
         }
 
         [HttpDelete("{id}")]

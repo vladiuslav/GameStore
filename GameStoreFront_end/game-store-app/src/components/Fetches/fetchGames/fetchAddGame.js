@@ -20,6 +20,7 @@ const fetchAddGame = async ({
     description: description,
     price: price,
     genresIds: genresIds,
+    commentsIds: [],
   });
 
   var requestOptions = {

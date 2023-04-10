@@ -37,7 +37,7 @@ const Games = () => {
   }, []);
 
   const handleOnChange = (name) => {
-    let updatedCheckedState = checkedState;
+    let updatedCheckedState = new Map(checkedState);
     let IsPressed = updatedCheckedState.get(name);
     updatedCheckedState.set(name, !IsPressed);
     setCheckedState(updatedCheckedState);
@@ -66,7 +66,7 @@ const Games = () => {
     if (genres.length !== 0 && ids.length !== 0) {
       let genresString = "";
       genres.forEach((element) => {
-        if (ids.find((id) => id === element.id) !== null) {
+        if (ids.find((id) => id === element.id) !== undefined) {
           genresString += element.name + "/";
         }
       });

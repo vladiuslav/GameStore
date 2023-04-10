@@ -14,6 +14,7 @@ namespace BLL.Models
         public decimal Price { get; set; }
         public string? ImageUrl { get; set; }
         public ICollection<int> GenresIds { get; set; }
+        public ICollection<int> CommentsIds { get; set; }
 
     }
 }
