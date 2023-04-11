@@ -14,16 +14,18 @@ const GameCreateComment = (props) => {
   };
 
   return (
-    <div>
+    <div className="comment-form">
       <label>
         Comment:
         <input
+          className="comment-text-input"
           type="text"
           value={commentText}
           onChange={(event) => setCommentText(event.target.value)}
         />
       </label>
       <button
+        className="comment-button"
         onClick={() => {
           CreateComment();
         }}

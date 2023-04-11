@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../Images/Logo.jpg";
 import fetchUserGetCurrent from "./Fetches/fetchUsers/fetchUsersGet/fetchUserGetCurrent";
-import fetchGenerateToken from "./Fetches/fetchUsers/fetchGenerateToken";
 import GetUserImage from "./userPageComponents/GetUserImage";
 import SignIn from "./SignIn";
 import LogIn from "./LogIn";

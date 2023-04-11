@@ -116,11 +116,13 @@ const GameComments = (props) => {
         ) : (
           <>
             <input
+              className="comment-text-input"
               value={changeCommentText}
               onChange={(event) => setChangeCommentText(event.target.value)}
               type="text"
             />
             <button
+              className="comment-button"
               onClick={() => {
                 updateComment();
               }}
@@ -129,7 +131,7 @@ const GameComments = (props) => {
             </button>
           </>
         )}
-        {userCurrent != undefined ||
+        {userCurrent !== undefined ||
         userCurrent.commentsIds.includes(comment.id) ? (
           <p>
             <span

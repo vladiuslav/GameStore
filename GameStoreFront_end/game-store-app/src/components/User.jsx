@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import fetchUserGetCurrent from "./Fetches/fetchUsers/fetchUsersGet/fetchUserGetCurrent";
 import GetUserImage from "./userPageComponents/GetUserImage";
-import fetchGenerateToken from "./Fetches/fetchUsers/fetchGenerateToken";
 import CheckIsTokenExpired from "./JsFunctions/CheckIsTokenExpired";
 
 const User = () => {
