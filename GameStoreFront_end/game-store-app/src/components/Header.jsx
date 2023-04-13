@@ -125,7 +125,7 @@ const Header = () => {
                 </Link>
               </li>
               <li>
-                <Link className="nav-item">
+                <Link to="/Cart" className="nav-item">
                   <i className="fa-solid fa-cart-shopping"></i>
                 </Link>
               </li>

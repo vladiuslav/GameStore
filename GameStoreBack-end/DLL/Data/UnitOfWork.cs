@@ -17,12 +17,16 @@ namespace DLL.Data
         public IRefreshTokenRepository RefreshTokenRepository { get; }
         public IPassswordWithSaltRepository PassswordWithSaltRepository { get; }
         public ICommentRepository CommentRepository { get; }
+        public ICartRepository CartRepository { get; }
+        public IOrderRepository OrderRepository { get; }
         public UnitOfWork(IGameRepository gameRepository, 
             IGenreRepository genreRepository,
             IUserRepository userRepository ,
             IRefreshTokenRepository refreshTokenRepository,
             IPassswordWithSaltRepository passswordWithSaltRepository, 
             ICommentRepository commentRepository,
+            ICartRepository cartRepository,
+            IOrderRepository orderRepository,
             GameStoreDbContext context
             )
         {
@@ -33,6 +37,9 @@ namespace DLL.Data
             RefreshTokenRepository = refreshTokenRepository;
             PassswordWithSaltRepository = passswordWithSaltRepository;
             CommentRepository = commentRepository;
+            CartRepository = cartRepository;
+            OrderRepository = orderRepository;
+
             if (context.Games.Count() == 0 &&
                 context.Genres.Count() == 0 &&
                 context.Users.Count() == 0)

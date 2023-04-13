@@ -15,6 +15,8 @@ namespace DLL.Interafeces
         IPassswordWithSaltRepository PassswordWithSaltRepository { get; }
         IRefreshTokenRepository RefreshTokenRepository { get; }
         ICommentRepository CommentRepository { get; }
+        IOrderRepository OrderRepository { get; }
+        ICartRepository CartRepository { get; }
         Task SaveAsync();
     }
 }

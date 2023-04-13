@@ -16,18 +16,23 @@ namespace DLL.Data
         public DbSet<Game> Games { get; set; }
         public DbSet<Genre> Genres { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<Cart> Carts { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<PasswordWithSalt> PasswordWithSalts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Game>()
                 .HasMany(g => g.Genres)
                 .WithMany(g => g.Games);
+
             modelBuilder.Entity<Genre>()
                 .HasMany(g => g.Games)
                 .WithMany(g => g.Genres);
+
             modelBuilder.Entity<User>()
                 .HasOne(u => u.PasswordWithSalt)
                 .WithOne(p => p.User);

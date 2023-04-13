@@ -55,13 +55,10 @@ namespace WebApi.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> GetCurrentUser()
         {
-
             var email = User.Claims.First(claim => claim.Type == ClaimTypes.Email).Value;
             var user = _mapper.Map<UserFullViewModel>(await _userService.GetUserByEmailAsync(email));
             return Ok(user);
-
         }
-
         [HttpPost("refreshToken")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]

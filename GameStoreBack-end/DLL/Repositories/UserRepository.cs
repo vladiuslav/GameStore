@@ -36,7 +36,12 @@ namespace DLL.Repositories
 
         public async Task<IEnumerable<User>> GetAllWithDetailsAsync()
         {
-            return await _dbContext.Users.Include(u=>u.PasswordWithSalt).Include(u => u.Comments).ToListAsync();
+            return await _dbContext.Users
+                .Include(u => u.PasswordWithSalt)
+                .Include(u => u.Comments)
+                .Include(u => u.CartItems)
+                .Include(u => u.Orders)
+                .ToListAsync();
         }
 
         public async Task<User> GetByIdAsync(int id)
@@ -46,7 +51,12 @@ namespace DLL.Repositories
 
         public async Task<User> GetByIdWithDetailsAsync(int id)
         {
-            return await _dbContext.Users.Include(u => u.PasswordWithSalt).Include(u => u.Comments).FirstAsync(g => g.Id == id);
+            return await _dbContext.Users
+                .Include(u => u.PasswordWithSalt)
+                .Include(u => u.Comments)
+                .Include(u=>u.CartItems)
+                .Include(u => u.Orders)
+                .FirstAsync(g => g.Id == id);
         }
 
         public async Task UpdateAsync(User entity)
@@ -58,6 +68,7 @@ namespace DLL.Repositories
             user.Email = entity.Email;
             user.PasswordWithSalt = entity.PasswordWithSalt;
             user.AvatarImageUrl = entity.AvatarImageUrl;
+            user.CartItems = entity.CartItems;
         }
 
     }
