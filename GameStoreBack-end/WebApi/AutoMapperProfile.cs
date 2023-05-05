@@ -37,6 +37,8 @@ namespace WebApi
 				.ReverseMap();
             CreateMap<CommentModel, CommentCreateModel>()
 				.ReverseMap();
+			CreateMap<OrderModel,CreateOrderModel>()
+				.ReverseMap();
         }
 	}
 }

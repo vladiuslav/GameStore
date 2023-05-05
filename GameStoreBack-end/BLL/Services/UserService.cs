@@ -67,7 +67,6 @@ namespace BLL.Services
         public async Task UpdateAsync(UserModel model)
         {
             var user = _mapper.Map<User>(model);
-            user.CartItems = (await _unitOfWork.UserRepository.GetByIdAsync(user.Id)).CartItems;
             var salt = GenerateSalt(10);
             var passwordWithSalt = (await _unitOfWork.PassswordWithSaltRepository.GetAllWithDetailsAsync()).First(ps => ps.UserId == user.Id);
 

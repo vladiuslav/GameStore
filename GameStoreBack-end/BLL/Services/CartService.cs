@@ -55,10 +55,10 @@ namespace GameStrore.BusinessLogic.Services
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task<IEnumerable<CartModel>> GetUserCart(int userId)
+        public async Task<CartModel> GetCartByGameId(int gameId)
         {
             var carts = await _unitOfWork.CartRepository.GetAllWithDetailsAsync();
-            return _mapper.Map<IEnumerable<CartModel>>(carts.Where(c=>c.UserId== userId).ToList());
+            return _mapper.Map<CartModel>(carts.FirstOrDefault(c => c.GameId == gameId));
         }
     }
 }

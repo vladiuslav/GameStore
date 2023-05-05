@@ -41,7 +41,6 @@ namespace GameStore.DataLogic.Repositories
         public async Task<IEnumerable<Cart>> GetAllWithDetailsAsync()
         {
             return await _dbContext.Carts
-                .Include(c=>c.User)
                 .Include(c=>c.Game)
                 .ToListAsync();
         }
@@ -54,7 +53,6 @@ namespace GameStore.DataLogic.Repositories
         public async Task<Cart> GetByIdWithDetailsAsync(int id)
         {
             var order = await _dbContext.Carts
-                .Include(c => c.User)
                 .Include(c => c.Game)
                 .FirstOrDefaultAsync(c => c.Id == id);
             return order;

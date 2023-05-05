@@ -1,0 +1,22 @@
+.order-center {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-direction: column;
+}
+
+.order-input {
+  margin-bottom: 1.25em;
+  width: 25em;
+  height: 2em;
+}
+.order-payment-input {
+  margin-bottom: 1.25em;
+  width: 25.5em;
+  height: 2em;
+}
+.order-text-input {
+  margin-bottom: 1.25em;
+  width: 25em;
+  height: 10em;
+}

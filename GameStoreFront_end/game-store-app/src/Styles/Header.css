@@ -15,6 +15,10 @@ nav li {
   float: left;
 }
 
+.site-logo-margin {
+  margin-top: 0.5em;
+}
+
 .left-nav-items {
   margin-top: 0.25em;
   margin-left: 1em;
@@ -45,11 +49,11 @@ nav li {
 }
 
 .site-name {
-  font-size: 1.5em;
+  font-size: 1.25em;
   font-weight: bolder;
   display: block;
   color: white;
   text-align: center;
-  padding: 1em 0.1em;
+  padding: 1.25em 0.1em;
   text-decoration: none;
 }

@@ -6,6 +6,7 @@ import fetchGamesByGenres from "./Fetches/fetchGames/fetchGetGames/fetchGamesByG
 import fetchGamesByName from "./Fetches/fetchGames/fetchGetGames/fetchGamesByName";
 import fetchGenres from "./Fetches/fetchGaneres/fetchGenres";
 import GameEditFunctional from "./GamePageComponents/GameEditFunctional";
+import AddCartItem from "./JsFunctions/CartFunctions/AddCartItem";
 
 const Games = () => {
   const [games, setGames] = useState([]);
@@ -16,8 +17,8 @@ const Games = () => {
   useEffect(() => {
     //get games
     const getGames = async () => {
-      const gamesFromServer = await fetchGames();
-      let gamesJson = await gamesFromServer.json();
+      const result = await fetchGames();
+      let gamesJson = await result.json();
       setGames(gamesJson);
     };
     getGames();
@@ -46,9 +47,15 @@ const Games = () => {
 
   const FindByName = () => {
     const getGames = async () => {
-      const gamesFromServer = await fetchGamesByName(searchName);
-      let jsonResult = await gamesFromServer.json();
-      setGames(jsonResult);
+      if (searchName.length != 0) {
+        const gamesFromServer = await fetchGamesByName(searchName);
+        let jsonResult = await gamesFromServer.json();
+        setGames(jsonResult);
+      } else {
+        const result = await fetchGames();
+        let gamesJson = await result.json();
+        setGames(gamesJson);
+      }
     };
     getGames();
   };
@@ -99,21 +106,36 @@ const Games = () => {
             }
             GameImageUrl={game.imageUrl}
           />
-          <div className={next++ % 4 > 0 ? "" : "games-gray-baground-part"}>
-            <div className="games-container-part">
+        </Link>
+        <div className={next++ % 4 > 0 ? "" : "games-gray-baground-part"}>
+          <div className="games-container-part">
+            <Link className="games-container-link" to={"/Game/" + game.id}>
               <div className="games-left-price">{game.price}$</div>
-              <div className="games-right-buy">
-                <button className="green-button">BUY</button>
-              </div>
+            </Link>
+            <div className="games-right-buy">
+              <button
+                className="green-button"
+                onClick={() => {
+                  AddCartItem(game.id, 1);
+                }}
+              >
+                BUY
+              </button>
             </div>
+          </div>
+          <Link className="games-container-link" to={"/Game/" + game.id}>
             <div>
               <div className="games-container-genres">
                 {getGenresBlock(game.genresIds)}
               </div>
-              <div className="games-container-name">{game.name}</div>
+              <div className="games-container-name">
+                {game.name.length > 20
+                  ? game.name.slice(0, 20) + "..."
+                  : game.name}
+              </div>
             </div>
-          </div>
-        </Link>
+          </Link>
+        </div>
       </div>
     ));
   };

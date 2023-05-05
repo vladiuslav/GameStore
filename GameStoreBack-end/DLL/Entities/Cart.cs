@@ -13,10 +13,9 @@ namespace GameStore.DataLogic.Entities
         [Required]
         public int Quantity { get; set; }
         [Required]
+        public int OrderId { get; set; }
+        [Required]
         public int GameId { get; set; }
         public Game Game { get; set; }
-        [Required]
-        public int UserId { get; set; }
-        public User User { get; set; }
     }
 }

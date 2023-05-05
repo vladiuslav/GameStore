@@ -82,7 +82,7 @@ namespace WebApi.Controllers
             game.ImageUrl = null;
             await _gameService.AddAsync(gameModel);
 
-            return Created(game.Name, gameModel);
+            return Ok();
        
         }
 
@@ -103,7 +103,7 @@ namespace WebApi.Controllers
             }
 
             var gameByName = await _gameService.GetByGameNameAsync(game.Name);
-            if (game.Name != null && gameByName.Id != game.Id)
+            if (gameByName != null && gameByName.Id != game.Id)
             {
                 return BadRequest();
             }   

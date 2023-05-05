@@ -39,8 +39,6 @@ namespace DLL.Repositories
             return await _dbContext.Users
                 .Include(u => u.PasswordWithSalt)
                 .Include(u => u.Comments)
-                .Include(u => u.CartItems)
-                .Include(u => u.Orders)
                 .ToListAsync();
         }
 
@@ -54,8 +52,6 @@ namespace DLL.Repositories
             return await _dbContext.Users
                 .Include(u => u.PasswordWithSalt)
                 .Include(u => u.Comments)
-                .Include(u=>u.CartItems)
-                .Include(u => u.Orders)
                 .FirstAsync(g => g.Id == id);
         }
 
@@ -68,7 +64,6 @@ namespace DLL.Repositories
             user.Email = entity.Email;
             user.PasswordWithSalt = entity.PasswordWithSalt;
             user.AvatarImageUrl = entity.AvatarImageUrl;
-            user.CartItems = entity.CartItems;
         }
 
     }

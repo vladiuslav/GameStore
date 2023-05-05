@@ -24,7 +24,5 @@ namespace DLL.Entities
         [Required]
         public PasswordWithSalt PasswordWithSalt { get; set; }
         public ICollection<Comment> Comments { get; set; }
-        public ICollection<Cart> CartItems{ get; set; }
-        public ICollection<Order> Orders { get; set; }
     }
 }

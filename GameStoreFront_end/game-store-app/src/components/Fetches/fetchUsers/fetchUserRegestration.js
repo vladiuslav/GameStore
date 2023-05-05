@@ -9,11 +9,11 @@ const fetchUserRegestration = async ({
   myHeaders.append("Content-Type", "application/json");
 
   var raw = JSON.stringify({
-    firstName: "string1234",
-    lastName: "string1234",
-    userName: "string1234",
-    email: "string1234",
-    password: "stringst",
+    firstName: firstName,
+    lastName: lastName,
+    userName: userName,
+    email: email,
+    password: password,
   });
 
   var requestOptions = {

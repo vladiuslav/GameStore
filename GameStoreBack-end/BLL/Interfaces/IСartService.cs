@@ -10,6 +10,6 @@ namespace GameStrore.BusinessLogic.Interfaces
 {
     public interface IСartService : ICrud<CartModel>
     {
-        Task<IEnumerable<CartModel>> GetUserCart(int userId);
+        Task<CartModel> GetCartByGameId(int gameId);
     }
 }
