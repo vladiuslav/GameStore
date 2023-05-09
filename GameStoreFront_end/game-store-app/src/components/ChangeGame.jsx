@@ -183,7 +183,7 @@ const ChangeGame = () => {
         />
       </div>
       <button className="green-button" onClick={(e) => changeGame(e)}>
-        ChangeGame
+        Change Game
       </button>
     </div>
   );
