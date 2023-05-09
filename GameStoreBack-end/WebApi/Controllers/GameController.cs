@@ -62,7 +62,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(201)]
+        [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> CreateGame(GameViewModel game)
         {
@@ -77,12 +77,16 @@ namespace WebApi.Controllers
             {
                 return BadRequest();
             }
-
+            if (string.IsNullOrEmpty(game.Price))
+            {
+                game.Price = "0";
+            }
             var gameModel = _mapper.Map<GameModel>(game);
             game.ImageUrl = null;
             await _gameService.AddAsync(gameModel);
 
-            return Ok();
+            var lastGame = _gameService.GetAllAsync().Result.Last();
+            return Ok(lastGame);
        
         }
 

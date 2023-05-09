@@ -23,6 +23,10 @@ namespace BLL
                 .ForMember(
                     gm => gm.GamesIds,
                     g => g.MapFrom(g => g.Games.Select(g => g.Id)))
+                .ForMember(
+                    gm => gm.ParentGenreId,
+                    g => g.MapFrom(g => g.ParentGenreId)
+                    )
                 .ReverseMap();
 
             CreateMap<User, UserModel>()

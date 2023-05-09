@@ -3,16 +3,17 @@ import { useNavigate } from "react-router-dom";
 import React from "react";
 import fetchGenres from "./Fetches/fetchGaneres/fetchGenres";
 import fetchAddGame from "./Fetches/fetchGames/fetchAddGame";
-import FlashBlock from "./FlashBlock";
+import fetchChangeGameImage from "./Fetches/fetchGames/fetchChangeGameImage";
+
 const AddGame = () => {
   const navigate = useNavigate();
-  const [isShowErrorBlock, setIsShowErrorBlock] = useState(false);
-  const [errorText, setErrorText] = useState("");
   const [genres, setGenres] = useState([]);
+  const [isShowEmptyError, setIsShowEmptyError] = useState(false);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [checkedState, setCheckedState] = useState(new Map());
+  const [image, setImage] = useState(null);
 
   useEffect(() => {
     const getGenres = async () => {
@@ -41,25 +42,15 @@ const AddGame = () => {
   const createGame = (e) => {
     e.preventDefault();
 
-    if (name.length < 1 || description.length < 1 || price.length < 1) {
-      setErrorText("Some input is empty");
-      setIsShowErrorBlock(true);
+    if (name.length < 3 || description.length < 10) {
+      setIsShowEmptyError(true);
       return;
     }
 
-    if (name.length < 3 || name.length > 40) {
-      setErrorText("Name too short or too long");
-      setIsShowErrorBlock(true);
-      return;
-    }
-    if (description.length < 10 || description.length > 400) {
-      setErrorText("Description too short or too long");
-      setIsShowErrorBlock(true);
-      return;
-    }
     if (price.includes(".")) {
       setPrice(price.replace(/\./g, ","));
     }
+
     const processFetch = async () => {
       let result = await fetchAddGame({
         name,
@@ -68,20 +59,18 @@ const AddGame = () => {
         checkedState,
         genres,
       });
-      if (result.status === 201) {
-        setName("");
-        setDescription("");
-        setPrice("");
-        setCheckedState([]);
-        navigate("/Games");
+
+      if (result.status === 200) {
+        let resultJson = await result.json();
+        changeImage(resultJson.id);
+        alert("Game added");
+        navigate("/");
         return;
       } else if (result.status === 400) {
-        setErrorText("Game name exist or wrong price number.");
-        setIsShowErrorBlock(true);
+        alert("Game name exist");
         return;
       } else {
-        setErrorText("Error" + result.status);
-        setIsShowErrorBlock(true);
+        alert("Error " + result.status);
         return;
       }
     };
@@ -89,19 +78,35 @@ const AddGame = () => {
     processFetch();
   };
 
+  const changeImage = (gameId) => {
+    if (image === null || image.length < 1) {
+      return;
+    }
+
+    const processFetch = async () => {
+      let result = await fetchChangeGameImage(image[0], gameId);
+      if (result.status === 200) {
+        return;
+      } else {
+        alert("Error " + result.status);
+        return;
+      }
+    };
+    processFetch();
+  };
+
   //render
   return (
     <div className="dark-background">
-      <div
-        onClick={(e) => {
-          e.preventDefault();
-          setIsShowErrorBlock(false);
-        }}
-      >
-        <FlashBlock massage={errorText} isShow={isShowErrorBlock} />
-      </div>
       <div>
-        <p>Name</p>
+        <p>Name *</p>
+        {isShowEmptyError && name.length < 3 ? (
+          <p className="error-text">
+            Name can`t be empty and have at least 3 letters
+          </p>
+        ) : (
+          <></>
+        )}
         <input
           className="game-form-input-text"
           type="text"
@@ -111,7 +116,14 @@ const AddGame = () => {
         />
       </div>
       <div>
-        <p>Game description</p>
+        <p>Game description *</p>
+        {isShowEmptyError && description.length < 10 ? (
+          <p className="error-text">
+            Description can`t be empty and have at least 10 letters
+          </p>
+        ) : (
+          <></>
+        )}
         <input
           className="game-form-input-text"
           type="text"
@@ -150,7 +162,14 @@ const AddGame = () => {
           onChange={(e) => setPrice(e.target.value)}
         />
       </div>
-
+      <div>
+        <label>Image of game</label>
+        <input
+          className="game-form-input-file"
+          type="file"
+          onChange={(e) => setImage(e.target.files)}
+        />
+      </div>
       <button className="green-button" onClick={(e) => createGame(e)}>
         CreateNewGame
       </button>

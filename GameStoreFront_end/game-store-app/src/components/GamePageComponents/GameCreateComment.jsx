@@ -10,7 +10,11 @@ const GameCreateComment = (props) => {
       commentText: commentText,
       repliedCommentId: props.repliedCommentId,
     });
-    window.location.reload();
+    if (result.status === 200) {
+      window.location.reload();
+    } else {
+      alert("Error " + result.status);
+    }
   };
 
   return (

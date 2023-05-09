@@ -11,6 +11,9 @@ article {
   padding: 1em;
   background-color: #1e1e1e;
 }
+.error-text {
+  color: red;
+}
 .background-gray {
   position: fixed;
   z-index: 10;

@@ -15,7 +15,6 @@ const Games = () => {
   const [checkedState, setCheckedState] = useState(new Map());
   const [showGenreResults, setShowGenreResults] = useState(false);
   useEffect(() => {
-    //get games
     const getGames = async () => {
       const result = await fetchGames();
       let gamesJson = await result.json();
@@ -27,6 +26,7 @@ const Games = () => {
       const result = await fetchGenres();
       let genresJson = await result.json();
       await setGenres(genresJson);
+
       let genresChecks = checkedState;
       for (let index = 0; index < genresJson.length; index++) {
         genresChecks.set(genresJson[index].name, false);
@@ -37,17 +37,17 @@ const Games = () => {
     setStarterGenres();
   }, []);
 
-  const handleOnChange = (name) => {
+  const handleOnChangeGenreFilterItem = (name) => {
     let updatedCheckedState = new Map(checkedState);
     let IsPressed = updatedCheckedState.get(name);
     updatedCheckedState.set(name, !IsPressed);
     setCheckedState(updatedCheckedState);
-    FindByGenres();
+    FindByGenres(updatedCheckedState);
   };
 
   const FindByName = () => {
     const getGames = async () => {
-      if (searchName.length != 0) {
+      if (searchName.length !== 0) {
         const gamesFromServer = await fetchGamesByName(searchName);
         let jsonResult = await gamesFromServer.json();
         setGames(jsonResult);
@@ -60,11 +60,23 @@ const Games = () => {
     getGames();
   };
 
-  const FindByGenres = () => {
+  const FindByGenres = (checkedState) => {
     const getGames = async () => {
-      const gamesFromServer = await fetchGamesByGenres(checkedState, genres);
-      let jsonResult = await gamesFromServer.json();
-      setGames(jsonResult);
+      let genresIds = [];
+      checkedState.forEach(function(value, key) {
+        if (value) {
+          genresIds.push(genres.find((genre) => genre.name === key).id);
+        }
+      });
+      if (genresIds.length === 0) {
+        const result = await fetchGames();
+        let gamesJson = await result.json();
+        setGames(gamesJson);
+      } else {
+        const gamesFromServer = await fetchGamesByGenres(genresIds);
+        let jsonResult = await gamesFromServer.json();
+        setGames(jsonResult);
+      }
     };
     getGames();
   };
@@ -72,9 +84,14 @@ const Games = () => {
   const getGenresBlock = (ids) => {
     if (genres.length !== 0 && ids.length !== 0) {
       let genresString = "";
+      let elementNumber = 0;
       genres.forEach((element) => {
         if (ids.find((id) => id === element.id) !== undefined) {
-          genresString += element.name + "/";
+          if (elementNumber++ === 3) {
+            genresString += element.name + " ... ";
+          } else if (elementNumber <= 3) {
+            genresString += element.name + "/";
+          }
         }
       });
       genresString = genresString.slice(0, genresString.length - 1);
@@ -95,6 +112,7 @@ const Games = () => {
       >
         <Link className="games-container-link" to={"/Game/" + game.id}>
           <GameEditFunctional
+            IsSmallGame={next % 4 > 0}
             gameId={game.id}
             classNameForOverideBlock={
               next % 4 > 0
@@ -158,7 +176,7 @@ const Games = () => {
           <div key={genre.id} className="game-genres-item">
             <i
               onClick={() => {
-                handleOnChange(genre.name);
+                handleOnChangeGenreFilterItem(genre.name);
               }}
               className="fa-solid fa-xmark"
             ></i>
@@ -168,6 +186,43 @@ const Games = () => {
       </div>
     ) : (
       <></>
+    );
+  };
+
+  const getGenresWithParent = function() {
+    let newGenres = [];
+    genres.forEach((element) => {
+      if (element.parentGenreId === null) {
+        newGenres.push(element);
+      } else {
+        let id = newGenres.findIndex((g) => g.id === element.parentGenreId);
+        newGenres[id].childGenre = element;
+      }
+    });
+    return newGenres;
+  };
+
+  const GenreFilterBlock = (props) => {
+    let item = props.genre;
+    let isChild = props.isChild;
+
+    return (
+      <>
+        <div key={item.id} className={isChild ? "child-genre" : "parent-genre"}>
+          <input
+            type="checkbox"
+            value={checkedState.get(item.name)}
+            checked={checkedState.get(item.name)}
+            onChange={() => handleOnChangeGenreFilterItem(item.name)}
+          />
+          <label>{item.name}</label>
+        </div>
+        {item.childGenre !== undefined ? (
+          <GenreFilterBlock genre={item.childGenre} isChild={true} />
+        ) : (
+          <></>
+        )}
+      </>
     );
   };
 
@@ -186,17 +241,11 @@ const Games = () => {
           {showGenreResults ? (
             <div className="genres-filter">
               <div className="genres-filter-grid">
-                {genres.map((item) => {
-                  return (
-                    <div key={item.id}>
-                      <input
-                        type="checkbox"
-                        value={checkedState.get(item.name)}
-                        checked={checkedState.get(item.name)}
-                        onChange={() => handleOnChange(item.name)}
-                      />
-                      <label>{item.name}</label>
-                    </div>
+                {getGenresWithParent().map((item) => {
+                  return item.parentGenreId === null ? (
+                    <GenreFilterBlock genre={item} isChild={false} />
+                  ) : (
+                    <></>
                   );
                 })}
               </div>

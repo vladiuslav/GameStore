@@ -1,6 +1,11 @@
 import fetchGenerateToken from "../Fetches/fetchUsers/fetchGenerateToken";
 const CheckIsTokenExpired = async () => {
-  let expiresTime = new Date(localStorage.getItem("expiredTokenTime"));
+  let tokenTime = localStorage.getItem("expiredTokenTime");
+  if (tokenTime === null) {
+    return;
+  }
+  let expiresTime = new Date(tokenTime);
+
   if (expiresTime < Date.now()) {
     let result = await fetchGenerateToken();
     if (result.status === 200) {

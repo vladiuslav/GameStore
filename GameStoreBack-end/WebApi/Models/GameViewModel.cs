@@ -15,7 +15,6 @@ namespace WebApi.Models
         [MinLength(10)]
         [MaxLength(400)]
         public string Description { get; set; }
-        [Required]
         public string Price { get; set; }
         public string? ImageUrl { get; set; }
         public ICollection<int> GenresIds { get; set; }

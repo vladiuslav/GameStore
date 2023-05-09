@@ -57,7 +57,9 @@ const Header = () => {
     <nav>
       <ul>
         <li className="site-logo-margin">
-          <img alt="Logo" src={logo} className="site-logo" />
+          <Link to="/">
+            <img alt="Logo" src={logo} className="site-logo" />
+          </Link>
         </li>
         <li>
           <Link to="/" className="site-name">

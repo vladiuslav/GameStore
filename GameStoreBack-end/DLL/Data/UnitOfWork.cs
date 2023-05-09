@@ -72,7 +72,7 @@ namespace DLL.Data
                     " sed iaculis leo enim sed orci. Phasellus bibendum iaculis aliquet." +
                     " Suspendisse potenti. Aenean volutpat maximus mattis. Sed vel tellus nulla.",
 
-                    Price = 10.00m,
+                    Price = 10.59m,
                     Genres = new List<Genre>() 
                 },
                 new Game
@@ -83,7 +83,7 @@ namespace DLL.Data
                     " sed iaculis leo enim sed orci. Phasellus bibendum iaculis aliquet." +
                     " Suspendisse potenti. Aenean volutpat maximus mattis. Sed vel tellus nulla.",
 
-                    Price = 10.00m,
+                    Price = 4.99m,
                     Genres = new List<Genre>()
                 },
                 new Game
@@ -94,7 +94,7 @@ namespace DLL.Data
                     " sed iaculis leo enim sed orci. Phasellus bibendum iaculis aliquet." +
                     " Suspendisse potenti. Aenean volutpat maximus mattis. Sed vel tellus nulla.",
 
-                    Price = 10.00m,
+                    Price = 14.30m,
                     Genres = new List<Genre>()
                 },
                 new Game
@@ -105,7 +105,7 @@ namespace DLL.Data
                     " sed iaculis leo enim sed orci. Phasellus bibendum iaculis aliquet." +
                     " Suspendisse potenti. Aenean volutpat maximus mattis. Sed vel tellus nulla.",
 
-                    Price = 10.00m,
+                    Price = 9.99m,
                     Genres = new List<Genre>()
                 },
                 new Game
@@ -116,7 +116,7 @@ namespace DLL.Data
                     " sed iaculis leo enim sed orci. Phasellus bibendum iaculis aliquet." +
                     " Suspendisse potenti. Aenean volutpat maximus mattis. Sed vel tellus nulla.",
 
-                    Price = 10.00m,
+                    Price = 12.00m,
                     Genres = new List<Genre>()
                 },
                 new Game
@@ -127,7 +127,7 @@ namespace DLL.Data
                     " sed iaculis leo enim sed orci. Phasellus bibendum iaculis aliquet." +
                     " Suspendisse potenti. Aenean volutpat maximus mattis. Sed vel tellus nulla.",
 
-                    Price = 10.00m,
+                    Price = 10.10m,
                     Genres = new List<Genre>()
                 });
 

@@ -1,20 +1,14 @@
 import React from "react";
-
+import nonegame from "../../Images/nonegame.png";
 const GameImage = (props) => {
   let imageUrl;
   if (props.GameImageUrl === null) {
-    imageUrl = "nonegame.png";
+    imageUrl = nonegame;
   } else {
-    imageUrl = props.GameImageUrl;
+    imageUrl = "https://localhost:7025/img/" + props.GameImageUrl;
   }
 
-  return (
-    <img
-      alt="Game"
-      className={props.className}
-      src={"https://localhost:7025/img/" + imageUrl}
-    />
-  );
+  return <img alt="Game" className={props.className} src={imageUrl} />;
 };
 
 export default GameImage;
