@@ -68,9 +68,7 @@ namespace WebApi.Controllers
         {
             if (!ModelState.IsValid)
             {
-
                 return BadRequest();
-
             }
             
             if((await _gameService.GetByGameNameAsync(game.Name)) != null)

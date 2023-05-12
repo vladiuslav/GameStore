@@ -9,11 +9,9 @@ namespace WebApi.Models
         public int Id { get; set; }
         [Required]
         [MinLength(3)]
-        [MaxLength(40)]
         public string Name { get; set; }
         [Required]
         [MinLength(10)]
-        [MaxLength(400)]
         public string Description { get; set; }
         public string Price { get; set; }
         public string? ImageUrl { get; set; }

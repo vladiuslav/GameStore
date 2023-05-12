@@ -128,7 +128,7 @@ const ChangeUser = () => {
         <input
           type="text"
           placeholder="Password"
-          value={password}
+          value={"*".repeat(password.length)}
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>

@@ -1,13 +1,11 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import FlashBlock from "./FlashBlock";
 import fetchUserRegestration from "./Fetches/fetchUsers/fetchUserRegestration";
 
 const SignIn = (props) => {
   const navigate = useNavigate();
-  const [isShowErrorBlock, setIsShowErrorBlock] = useState(false);
-  const [errorText, setErrorText] = useState("");
+  const [isShowEmptyError, setIsShowEmptyError] = useState(false);
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -18,19 +16,21 @@ const SignIn = (props) => {
   const createAccount = (e) => {
     e.preventDefault();
 
-    if (
-      firstName.length < 3 ||
-      lastName.length < 3 ||
-      userName.length < 3 ||
-      email.length < 3
-    ) {
-      setErrorText("Some input is empty or have less then 3 letters");
-      setIsShowErrorBlock(true);
+    if (firstName.length < 3) {
+      setIsShowEmptyError(true);
       return;
     }
+    if (lastName.length < 3) {
+      setIsShowEmptyError(true);
+      return;
+    }
+    if (email.length < 3) {
+      setIsShowEmptyError(true);
+      return;
+    }
+
     if (password.length < 8) {
-      setErrorText("Input is empty or have less 1then 8 letters");
-      setIsShowErrorBlock(true);
+      setIsShowEmptyError(true);
       return;
     }
 
@@ -43,15 +43,14 @@ const SignIn = (props) => {
         password,
       });
       if (result.status === 200) {
+        alert("Account created");
         navigate("/");
         return;
       } else if (result.status === 400) {
-        setErrorText("Wrong input.");
-        setIsShowErrorBlock(true);
+        alert("Wrong input");
         return;
       } else {
-        setErrorText("Error" + result.status);
-        setIsShowErrorBlock(true);
+        alert("Error" + result.status);
         return;
       }
     };
@@ -60,14 +59,6 @@ const SignIn = (props) => {
 
   return (
     <div className="central-form">
-      <div
-        onClick={(e) => {
-          e.preventDefault();
-          setIsShowErrorBlock(false);
-        }}
-      >
-        <FlashBlock massage={errorText} isShow={isShowErrorBlock} />
-      </div>
       <div className="user-form">
         <div
           onClick={() => {
@@ -79,6 +70,13 @@ const SignIn = (props) => {
         <h1>User registration</h1>
         <div className="user-form-part">
           <div className="user-form-label">First name</div>
+          {isShowEmptyError && firstName.length < 3 ? (
+            <p className="error-text">
+              First name empty or have less then 3 letters
+            </p>
+          ) : (
+            <></>
+          )}
           <input
             className="user-form-input"
             type="text"
@@ -89,6 +87,13 @@ const SignIn = (props) => {
         </div>
         <div className="user-form-part">
           <div>Last name</div>
+          {isShowEmptyError && lastName.length < 3 ? (
+            <p className="error-text">
+              Last name empty or have less then 3 letters
+            </p>
+          ) : (
+            <></>
+          )}
           <input
             className="user-form-input"
             type="text"
@@ -99,6 +104,13 @@ const SignIn = (props) => {
         </div>
         <div className="user-form-part">
           <div>User name</div>
+          {isShowEmptyError && userName.length < 3 ? (
+            <p className="error-text">
+              User name empty or have less then 3 letters
+            </p>
+          ) : (
+            <></>
+          )}
           <input
             className="user-form-input"
             type="text"
@@ -109,6 +121,13 @@ const SignIn = (props) => {
         </div>
         <div className="user-form-part">
           <div>Email</div>
+          {isShowEmptyError && email.length < 3 ? (
+            <p className="error-text">
+              Email empty or have less then 3 letters
+            </p>
+          ) : (
+            <></>
+          )}
           <input
             className="user-form-input"
             type="text"
@@ -119,17 +138,24 @@ const SignIn = (props) => {
         </div>
         <div className="user-form-part">
           <div>Password</div>
+          {isShowEmptyError && password.length < 8 ? (
+            <p className="error-text">
+              Password empty or have less then 8 letters
+            </p>
+          ) : (
+            <></>
+          )}
           <input
             className="user-form-input"
             type="text"
             placeholder="Password"
-            value={password}
+            value={"*".repeat(password.length)}
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
         <div className="user-form-part">
           <button className="green-button" onClick={(e) => createAccount(e)}>
-            Create Account
+            Create account
           </button>
         </div>
       </div>

@@ -12,6 +12,7 @@ article {
   background-color: #1e1e1e;
 }
 .error-text {
+  margin: 0;
   color: red;
 }
 .background-gray {

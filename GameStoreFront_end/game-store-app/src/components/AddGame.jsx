@@ -159,7 +159,13 @@ const AddGame = () => {
           type="text"
           placeholder="Add price"
           value={price}
-          onChange={(e) => setPrice(e.target.value)}
+          onChange={(e) => {
+            if (e.target.value.includes(".")) {
+              setPrice(e.target.value.replace(/\./g, ","));
+            } else {
+              setPrice(e.target.value);
+            }
+          }}
         />
       </div>
       <div>
