@@ -45,7 +45,13 @@ namespace WebApi.Controllers
             var user = _mapper.Map<UserViewModel>(await _userService.GetByIdAsync(id));
             if (user == null)
             {
-                return NotFound();
+                var problem = new ProblemDetails
+                {
+                    Title = "User not found",
+                    Detail = $"The user with ID {id} does not exist.",
+                    Status = 404,
+                };
+                return NotFound(problem);
             }
             return Ok(user);
 
@@ -65,15 +71,16 @@ namespace WebApi.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> refreshToken(AuthResultViewModel tokenRequestVM)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
             var result = await VerifyAndGenerateTokenAsync(tokenRequestVM);
             if (result == null)
             {
-                return BadRequest();
+                var problem = new ProblemDetails
+                {
+                    Title = "Refresh token expired",
+                    Detail = $"The refresh token expired or changed.",
+                    Status = 400,
+                };
+                return BadRequest(problem);
             }
             return Ok(result);
         }
@@ -115,17 +122,20 @@ namespace WebApi.Controllers
         [ProducesResponseType(401)]
         public async Task<IActionResult> Login(LoginData loginVM)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("Please, provide all required fields");
-            }
             var user = await _userService.GetUserByLoginData(loginVM);
-            if (user != null)
+            if (user == null)
             {
-                var tokenValue = await GenerateJWTTokenAsync(user, null);
-                return Ok(tokenValue);
+                var problem = new ProblemDetails
+                {
+                    Title = "User wrong credentials",
+                    Detail = $"The user wrong email and password or user does not exist.",
+                    Status = 404,
+                };
+                return Unauthorized(problem);
             }
-            return Unauthorized();
+
+            var tokenValue = await GenerateJWTTokenAsync(user, null);
+            return Ok(tokenValue);
         }
 
         private async Task<AuthResultViewModel> GenerateJWTTokenAsync(UserModel user, RefreshToken rToken)
@@ -185,31 +195,36 @@ namespace WebApi.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> CreateUser(UserFullViewModel user)
         {
-            if (ModelState.IsValid)
+            var userByEmail = await _userService.GetUserByEmailAsync(user.Email);
+            if (userByEmail != null)
             {
-                var userByEmail = await _userService.GetUserByEmailAsync(user.Email);
-                if (userByEmail != null)
+                var problem = new ProblemDetails
                 {
-                    return BadRequest();
-                }
-
-                var userByName = await _userService.GetUserByUserNameAsync(user.UserName);
-                if (userByName != null)
-                {
-                    return BadRequest();
-                }
-
-                var userModel = _mapper.Map<UserModel>(user);
-                userModel.AvatarImageUrl = null;
-                await _userService.AddAsync(userModel);
-                var response = new JsonResult(user);
-                response.StatusCode = 200;
-                return response;
+                    Title = "User already exist",
+                    Detail = $"The user with email {user.Email} already exist.",
+                    Status = 400,
+                };
+                return BadRequest(problem);
             }
-            else
+
+            var userByName = await _userService.GetUserByUserNameAsync(user.UserName);
+            if (userByName != null)
             {
-                return BadRequest();
+                var problem = new ProblemDetails
+                {
+                    Title = "User already exist",
+                    Detail = $"The user with name {user.UserName} already exist.",
+                    Status = 400,
+                };
+                return BadRequest(problem);
             }
+
+            var userModel = _mapper.Map<UserModel>(user);
+            userModel.AvatarImageUrl = null;
+            await _userService.AddAsync(userModel);
+            var response = new JsonResult(user);
+            response.StatusCode = 200;
+            return response;
         }
 
         [HttpPut()]
@@ -218,23 +233,31 @@ namespace WebApi.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> Update([FromBody] UserUpdateModel user)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
             var email = User.Claims.First(claim => claim.Type == ClaimTypes.Email).Value;
             var userByIdentity = await _userService.GetUserByEmailAsync(email);
 
             var userByEmail = await _userService.GetUserByEmailAsync(user.Email);
             if (userByEmail != null && userByEmail.Id != userByIdentity.Id)
             {
-                return BadRequest();
+                var problem = new ProblemDetails
+                {
+                    Title = "User already exist",
+                    Detail = $"The user with email {user.Email} already exist.",
+                    Status = 400,
+                };
+                return BadRequest(problem);
             }
 
             var userByName = await _userService.GetUserByUserNameAsync(user.UserName);
             if (userByName != null && userByName.Id != userByIdentity.Id)
             {
-                return BadRequest();
+                var problem = new ProblemDetails
+                {
+                    Title = "User already exist",
+                    Detail = $"The user with name {user.UserName} already exist.",
+                    Status = 400,
+                };
+                return BadRequest(problem);
             }
 
             var userModel = _mapper.Map<UserModel>(user);
@@ -242,7 +265,7 @@ namespace WebApi.Controllers
             userModel.Id = userByIdentity.Id;
             userModel.AvatarImageUrl = userByIdentity.AvatarImageUrl;
             await _userService.UpdateAsync(userModel);
-            return Ok();
+            return Ok(userModel);
 
         }
 
@@ -252,6 +275,17 @@ namespace WebApi.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Delete(int id)
         {
+            var user = _userService.GetByIdAsync(id);
+            if(user == null)
+            {
+                var problem = new ProblemDetails
+                {
+                    Title = "User not found",
+                    Detail = $"The user with ID {id} does not exist.",
+                    Status = 404,
+                };
+                return NotFound(problem);
+            }
             await _userService.DeleteByIdAsync(id);
             return NoContent();
         }

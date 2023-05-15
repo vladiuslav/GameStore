@@ -29,7 +29,7 @@ const GameComments = (props) => {
 
     const getComments = async () => {
       const result = await fetchGetCommentsForGame(props.gameId);
-      if (result.status === 200) {
+      if (result.ok) {
         let resultJson = await result.json();
         setComments(resultJson);
       }
@@ -41,7 +41,7 @@ const GameComments = (props) => {
       const token = localStorage.getItem("token");
       if (token !== null) {
         const result = await fetchUserGetCurrent(token);
-        if (result.status === 200) {
+        if (result.ok) {
           let resultjson = await result.json();
           setCurrentUser(resultjson);
         }
@@ -93,8 +93,16 @@ const GameComments = (props) => {
       commentId: changeCommentId,
     });
 
-    if (result.status === 200) {
+    if (result.ok) {
       window.location.reload();
+    } else {
+      let errorBody = await result.json();
+      alert(
+        errorBody.title +
+          "\n" +
+          (errorBody.detail !== undefined ? errorBody.detail : "")
+      );
+      return;
     }
   };
 
@@ -154,7 +162,7 @@ const GameComments = (props) => {
                     let result = await fetchDeleteComment({
                       commentId: comment.id,
                     });
-                    if (result.status === 204) {
+                    if (result.ok) {
                       window.location.reload();
                     }
                   };

@@ -27,12 +27,20 @@ const Order = () => {
         paymentType,
         comment
       );
-      if (result.status !== 200) {
+      if (result.ok) {
+        RemoveAllCartItems();
+        navigate("/");
+      } else {
+        let errorBody = await result.json();
+        alert(
+          errorBody.title +
+            "\n" +
+            (errorBody.detail !== undefined ? errorBody.detail : "")
+        );
       }
     };
+
     processFetch();
-    RemoveAllCartItems();
-    navigate("/");
   }
 
   //render

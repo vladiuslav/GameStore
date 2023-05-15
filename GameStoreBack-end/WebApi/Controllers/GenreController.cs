@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using AutoMapper;
-using BLL.Services;
+﻿using AutoMapper;
 using BLL.Interfaces;
 using BLL.Models;
-using WebApi.Models;
 using DLL.Entities;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
 {
@@ -35,7 +33,13 @@ namespace WebApi.Controllers
             var genre = _mapper.Map<GenreViewModel>(await _genreService.GetByIdAsync(id));
             if (genre == null)
             {
-                return NotFound();
+                var problem = new ProblemDetails
+                {
+                    Title = "Genre not found",
+                    Detail = $"The genre with ID {id} does not exist.",
+                    Status = 404,
+                };
+                return NotFound(problem);
             }
             return Ok(genre);
         }
@@ -45,21 +49,20 @@ namespace WebApi.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> CreateGenre(GenreViewModel genre)
         {
-            if (ModelState.IsValid)
+            var genreByName = await _genreService.GetByGenreNameAsync(genre.Name);
+            if (genreByName != null)
             {
-                var genreByName = await _genreService.GetByGenreNameAsync(genre.Name);
-                if(genreByName != null)
+                var problem = new ProblemDetails
                 {
-                    return BadRequest();
-                }
-                var genreModel = _mapper.Map<GenreModel>(genre);
-                await _genreService.AddAsync(genreModel);
-                return Ok(genreModel);
+                    Title = "Genre already exist",
+                    Detail = $"The genre with name {genre.Name} already exist.",
+                    Status = 400,
+                };
+                return BadRequest(problem);
             }
-            else
-            {
-                return BadRequest();
-            }
+            var genreModel = _mapper.Map<GenreModel>(genre);
+            await _genreService.AddAsync(genreModel);
+            return Ok(genreModel);
         }
 
         [HttpPut]
@@ -68,31 +71,33 @@ namespace WebApi.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Update([FromBody] GenreViewModel genre)
         {
-            if (ModelState.IsValid)
+            if ((await _genreService.GetByIdAsync(genre.Id)) == null)
             {
-                if ((await _genreService.GetByIdAsync(genre.Id)) == null)
+                var problem = new ProblemDetails
                 {
-                    return NotFound(genre.Name);
-                }
-
-                var genreByName = await _genreService.GetByGenreNameAsync(genre.Name);
-                if(genreByName==null)
-                {
-
-                }
-                else if (genre.Name != null && genreByName.Id != genre.Id)
-                {
-                    return BadRequest();
-                }
-
-                var genreModel = _mapper.Map<GenreModel>(genre);
-                await _genreService.UpdateAsync(genreModel);
-                return Ok(genre);
+                    Title = "Genre not found",
+                    Detail = $"The genre with ID {genre.Id} does not exist.",
+                    Status = 404,
+                };
+                return NotFound(problem);
             }
-            else
+
+            var genreByName = await _genreService.GetByGenreNameAsync(genre.Name);
+
+            if (genreByName != null &&(genre.Name != null && genreByName.Id != genre.Id))
             {
-                return BadRequest();
+                var problem = new ProblemDetails
+                {
+                    Title = "Genre already exist",
+                    Detail = $"The genre with name {genre.Name} already exist.",
+                    Status = 400,
+                };
+                return BadRequest(problem);
             }
+
+            var genreModel = _mapper.Map<GenreModel>(genre);
+            await _genreService.UpdateAsync(genreModel);
+            return Ok(genre);
         }
 
         [HttpDelete("{id}")]
@@ -104,12 +109,18 @@ namespace WebApi.Controllers
             var genre = await _genreService.GetByIdAsync(id);
             if (genre == null)
             {
-                return NotFound();
+                var problem = new ProblemDetails
+                {
+                    Title = "Genre not found",
+                    Detail = $"The genre with ID {id} does not exist.",
+                    Status = 404,
+                };
+                return NotFound(problem);
             }
             else
             {
                 await _genreService.DeleteByIdAsync(id);
-                return Ok("Deleted");
+                return NoContent();
             }
 
         }

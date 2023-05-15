@@ -22,7 +22,7 @@ const LogIn = (props) => {
 
     const processFetch = async () => {
       let result = await fetchUserLogin({ email, password });
-      if (result.status === 200) {
+      if (result.ok) {
         let resultJson = await result.json();
         localStorage.setItem("token", resultJson.token);
         localStorage.setItem("refresh_token", resultJson.refreshToken);
@@ -31,14 +31,13 @@ const LogIn = (props) => {
         props.checkIsLogged();
         props.setIsOpenForm();
         return;
-      } else if (result.status === 400) {
-        alert("Wrong input or user don`t exist.");
-        return;
-      } else if (result.status === 404) {
-        alert("Wrong login or password");
-        return;
       } else {
-        alert("Error" + result.status);
+        let errorBody = await result.json();
+        alert(
+          errorBody.title +
+            "\n" +
+            (errorBody.detail !== undefined ? errorBody.detail : "")
+        );
         return;
       }
     };

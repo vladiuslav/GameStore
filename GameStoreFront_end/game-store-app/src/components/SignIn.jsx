@@ -42,15 +42,17 @@ const SignIn = (props) => {
         email,
         password,
       });
-      if (result.status === 200) {
+      if (result.ok) {
         alert("Account created");
         navigate("/");
         return;
-      } else if (result.status === 400) {
-        alert("Wrong input");
-        return;
       } else {
-        alert("Error" + result.status);
+        let errorBody = await result.json();
+        alert(
+          errorBody.title +
+            "\n" +
+            (errorBody.detail !== undefined ? errorBody.detail : "")
+        );
         return;
       }
     };

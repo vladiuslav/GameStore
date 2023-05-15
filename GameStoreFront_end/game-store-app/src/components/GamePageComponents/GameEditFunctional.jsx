@@ -10,14 +10,16 @@ const GameEditFunctional = (props) => {
 
     const processFetch = async () => {
       let result = await fetchDeleteGame(props.gameId);
-      if (result.status === 200) {
+      if (result.ok) {
         navigate("/Game/" + props.gameId);
         return;
-      } else if (result.status === 404) {
-        alert("Game doesn`t exist");
-        return;
       } else {
-        alert("Error" + result.status);
+        let errorBody = await result.json();
+        alert(
+          errorBody.title +
+            "\n" +
+            (errorBody.detail !== undefined ? errorBody.detail : "")
+        );
         return;
       }
     };

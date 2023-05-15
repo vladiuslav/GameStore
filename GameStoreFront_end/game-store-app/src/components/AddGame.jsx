@@ -60,17 +60,19 @@ const AddGame = () => {
         genres,
       });
 
-      if (result.status === 200) {
+      if (result.ok) {
         let resultJson = await result.json();
         changeImage(resultJson.id);
         alert("Game added");
         navigate("/");
         return;
-      } else if (result.status === 400) {
-        alert("Game name exist");
-        return;
       } else {
-        alert("Error " + result.status);
+        let errorBody = await result.json();
+        alert(
+          errorBody.title +
+            "\n" +
+            (errorBody.detail !== undefined ? errorBody.detail : "")
+        );
         return;
       }
     };
@@ -85,10 +87,15 @@ const AddGame = () => {
 
     const processFetch = async () => {
       let result = await fetchChangeGameImage(image[0], gameId);
-      if (result.status === 200) {
+      if (result.ok) {
         return;
       } else {
-        alert("Error " + result.status);
+        let errorBody = await result.json();
+        alert(
+          errorBody.title +
+            "\n" +
+            (errorBody.detail !== undefined ? errorBody.detail : "")
+        );
         return;
       }
     };

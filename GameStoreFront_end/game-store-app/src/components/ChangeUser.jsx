@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import React from "react";
 import fetchUserGetCurrent from "./Fetches/fetchUsers/fetchUsersGet/fetchUserGetCurrent";
 import fetchChangeUser from "./Fetches/fetchUsers/fetchChangeUser";
-import CheckIsTokenExpired from "./JsFunctions/CheckIsTokenExpired";
 import fetchChangeUserImage from "./Fetches/fetchUsers/fetchChangeUserImage";
 
 const ChangeUser = () => {
@@ -19,10 +18,9 @@ const ChangeUser = () => {
 
   useEffect(() => {
     const getUser = async () => {
-      CheckIsTokenExpired();
-      const token = localStorage.getItem("token");
-      const result = await fetchUserGetCurrent(token);
+      const result = await fetchUserGetCurrent();
       let userFromServer = await result.json();
+
       setEmail(userFromServer.email);
       setFirstName(userFromServer.firstName);
       setLastName(userFromServer.lastName);
@@ -60,15 +58,17 @@ const ChangeUser = () => {
         email,
         password.length === 0 ? "" : password
       );
-      if (result.status === 200) {
+      if (result.ok) {
         await changeImage();
         navigate("/");
         return;
-      } else if (result.status === 400) {
-        alert("Wrong input.");
-        return;
       } else {
-        alert("Error" + result.status);
+        let errorBody = await result.json();
+        alert(
+          errorBody.title +
+            "\n" +
+            (errorBody.detail !== undefined ? errorBody.detail : "")
+        );
         return;
       }
     };
@@ -82,10 +82,15 @@ const ChangeUser = () => {
 
     const processFetch = async () => {
       let result = await fetchChangeUserImage(image[0]);
-      if (result.status === 200) {
+      if (result.ok) {
         return;
       } else {
-        alert("Error " + result.status);
+        let errorBody = await result.json();
+        alert(
+          errorBody.title +
+            "\n" +
+            (errorBody.detail !== undefined ? errorBody.detail : "")
+        );
         return;
       }
     };

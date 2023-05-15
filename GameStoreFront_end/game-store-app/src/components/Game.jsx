@@ -15,7 +15,13 @@ const Game = () => {
   useEffect(() => {
     const getGame = async () => {
       const result = await fetchGame(GameId);
-      if (result.status !== 200) {
+      if (!result.ok) {
+        let errorBody = await result.json();
+        alert(
+          errorBody.title +
+            "\n" +
+            (errorBody.detail !== undefined ? errorBody.detail : "")
+        );
         navigate("/");
       }
       let resultJson = await result.json();

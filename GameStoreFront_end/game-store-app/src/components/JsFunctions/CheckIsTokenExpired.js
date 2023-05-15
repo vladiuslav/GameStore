@@ -8,7 +8,7 @@ const CheckIsTokenExpired = async () => {
 
   if (expiresTime < Date.now()) {
     let result = await fetchGenerateToken();
-    if (result.status === 200) {
+    if (result.ok) {
       let resultJson = await result.json();
 
       localStorage.setItem("token", resultJson.token);

@@ -42,7 +42,7 @@ const Header = () => {
     if (token !== null) {
       setIsLogged(true);
       const result = await fetchUserGetCurrent(token);
-      if (result.status === 200) {
+      if (result.ok) {
         let resultjson = await result.json();
         setUser(resultjson);
       }
