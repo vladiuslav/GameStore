@@ -31,17 +31,24 @@ namespace WebApi
 			CreateMap<UserFullViewModel,UserModel>()
 				.ReverseMap();
 
-			CreateMap<UserModel, UserViewModel>()
+            CreateMap<UserUpdateModel, UserModel>()
+                .ReverseMap();
+
+            CreateMap<UserModel, UserViewModel>()
 				.ForMember(
 				uvm => uvm.FullName,
 				um => um.MapFrom(u => u.FirstName + ' ' + u.LastName)
 				);
+
 			CreateMap<CommentModel, CommentViewModel>()
 				.ReverseMap();
+
             CreateMap<CommentModel, CommentCreateModel>()
 				.ReverseMap();
+
 			CreateMap<OrderModel,CreateOrderModel>()
 				.ReverseMap();
+
         }
 	}
 }

@@ -73,7 +73,8 @@ namespace GameStore.DataLogic.Data
             await unitOfWork.SaveAsync();
 
             var passwordWithSalt = getPasswordWithSalt();
-            unitOfWork.PassswordWithSaltRepository.AddAsync(passwordWithSalt);
+            await unitOfWork.PassswordWithSaltRepository.AddAsync(passwordWithSalt);
+
             await unitOfWork.UserRepository.AddAsync(
                 new User
             {

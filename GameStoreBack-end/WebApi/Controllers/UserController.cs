@@ -2,6 +2,7 @@
 using BLL.Interfaces;
 using BLL.Models;
 using DLL.Entities;
+using GameStore.WebAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -86,7 +87,7 @@ namespace WebApi.Controllers
             {
                 return null;
             }
-            
+
 
             var dbUser = await _userService.GetByIdAsync(storedToken.UserId);
 
@@ -215,35 +216,34 @@ namespace WebApi.Controllers
         [Authorize]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> Update([FromBody] UserFullViewModel user)
+        public async Task<IActionResult> Update([FromBody] UserUpdateModel user)
         {
-            if (ModelState.IsValid)
-            {
-                var email = User.Claims.First(claim => claim.Type == ClaimTypes.Email).Value;
-                var userByIdentity = await _userService.GetUserByEmailAsync(email);
-
-                var userByEmail = await _userService.GetUserByEmailAsync(user.Email);
-                if(userByEmail!= null && userByEmail.Id != userByIdentity.Id)
-                {
-                    return BadRequest();
-                }
-
-                var userByName = await _userService.GetUserByUserNameAsync(user.UserName);
-                if (userByName != null && userByName.Id != userByIdentity.Id)
-                {
-                    return BadRequest();
-                }
-
-                var userModel = _mapper.Map<UserModel>(user);
-                userModel.Id = userByIdentity.Id;
-                userModel.AvatarImageUrl = userByIdentity.AvatarImageUrl;
-                await _userService.UpdateAsync(userModel);
-                return Ok();
-            }
-            else
+            if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
+            var email = User.Claims.First(claim => claim.Type == ClaimTypes.Email).Value;
+            var userByIdentity = await _userService.GetUserByEmailAsync(email);
+
+            var userByEmail = await _userService.GetUserByEmailAsync(user.Email);
+            if (userByEmail != null && userByEmail.Id != userByIdentity.Id)
+            {
+                return BadRequest();
+            }
+
+            var userByName = await _userService.GetUserByUserNameAsync(user.UserName);
+            if (userByName != null && userByName.Id != userByIdentity.Id)
+            {
+                return BadRequest();
+            }
+
+            var userModel = _mapper.Map<UserModel>(user);
+
+            userModel.Id = userByIdentity.Id;
+            userModel.AvatarImageUrl = userByIdentity.AvatarImageUrl;
+            await _userService.UpdateAsync(userModel);
+            return Ok();
+
         }
 
         [HttpDelete("{id}")]
@@ -253,10 +253,7 @@ namespace WebApi.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             await _userService.DeleteByIdAsync(id);
-            var result = new JsonResult("");
-            result.StatusCode = 204;
-            result.ContentType = "application/json";
-            return result;
+            return NoContent();
         }
     }
 }

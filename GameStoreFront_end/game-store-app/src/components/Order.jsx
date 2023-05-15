@@ -61,7 +61,7 @@ const Order = () => {
         <div>Email</div>
         <input
           className="order-input"
-          type="text"
+          type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />

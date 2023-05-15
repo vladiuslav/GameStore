@@ -70,7 +70,7 @@ const ChangeGame = () => {
         GameId,
       });
       if (result.status === 200) {
-        changeImage();
+        await changeImage();
         alert("Game chenged");
         navigate("/Game/" + GameId);
         return;
@@ -88,7 +88,7 @@ const ChangeGame = () => {
     processFetch();
   };
 
-  const changeImage = (e) => {
+  const changeImage = async () => {
     if (image === null || image.length < 1) {
       return;
     }

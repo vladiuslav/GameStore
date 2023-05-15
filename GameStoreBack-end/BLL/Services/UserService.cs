@@ -67,13 +67,21 @@ namespace BLL.Services
         public async Task UpdateAsync(UserModel model)
         {
             var user = _mapper.Map<User>(model);
-            var salt = GenerateSalt(10);
-            var passwordWithSalt = (await _unitOfWork.PassswordWithSaltRepository.GetAllWithDetailsAsync()).First(ps => ps.UserId == user.Id);
+            if(model.Password!= null) {
+                var salt = GenerateSalt(10);
+                var passwordWithSalt = (await _unitOfWork.PassswordWithSaltRepository.GetAllWithDetailsAsync()).First(ps => ps.UserId == user.Id);
 
-            passwordWithSalt.Salt = salt;
-            passwordWithSalt.Password = HashPassword(model.Password, salt);
+                passwordWithSalt.Salt = salt;
+                passwordWithSalt.Password = HashPassword(model.Password, salt);
 
-            await _unitOfWork.PassswordWithSaltRepository.UpdateAsync(passwordWithSalt);
+                await _unitOfWork.PassswordWithSaltRepository.UpdateAsync(passwordWithSalt);
+                user.PasswordWithSalt = passwordWithSalt;
+            }
+            else
+            {
+                user.PasswordWithSalt= _unitOfWork.UserRepository.GetByIdWithDetailsAsync(user.Id).Result.PasswordWithSalt;
+            }
+            
             await _unitOfWork.UserRepository.UpdateAsync(user);
             await _unitOfWork.SaveAsync();
         }

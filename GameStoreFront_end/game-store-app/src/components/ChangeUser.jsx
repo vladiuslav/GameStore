@@ -1,22 +1,21 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import React from "react";
-import ChangeUserImage from "./userPageComponents/ChangeUserImage";
 import fetchUserGetCurrent from "./Fetches/fetchUsers/fetchUsersGet/fetchUserGetCurrent";
 import fetchChangeUser from "./Fetches/fetchUsers/fetchChangeUser";
-import FlashBlock from "./FlashBlock";
 import CheckIsTokenExpired from "./JsFunctions/CheckIsTokenExpired";
+import fetchChangeUserImage from "./Fetches/fetchUsers/fetchChangeUserImage";
 
 const ChangeUser = () => {
   const navigate = useNavigate();
-  const [isShowErrorBlock, setIsShowErrorBlock] = useState(false);
-  const [errorText, setErrorText] = useState("");
+  const [isShowEmptyError, setIsShowEmptyError] = useState(false);
 
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
   const [userName, setUserName] = useState("");
+  const [image, setImage] = useState(null);
 
   useEffect(() => {
     const getUser = async () => {
@@ -27,7 +26,6 @@ const ChangeUser = () => {
       setEmail(userFromServer.email);
       setFirstName(userFromServer.firstName);
       setLastName(userFromServer.lastName);
-      setPassword(userFromServer.password);
       setUserName(userFromServer.userName);
     };
     getUser();
@@ -36,59 +34,77 @@ const ChangeUser = () => {
   const changeUser = (e) => {
     e.preventDefault();
 
-    if (
-      firstName.length < 3 ||
-      lastName.length < 3 ||
-      userName.length < 3 ||
-      email.length < 3
-    ) {
-      setErrorText("Some input is empty or have less then 3 letters");
-      setIsShowErrorBlock(true);
+    if (firstName.length < 3) {
+      setIsShowEmptyError(true);
       return;
     }
-    if (password.length < 8) {
-      setErrorText("Input is empty or have less 1then 8 letters");
-      setIsShowErrorBlock(true);
+    if (lastName.length < 3) {
+      setIsShowEmptyError(true);
+      return;
+    }
+    if (email.length < 3) {
+      setIsShowEmptyError(true);
+      return;
+    }
+
+    if (password.length > 0 && password.length < 8) {
+      setIsShowEmptyError(true);
       return;
     }
 
     const processFetch = async () => {
-      let result = await fetchChangeUser({
+      let result = await fetchChangeUser(
         firstName,
         lastName,
         userName,
         email,
-        password,
-      });
+        password.length === 0 ? "" : password
+      );
       if (result.status === 200) {
+        await changeImage();
         navigate("/");
         return;
       } else if (result.status === 400) {
-        setErrorText("Wrong input.");
-        setIsShowErrorBlock(true);
+        alert("Wrong input.");
         return;
       } else {
-        setErrorText("Error" + result.status);
-        setIsShowErrorBlock(true);
+        alert("Error" + result.status);
         return;
       }
     };
     processFetch();
   };
+
+  const changeImage = async () => {
+    if (image === null || image.length < 1) {
+      return;
+    }
+
+    const processFetch = async () => {
+      let result = await fetchChangeUserImage(image[0]);
+      if (result.status === 200) {
+        return;
+      } else {
+        alert("Error " + result.status);
+        return;
+      }
+    };
+    processFetch();
+  };
+
   //render
   return (
     <div className="dark-background">
-      <div
-        onClick={(e) => {
-          e.preventDefault();
-          setIsShowErrorBlock(false);
-        }}
-      >
-        <FlashBlock massage={errorText} isShow={isShowErrorBlock} />
-      </div>
       <h1>Change User</h1>
       <div>
         <p>First name</p>
+        {isShowEmptyError && firstName.length < 3 ? (
+          <p className="error-text">
+            First name empty or have less then 3 letters
+          </p>
+        ) : (
+          <></>
+        )}
         <input
           type="text"
           placeholder="First name"
@@ -98,6 +114,13 @@ const ChangeUser = () => {
       </div>
       <div>
         <p>Last name</p>
+        {isShowEmptyError && lastName.length < 3 ? (
+          <p className="error-text">
+            Last name empty or have less then 3 letters
+          </p>
+        ) : (
+          <></>
+        )}
         <input
           type="text"
           placeholder="Last name"
@@ -107,6 +130,13 @@ const ChangeUser = () => {
       </div>
       <div>
         <p>User name</p>
+        {isShowEmptyError && userName.length < 3 ? (
+          <p className="error-text">
+            User name empty or have less then 3 letters
+          </p>
+        ) : (
+          <></>
+        )}
         <input
           type="text"
           placeholder="User name"
@@ -116,8 +146,13 @@ const ChangeUser = () => {
       </div>
       <div>
         <p>Email</p>
+        {isShowEmptyError && email.length < 3 ? (
+          <p className="error-text">Email empty or have less then 3 letters</p>
+        ) : (
+          <></>
+        )}
         <input
-          type="text"
+          type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -125,18 +160,27 @@ const ChangeUser = () => {
       </div>
       <div>
         <p>Password</p>
+        {isShowEmptyError && password.length < 8 ? (
+          <p className="error-text">
+            Password empty or have less then 8 letters
+          </p>
+        ) : (
+          <></>
+        )}
         <input
-          type="text"
+          type="password"
           placeholder="Password"
-          value={"*".repeat(password.length)}
+          value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
-
+      <div>
+        <label>Image of game</label>
+        <input type="file" onChange={(e) => setImage(e.target.files)} />
+      </div>
       <button className="green-button" onClick={(e) => changeUser(e)}>
         Change user
       </button>
-      <ChangeUserImage />
     </div>
   );
 };

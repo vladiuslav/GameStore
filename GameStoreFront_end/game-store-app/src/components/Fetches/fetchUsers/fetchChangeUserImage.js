@@ -1,4 +1,8 @@
-const fetchChangeUserImage = async (file, token) => {
+import CheckIsTokenExpired from "../../JsFunctions/CheckIsTokenExpired";
+
+const fetchChangeUserImage = async (file) => {
+  CheckIsTokenExpired();
+  const token = localStorage.getItem("token");
   var myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + token);
 

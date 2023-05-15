@@ -130,7 +130,7 @@ const SignIn = (props) => {
           )}
           <input
             className="user-form-input"
-            type="text"
+            type="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -147,9 +147,9 @@ const SignIn = (props) => {
           )}
           <input
             className="user-form-input"
-            type="text"
+            type="password"
             placeholder="Password"
-            value={"*".repeat(password.length)}
+            value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>

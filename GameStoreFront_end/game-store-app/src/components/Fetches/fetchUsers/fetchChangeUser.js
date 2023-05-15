@@ -1,12 +1,12 @@
 import CheckIsTokenExpired from "../../JsFunctions/CheckIsTokenExpired";
 
-const fetchChangeUser = async ({
+const fetchChangeUser = async (
   firstName,
   lastName,
   userName,
   email,
-  password,
-}) => {
+  password
+) => {
   var myHeaders = new Headers();
   CheckIsTokenExpired();
   const token = localStorage.getItem("token");
@@ -21,6 +21,7 @@ const fetchChangeUser = async ({
     email: email,
     password: password,
   });
+  console.log(raw);
 
   var requestOptions = {
     method: "PUT",
