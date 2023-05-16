@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using BLL.Interfaces;
 using BLL.Services;
-using GameStore.WebAPI.Models;
+using GameStore.WebAPI.Models.CommentModels;
+using GameStore.WebAPI.Models.UserModels;
 using GameStrore.BusinessLogic.Interfaces;
 using GameStrore.BusinessLogic.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using WebApi.Models;
 
 namespace GameStore.WebAPI.Controllers
 {
@@ -143,7 +143,7 @@ namespace GameStore.WebAPI.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> UpdateComment(UpdateCommentModel comment)
+        public async Task<IActionResult> UpdateComment(CommentUpdateModel comment)
         {
 
             var commentModel = await _commentService.GetByIdAsync(comment.Id);

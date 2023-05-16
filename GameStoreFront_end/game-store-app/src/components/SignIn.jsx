@@ -42,6 +42,7 @@ const SignIn = (props) => {
         email,
         password,
       });
+      console.log(result);
       if (result.ok) {
         alert("Account created");
         navigate("/");

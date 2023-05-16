@@ -1,11 +1,7 @@
 ﻿using DLL.Data;
 using DLL.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace GameStore.DataLogic.Data
 {
@@ -25,10 +21,12 @@ namespace GameStore.DataLogic.Data
             await unitOfWork.GenreRepository.AddAsync(new Genre { Name = "Races2", ParentGenreId = 4 });
             await unitOfWork.SaveAsync();
             await unitOfWork.GameRepository.AddAsync(
-                new Game { Name = "Game 1",
+                new Game
+                {
+                    Name = "Game 1",
                     Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
                     Price = 10.99M,
-                    Genres=unitOfWork.GenreRepository.GetAllAsync().Result.Take(3).ToList(),
+                    Genres = unitOfWork.GenreRepository.GetAllAsync().Result.Take(3).ToList(),
                 });
             await unitOfWork.GameRepository.AddAsync(
                 new Game
@@ -77,15 +75,14 @@ namespace GameStore.DataLogic.Data
 
             await unitOfWork.UserRepository.AddAsync(
                 new User
-            {
-                FirstName = "Name1",
-                LastName = "LastName1",
-                UserName = "UserName1",
-                Email = "Email1@mail.com",
-                PasswordSaltId = 1,
-                PasswordWithSalt = passwordWithSalt
-
-            });
+                {
+                    FirstName = "Name1",
+                    LastName = "LastName1",
+                    UserName = "UserName1",
+                    Email = "Email1@mail.com",
+                    PasswordWithSaltId = 1,
+                    PasswordWithSalt = passwordWithSalt
+                });
             await unitOfWork.SaveAsync();
 
         }

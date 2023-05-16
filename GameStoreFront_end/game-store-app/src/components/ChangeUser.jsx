@@ -83,6 +83,12 @@ const ChangeUser = () => {
     const processFetch = async () => {
       let result = await fetchChangeUserImage(image[0]);
       if (result.ok) {
+        alert("Info changed." + "\n" + "now Log in with new info");
+        localStorage.removeItem("token");
+        localStorage.removeItem("refresh_token");
+        localStorage.removeItem("expiredTokenTime");
+        localStorage.removeItem("email");
+        navigate("/");
         return;
       } else {
         let errorBody = await result.json();

@@ -61,14 +61,14 @@ const ChangeGame = () => {
       return;
     }
     const processFetch = async () => {
-      let result = await fetchChangeGame({
+      let result = await fetchChangeGame(
         name,
         description,
         price,
         checkedState,
         genres,
-        GameId,
-      });
+        GameId
+      );
       if (result.ok) {
         await changeImage();
         alert("Game chenged");

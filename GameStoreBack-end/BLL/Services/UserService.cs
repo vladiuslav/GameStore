@@ -25,9 +25,8 @@ namespace BLL.Services
             var salt = GenerateSalt(10);
 
             var passwordWithSalt = new PasswordWithSalt { Salt = salt, Password = HashPassword(model.Password, salt), User = user };
-            await _unitOfWork.PassswordWithSaltRepository.AddAsync(passwordWithSalt);
-
             user.PasswordWithSalt = passwordWithSalt;
+
             await _unitOfWork.UserRepository.AddAsync(user);
             await _unitOfWork.SaveAsync();
         }

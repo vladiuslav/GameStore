@@ -2,7 +2,7 @@
 using BLL.Interfaces;
 using BLL.Models;
 using DLL.Entities;
-using GameStore.WebAPI.Models;
+using GameStore.WebAPI.Models.UserModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -193,7 +193,7 @@ namespace WebApi.Controllers
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> CreateUser(UserFullViewModel user)
+        public async Task<IActionResult> CreateUser(UserCreateModel user)
         {
             var userByEmail = await _userService.GetUserByEmailAsync(user.Email);
             if (userByEmail != null)
@@ -231,7 +231,7 @@ namespace WebApi.Controllers
         [Authorize]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> Update([FromBody] UserUpdateModel user)
+        public async Task<IActionResult> Update(UserUpdateModel user)
         {
             var email = User.Claims.First(claim => claim.Type == ClaimTypes.Email).Value;
             var userByIdentity = await _userService.GetUserByEmailAsync(email);

@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using BLL.Interfaces;
 using BLL.Models;
-using GameStore.WebAPI.Models;
+using GameStore.WebAPI.Models.CommentModels;
+using GameStore.WebAPI.Models.GameModels;
 using GameStrore.BusinessLogic.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using WebApi.Models;
 
 namespace WebApi.Controllers
 {
@@ -68,15 +68,14 @@ namespace WebApi.Controllers
             }
 
             var commentsFiltered = await _commentService.GetCommentsByGameIdAsync(id);
-            var comments = _mapper.Map<IEnumerable<CommentViewModel>>(commentsFiltered);
-            return Ok(comments);
+            return Ok(commentsFiltered);
 
         }
 
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> CreateGame(GameViewModel game)
+        public async Task<IActionResult> CreateGame(GameCreateModel game)
         {
             if((await _gameService.GetByGameNameAsync(game.Name)) != null)
             {
@@ -93,19 +92,19 @@ namespace WebApi.Controllers
                 game.Price = "0";
             }
             var gameModel = _mapper.Map<GameModel>(game);
-            game.ImageUrl = null;
+            gameModel.ImageUrl = null;
             await _gameService.AddAsync(gameModel);
 
             var lastGame = _gameService.GetAllAsync().Result.Last();
             return Ok(lastGame);
-       
+            
         }
 
         [HttpPut]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> Update([FromBody] GameViewModel game)
+        public async Task<IActionResult> Update(GameUpdateModel game)
         {
             var gameById = await _gameService.GetByIdAsync(game.Id);
             if (gameById == null)

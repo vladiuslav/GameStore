@@ -2,6 +2,7 @@
 using BLL.Interfaces;
 using BLL.Models;
 using DLL.Entities;
+using GameStore.WebAPI.Models.GenreModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
@@ -47,7 +48,7 @@ namespace WebApi.Controllers
         [HttpPost]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> CreateGenre(GenreViewModel genre)
+        public async Task<IActionResult> CreateGenre(GenreCreateModel genre)
         {
             var genreByName = await _genreService.GetByGenreNameAsync(genre.Name);
             if (genreByName != null)
@@ -69,7 +70,7 @@ namespace WebApi.Controllers
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> Update([FromBody] GenreViewModel genre)
+        public async Task<IActionResult> Update(GenreUpdateModel genre)
         {
             if ((await _genreService.GetByIdAsync(genre.Id)) == null)
             {
@@ -95,6 +96,10 @@ namespace WebApi.Controllers
                 return BadRequest(problem);
             }
 
+            if (genre.GamesIds.Count == 0)
+            {
+                genre.GamesIds = _genreService.GetByIdAsync(genre.Id).Result.GamesIds;
+            }
             var genreModel = _mapper.Map<GenreModel>(genre);
             await _genreService.UpdateAsync(genreModel);
             return Ok(genre);

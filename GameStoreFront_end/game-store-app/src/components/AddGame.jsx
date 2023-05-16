@@ -52,13 +52,13 @@ const AddGame = () => {
     }
 
     const processFetch = async () => {
-      let result = await fetchAddGame({
+      let result = await fetchAddGame(
         name,
         description,
         price,
         checkedState,
-        genres,
-      });
+        genres
+      );
 
       if (result.ok) {
         let resultJson = await result.json();

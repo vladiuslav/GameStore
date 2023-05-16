@@ -1,6 +1,7 @@
 ﻿using DLL.Entities;
 using GameStore.DataLogic.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -31,11 +32,13 @@ namespace DLL.Data
 
             modelBuilder.Entity<Genre>()
                 .HasMany(g => g.Games)
-                .WithMany(g => g.Genres);
-
+            .WithMany(g => g.Genres);
             modelBuilder.Entity<User>()
                 .HasOne(u => u.PasswordWithSalt)
-                .WithOne(p => p.User);
+                .WithOne(p => p.User)
+                .HasForeignKey<PasswordWithSalt>(p=>p.UserId)
+                .IsRequired();
+            
         }
         
     }
