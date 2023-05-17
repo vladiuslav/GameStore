@@ -34,6 +34,7 @@ const Header = () => {
     setIsLogged(false);
     checkIsLogged();
     navigate("/");
+    window.location.reload(); // check is this work
   };
 
   const checkIsLogged = async () => {

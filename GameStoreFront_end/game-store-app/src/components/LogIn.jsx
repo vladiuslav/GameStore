@@ -1,9 +1,12 @@
 import React from "react";
 import { useState } from "react";
 import fetchUserLogin from "./Fetches/fetchUsers/fetchUserLogin";
+import { useNavigate } from "react-router-dom";
 
 const LogIn = (props) => {
+  const navigate = useNavigate();
   const [isShowEmptyError, setIsShowEmptyError] = useState(false);
+  const [isShowEmailValidError, setIsShowEmailValidError] = useState(false);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -11,10 +14,12 @@ const LogIn = (props) => {
   const loginAccount = async (e) => {
     e.preventDefault();
 
-    if (email.length < 3) {
-      setIsShowEmptyError(true);
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+    if (!emailRegex.test(email)) {
+      setIsShowEmailValidError(true);
       return;
     }
+
     if (password.length < 8) {
       setIsShowEmptyError(true);
       return;
@@ -30,6 +35,7 @@ const LogIn = (props) => {
         localStorage.setItem("email", email);
         props.checkIsLogged();
         props.setIsOpenForm();
+        navigate("/User");
         return;
       } else {
         let errorBody = await result.json();
@@ -59,6 +65,11 @@ const LogIn = (props) => {
           <div>Email</div>
           {isShowEmptyError && email.length < 3 ? (
             <p className="error-text">Email must be more then 3 characters.</p>
+          ) : (
+            <></>
+          )}
+          {isShowEmailValidError ? (
+            <p className="error-text">Email invalid.</p>
           ) : (
             <></>
           )}

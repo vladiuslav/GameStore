@@ -8,6 +8,7 @@ import fetchChangeUserImage from "./Fetches/fetchUsers/fetchChangeUserImage";
 const ChangeUser = () => {
   const navigate = useNavigate();
   const [isShowEmptyError, setIsShowEmptyError] = useState(false);
+  const [isShowEmailValidError, setIsShowEmailValidError] = useState(false);
 
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -40,8 +41,10 @@ const ChangeUser = () => {
       setIsShowEmptyError(true);
       return;
     }
-    if (email.length < 3) {
-      setIsShowEmptyError(true);
+
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+    if (!emailRegex.test(email)) {
+      setIsShowEmailValidError(true);
       return;
     }
 
@@ -60,7 +63,13 @@ const ChangeUser = () => {
       );
       if (result.ok) {
         await changeImage();
+        alert("Info changed." + "\n" + "now Log in with new info");
+        localStorage.removeItem("token");
+        localStorage.removeItem("refresh_token");
+        localStorage.removeItem("expiredTokenTime");
+        localStorage.removeItem("email");
         navigate("/");
+        window.location.reload();
         return;
       } else {
         let errorBody = await result.json();
@@ -83,12 +92,6 @@ const ChangeUser = () => {
     const processFetch = async () => {
       let result = await fetchChangeUserImage(image[0]);
       if (result.ok) {
-        alert("Info changed." + "\n" + "now Log in with new info");
-        localStorage.removeItem("token");
-        localStorage.removeItem("refresh_token");
-        localStorage.removeItem("expiredTokenTime");
-        localStorage.removeItem("email");
-        navigate("/");
         return;
       } else {
         let errorBody = await result.json();
@@ -159,6 +162,11 @@ const ChangeUser = () => {
         <p>Email</p>
         {isShowEmptyError && email.length < 3 ? (
           <p className="error-text">Email empty or have less then 3 letters</p>
+        ) : (
+          <></>
+        )}
+        {isShowEmailValidError ? (
+          <p className="error-text">Email invalid.</p>
         ) : (
           <></>
         )}

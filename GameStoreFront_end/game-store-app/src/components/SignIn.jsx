@@ -6,6 +6,7 @@ import fetchUserRegestration from "./Fetches/fetchUsers/fetchUserRegestration";
 const SignIn = (props) => {
   const navigate = useNavigate();
   const [isShowEmptyError, setIsShowEmptyError] = useState(false);
+  const [isShowEmailValidError, setIsShowEmailValidError] = useState(false);
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -24,8 +25,10 @@ const SignIn = (props) => {
       setIsShowEmptyError(true);
       return;
     }
-    if (email.length < 3) {
-      setIsShowEmptyError(true);
+
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+    if (!emailRegex.test(email)) {
+      setIsShowEmailValidError(true);
       return;
     }
 
@@ -42,7 +45,6 @@ const SignIn = (props) => {
         email,
         password,
       });
-      console.log(result);
       if (result.ok) {
         alert("Account created");
         navigate("/");
@@ -128,6 +130,11 @@ const SignIn = (props) => {
             <p className="error-text">
               Email empty or have less then 3 letters
             </p>
+          ) : (
+            <></>
+          )}
+          {isShowEmailValidError ? (
+            <p className="error-text">Email invalid.</p>
           ) : (
             <></>
           )}

@@ -1,12 +1,6 @@
-﻿using AutoMapper;
-using BLL.Interfaces;
-using BLL.Models;
-using System.Net;
+﻿using BLL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
 using WebApi.Models;
-using System.IO;
-using DLL.Entities;
 
 namespace WebApi.Controllers
 {
@@ -31,6 +25,16 @@ namespace WebApi.Controllers
             {
                 var game = await _gameService.GetByIdAsync(gameId);
 
+                if (game == null)
+                {
+                    var problem = new ProblemDetails
+                    {
+                        Title = "Game not found",
+                        Detail = $"The game with ID {gameId} does not exist.",
+                        Status = 404,
+                    };
+                    return NotFound(problem);
+                }
                 // take file type
                 string fileName = fileModel.UploadedFile.FileName;
                 int indexOfLastDot = fileName.LastIndexOf('.');
@@ -42,15 +46,41 @@ namespace WebApi.Controllers
                 // delete previous image if exist
                 if (game.ImageUrl != null)
                 {
-                    System.IO.File.Delete(_appEnvironment.WebRootPath + game.ImageUrl);
+                    try
+                    {
+                        System.IO.File.Delete(_appEnvironment.WebRootPath + game.ImageUrl);
+                    }
+                    catch
+                    {
+                        var problem = new ProblemDetails
+                        {
+                            Title = "Error deleting image",
+                            Detail = $"Image replacing error.",
+                            Status = 400,
+                        };
+                        return BadRequest(problem);
+                    }
                 }
 
-                // save Files in cataloge wwwroot
-                using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
+                try
                 {
-                    await fileModel.UploadedFile.CopyToAsync(fileStream);
-                    game.ImageUrl = game.Id + filetype;
-                    await _gameService.UpdateAsync(game);
+                    // save Files in cataloge wwwroot
+                    using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
+                    {
+                        await fileModel.UploadedFile.CopyToAsync(fileStream);
+                        game.ImageUrl = game.Id + filetype;
+                        await _gameService.UpdateAsync(game);
+                    }
+                }
+                catch
+                {
+                    var problem = new ProblemDetails
+                    {
+                        Title = "Error deleting image",
+                        Detail = $"Image creating error.",
+                        Status = 400,
+                    };
+                    return BadRequest(problem);
                 }
             }
             return Ok();
@@ -62,13 +92,30 @@ namespace WebApi.Controllers
             try
             {
                 var game = await _gameService.GetByIdAsync(gameId);
+                if (game == null)
+                {
+                    var problem = new ProblemDetails
+                    {
+                        Title = "Game not found",
+                        Detail = $"The game with ID {gameId} does not exist.",
+                        Status = 404,
+                    };
+                    return NotFound(problem);
+                }
+
                 game.ImageUrl = null;
                 await _gameService.UpdateAsync(game);
                 return NoContent();
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                var problem = new ProblemDetails
+                {
+                    Title = "Error deleting image",
+                    Detail = $"Image error: {ex.Message}",
+                    Status = 400,
+                };
+                return BadRequest(problem);
             }
         }
     }
