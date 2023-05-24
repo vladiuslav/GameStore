@@ -4,6 +4,7 @@ using GameStore.DataLogic.Data;
 using GameStore.DataLogic.Interafeces;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -41,15 +42,16 @@ namespace DLL.Data
             CartRepository = cartRepository;
             OrderRepository = orderRepository;
 
-            if (this.GameRepository.GetAllAsync().Result.Count() == 0)
-            {
-                SeedData.CreateDataAsync(this);
-            }
+            SeedData.CreateData(this);            
         }
         public async Task SaveAsync()
         {
             await _context.SaveChangesAsync();
         }
 
+        public void Save()
+        {
+            _context.SaveChanges();
+        }
     }
 }

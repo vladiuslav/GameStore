@@ -135,12 +135,15 @@ namespace WebApi.Controllers
                 };
                 return Unauthorized(problem);
             }
-
-            var tokenValue = await GenerateJWTTokenAsync(user, null);
+            if (loginVM.RememberMe == null)
+            {
+                loginVM.RememberMe = false;
+            }
+            var tokenValue = await GenerateJWTTokenAsync(user, null, loginVM.RememberMe);
             return Ok(tokenValue);
         }
 
-        private async Task<AuthResultViewModel> GenerateJWTTokenAsync(UserModel user, RefreshToken rToken)
+        private async Task<AuthResultViewModel> GenerateJWTTokenAsync(UserModel user, RefreshToken rToken,bool rememberMe=false)
         {
             var authClaims = new List<Claim>()
             {
@@ -175,7 +178,7 @@ namespace WebApi.Controllers
                 IsRevoked = false,
                 UserId = user.Id,
                 DateAdded = DateTime.UtcNow,
-                DateExpire = DateTime.UtcNow.AddMonths(6),
+                DateExpire = rememberMe?DateTime.UtcNow.AddMonths(6): DateTime.UtcNow.AddHours(1),
                 Token = Guid.NewGuid().ToString() + "-" + Guid.NewGuid().ToString()
             };
 
@@ -185,7 +188,8 @@ namespace WebApi.Controllers
             {
                 Token = jwtToken,
                 RefreshToken = refreshToken.Token,
-                ExpiresAt = token.ValidTo
+                ExpiresAt = token.ValidTo,
+                RefreshTokenExpiresAt = refreshToken.DateExpire
             };
 
             return response;

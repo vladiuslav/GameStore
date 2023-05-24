@@ -30,6 +30,7 @@ const Header = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("expiredTokenTime");
+    localStorage.removeItem("refreshTokenExpiresionTime");
     localStorage.removeItem("email");
     setIsLogged(false);
     checkIsLogged();

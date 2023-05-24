@@ -10,6 +10,7 @@ const LogIn = (props) => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
 
   const loginAccount = async (e) => {
     e.preventDefault();
@@ -26,12 +27,16 @@ const LogIn = (props) => {
     }
 
     const processFetch = async () => {
-      let result = await fetchUserLogin({ email, password });
+      let result = await fetchUserLogin({ email, password, rememberMe });
       if (result.ok) {
         let resultJson = await result.json();
         localStorage.setItem("token", resultJson.token);
         localStorage.setItem("refresh_token", resultJson.refreshToken);
         localStorage.setItem("expiredTokenTime", resultJson.expiresAt);
+        localStorage.setItem(
+          "refreshTokenExpiresionTime",
+          resultJson.refreshTokenExpiresAt
+        );
         localStorage.setItem("email", email);
         props.checkIsLogged();
         props.setIsOpenForm();
@@ -96,6 +101,14 @@ const LogIn = (props) => {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        <div className="user-form-part">
+          <div>Remember me</div>
+          <input
+            type="checkbox"
+            value={rememberMe}
+            onChange={(e) => setRememberMe(!rememberMe)}
           />
         </div>
         <div className="user-form-part">

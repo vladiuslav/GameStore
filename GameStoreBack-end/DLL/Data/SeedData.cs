@@ -1,5 +1,6 @@
 ﻿using DLL.Data;
 using DLL.Entities;
+using System.Diagnostics.SymbolStore;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -7,87 +8,95 @@ namespace GameStore.DataLogic.Data
 {
     public class SeedData
     {
-        public static async Task CreateDataAsync(UnitOfWork unitOfWork)
+        public static readonly object locker = new object();
+        public static void CreateData(UnitOfWork unitOfWork)
         {
-            await unitOfWork.GenreRepository.AddAsync(new Genre { Name = "Strategy" });
-            await unitOfWork.GenreRepository.AddAsync(new Genre { Name = "Rpg" });
-            await unitOfWork.GenreRepository.AddAsync(new Genre { Name = "Sports" });
-            await unitOfWork.GenreRepository.AddAsync(new Genre { Name = "Races" });
-            await unitOfWork.GenreRepository.AddAsync(new Genre { Name = "Action" });
-            await unitOfWork.GenreRepository.AddAsync(new Genre { Name = "Adventure" });
-            await unitOfWork.GenreRepository.AddAsync(new Genre { Name = "Puzzle & Skill" });
-            await unitOfWork.GenreRepository.AddAsync(new Genre { Name = "Other" });
-            await unitOfWork.GenreRepository.AddAsync(new Genre { Name = "Rpg2", ParentGenreId = 2 });
-            await unitOfWork.GenreRepository.AddAsync(new Genre { Name = "Races2", ParentGenreId = 4 });
-            await unitOfWork.SaveAsync();
-            await unitOfWork.GameRepository.AddAsync(
-                new Game
+            lock (locker)
+            {   
+                if (!(unitOfWork.GameRepository.GetAllAsync().Result.Count() == 0 &&
+                unitOfWork.GenreRepository.GetAllAsync().Result.Count() == 0 &&
+                unitOfWork.UserRepository.GetAllAsync().Result.Count() == 0
+                ))
                 {
-                    Name = "Game 1",
-                    Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                    Price = 10.99M,
-                    Genres = unitOfWork.GenreRepository.GetAllAsync().Result.Take(3).ToList(),
-                });
-            await unitOfWork.GameRepository.AddAsync(
-                new Game
-                {
-                    Name = "Game 1",
-                    Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                    Price = 12.99M,
-                    Genres = unitOfWork.GenreRepository.GetAllAsync().Result.Take(1).ToList(),
-                });
-            await unitOfWork.GameRepository.AddAsync(
-                new Game
-                {
-                    Name = "Game 2",
-                    Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                    Price = 13M,
-                    Genres = unitOfWork.GenreRepository.GetAllAsync().Result.Take(3).ToList(),
-                });
-            await unitOfWork.GameRepository.AddAsync(
-                new Game
-                {
-                    Name = "Game 3",
-                    Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                    Price = 19M,
-                    Genres = unitOfWork.GenreRepository.GetAllAsync().Result.Take(4).ToList(),
-                });
-            await unitOfWork.GameRepository.AddAsync(
-                new Game
-                {
-                    Name = "Game 4",
-                    Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                    Price = 22.12M,
-                    Genres = unitOfWork.GenreRepository.GetAllAsync().Result.Take(3).ToList(),
-                });
-            await unitOfWork.GameRepository.AddAsync(
-                new Game
-                {
-                    Name = "Game 5",
-                    Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                    Price = 4.99M,
-                    Genres = unitOfWork.GenreRepository.GetAllAsync().Result.Take(2).ToList(),
-                });
-            await unitOfWork.SaveAsync();
+                    return;
+                }
+                unitOfWork.GenreRepository.AddAsync(new Genre { Name = "Strategy" });
+                unitOfWork.GenreRepository.AddAsync(new Genre { Name = "Rpg" });
+                unitOfWork.GenreRepository.AddAsync(new Genre { Name = "Sports" });
+                unitOfWork.GenreRepository.AddAsync(new Genre { Name = "Races" });
+                unitOfWork.GenreRepository.AddAsync(new Genre { Name = "Action" });
+                unitOfWork.GenreRepository.AddAsync(new Genre { Name = "Adventure" });
+                unitOfWork.GenreRepository.AddAsync(new Genre { Name = "Puzzle & Skill" });
+                unitOfWork.GenreRepository.AddAsync(new Genre { Name = "Other" });
+                unitOfWork.GenreRepository.AddAsync(new Genre { Name = "Rpg2", ParentGenreId = 2 });
+                unitOfWork.GenreRepository.AddAsync(new Genre { Name = "Races2", ParentGenreId = 4 });
+                unitOfWork.Save();
+                unitOfWork.GameRepository.AddAsync(
+                   new Game
+                   {
+                       Name = "Game 1",
+                       Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                       Price = 10.99M,
+                       Genres = unitOfWork.GenreRepository.GetAllAsync().Result.Take(3).ToList(),
+                   });
+                unitOfWork.GameRepository.AddAsync(
+                   new Game
+                   {
+                       Name = "Game 1",
+                       Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                       Price = 12.99M,
+                       Genres = unitOfWork.GenreRepository.GetAllAsync().Result.Take(1).ToList(),
+                   });
+                unitOfWork.GameRepository.AddAsync(
+                   new Game
+                   {
+                       Name = "Game 2",
+                       Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                       Price = 13M,
+                       Genres = unitOfWork.GenreRepository.GetAllAsync().Result.Take(3).ToList(),
+                   });
+                unitOfWork.GameRepository.AddAsync(
+                   new Game
+                   {
+                       Name = "Game 3",
+                       Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                       Price = 19M,
+                       Genres = unitOfWork.GenreRepository.GetAllAsync().Result.Take(4).ToList(),
+                   });
+                unitOfWork.GameRepository.AddAsync(
+                   new Game
+                   {
+                       Name = "Game 4",
+                       Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                       Price = 22.12M,
+                       Genres = unitOfWork.GenreRepository.GetAllAsync().Result.Take(3).ToList(),
+                   });
+                unitOfWork.GameRepository.AddAsync(
+                   new Game
+                   {
+                       Name = "Game 5",
+                       Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                       Price = 4.99M,
+                       Genres = unitOfWork.GenreRepository.GetAllAsync().Result.Take(2).ToList(),
+                   });
+                unitOfWork.Save();
+                var passwordWithSalt = getPasswordWithSalt();
+                unitOfWork.PassswordWithSaltRepository.AddAsync(passwordWithSalt);
 
-            var passwordWithSalt = getPasswordWithSalt();
-            await unitOfWork.PassswordWithSaltRepository.AddAsync(passwordWithSalt);
-
-            await unitOfWork.UserRepository.AddAsync(
-                new User
-                {
-                    FirstName = "Name1",
-                    LastName = "LastName1",
-                    UserName = "UserName1",
-                    Email = "Email1@mail.com",
-                    PasswordWithSaltId = 1,
-                    PasswordWithSalt = passwordWithSalt
-                });
-            await unitOfWork.SaveAsync();
-
+                unitOfWork.UserRepository.AddAsync(
+                   new User
+                   {
+                       FirstName = "Name1",
+                       LastName = "LastName1",
+                       UserName = "UserName1",
+                       Email = "Email1@mail.com",
+                       PasswordWithSaltId = 1,
+                       PasswordWithSalt = passwordWithSalt
+                   });
+                unitOfWork.Save();
+                
+            }
         }
-
-
         private static PasswordWithSalt getPasswordWithSalt()
         {
             var random = RandomNumberGenerator.Create();
