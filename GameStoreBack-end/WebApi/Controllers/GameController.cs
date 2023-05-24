@@ -62,27 +62,29 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(201)]
+        [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> CreateGame(GameViewModel game)
         {
             if (!ModelState.IsValid)
             {
-
                 return BadRequest();
-
             }
             
             if((await _gameService.GetByGameNameAsync(game.Name)) != null)
             {
                 return BadRequest();
             }
-
+            if (string.IsNullOrEmpty(game.Price))
+            {
+                game.Price = "0";
+            }
             var gameModel = _mapper.Map<GameModel>(game);
             game.ImageUrl = null;
             await _gameService.AddAsync(gameModel);
 
-            return Created(game.Name, gameModel);
+            var lastGame = _gameService.GetAllAsync().Result.Last();
+            return Ok(lastGame);
        
         }
 
@@ -103,7 +105,7 @@ namespace WebApi.Controllers
             }
 
             var gameByName = await _gameService.GetByGameNameAsync(game.Name);
-            if (game.Name != null && gameByName.Id != game.Id)
+            if (gameByName != null && gameByName.Id != game.Id)
             {
                 return BadRequest();
             }   

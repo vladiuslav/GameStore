@@ -56,18 +56,17 @@ namespace BLL.Services
                     .FirstOrDefault(u => u.Email == email)
                 );
         }
-        public async Task<UserModel> GetUserByUserNameAsync(string name)
+        public async Task<UserModel> GetUserByUserNameAsync(string userName)
         {
             return _mapper.Map<UserModel>(
                     (await _unitOfWork.UserRepository.GetAllWithDetailsAsync())
-                    .FirstOrDefault(u => u.UserName == name)
+                    .FirstOrDefault(u => u.UserName == userName)
                 );
         }
 
         public async Task UpdateAsync(UserModel model)
         {
             var user = _mapper.Map<User>(model);
-
             var salt = GenerateSalt(10);
             var passwordWithSalt = (await _unitOfWork.PassswordWithSaltRepository.GetAllWithDetailsAsync()).First(ps => ps.UserId == user.Id);
 
@@ -98,7 +97,7 @@ namespace BLL.Services
             return userModel;
         }
 
-        private string GenerateSalt(int length)
+        private static string GenerateSalt(int length)
         {
             var random = RandomNumberGenerator.Create();
             byte[] salt = new byte[length];

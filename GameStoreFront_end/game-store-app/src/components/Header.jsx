@@ -56,11 +56,15 @@ const Header = () => {
   return (
     <nav>
       <ul>
-        <li>
-          <img alt="Logo" src={logo} className="site-logo" />
+        <li className="site-logo-margin">
+          <Link to="/">
+            <img alt="Logo" src={logo} className="site-logo" />
+          </Link>
         </li>
         <li>
-          <Link className="site-name">Game store</Link>
+          <Link to="/" className="site-name">
+            Game store
+          </Link>
         </li>
         <div className="left-nav-items">
           <li>
@@ -87,6 +91,11 @@ const Header = () => {
         <div className="right-nav-items">
           {!isLogged ? (
             <>
+              <li>
+                <Link to="/Cart" className="nav-item">
+                  <i className="fa-solid fa-cart-shopping"></i>
+                </Link>
+              </li>
               <li>
                 <Link
                   className="nav-item"
@@ -125,7 +134,7 @@ const Header = () => {
                 </Link>
               </li>
               <li>
-                <Link className="nav-item">
+                <Link to="/Cart" className="nav-item">
                   <i className="fa-solid fa-cart-shopping"></i>
                 </Link>
               </li>

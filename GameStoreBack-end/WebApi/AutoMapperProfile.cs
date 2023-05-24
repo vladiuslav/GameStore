@@ -23,7 +23,10 @@ namespace WebApi
 				);
 
 			CreateMap<GenreViewModel, GenreModel>()
-				.ReverseMap();
+                .ForMember(
+                    gm => gm.ParentGenreId,
+                    gvm => gvm.MapFrom(g => g.ParentGenreId))
+                .ReverseMap();
 
 			CreateMap<UserFullViewModel,UserModel>()
 				.ReverseMap();
@@ -36,6 +39,8 @@ namespace WebApi
 			CreateMap<CommentModel, CommentViewModel>()
 				.ReverseMap();
             CreateMap<CommentModel, CommentCreateModel>()
+				.ReverseMap();
+			CreateMap<OrderModel,CreateOrderModel>()
 				.ReverseMap();
         }
 	}

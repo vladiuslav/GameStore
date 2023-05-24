@@ -65,6 +65,8 @@ namespace WEBAPI
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             services.AddScoped<IPassswordWithSaltRepository, PasswordWithSaltRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<ICartRepository, CartRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -74,6 +76,8 @@ namespace WEBAPI
             services.AddScoped<IRefreshTokenService, RefreshTokenService>();
             services.AddScoped<ISearchFilterService, SearchFilterService>();
             services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IСartService, CartService>();
 
             services.AddAutoMapper(typeof(AutoMapperProfile),typeof(AutoMapperProfileBll));
 

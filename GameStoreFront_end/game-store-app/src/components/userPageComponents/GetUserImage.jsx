@@ -1,19 +1,13 @@
 import React from "react";
-
+import noneuser from "../../Images/noneuser.png";
 const GetUserImage = (props) => {
   let imageUrl;
   if (props.avatarImageUrl === null) {
-    imageUrl = "noneuser.png";
+    imageUrl = noneuser;
   } else {
-    imageUrl = props.avatarImageUrl;
+    imageUrl = "https://localhost:7025/img/" + props.avatarImageUrl;
   }
 
-  return (
-    <img
-      alt="User"
-      className={props.className}
-      src={"https://localhost:7025/img/" + imageUrl}
-    />
-  );
+  return <img alt="User" className={props.className} src={imageUrl} />;
 };
 export default GetUserImage;

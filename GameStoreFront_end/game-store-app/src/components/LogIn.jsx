@@ -1,11 +1,9 @@
 import React from "react";
 import { useState } from "react";
-import FlashBlock from "./FlashBlock";
 import fetchUserLogin from "./Fetches/fetchUsers/fetchUserLogin";
 
 const LogIn = (props) => {
-  const [isShowErrorBlock, setIsShowErrorBlock] = useState(false);
-  const [errorText, setErrorText] = useState("");
+  const [isShowEmptyError, setIsShowEmptyError] = useState(false);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,13 +12,11 @@ const LogIn = (props) => {
     e.preventDefault();
 
     if (email.length < 3) {
-      setErrorText("Email must be more then 3 characters.");
-      setIsShowErrorBlock(true);
+      setIsShowEmptyError(true);
       return;
     }
     if (password.length < 8) {
-      setErrorText("Password must be more then 8 characters.");
-      setIsShowErrorBlock(true);
+      setIsShowEmptyError(true);
       return;
     }
 
@@ -36,16 +32,13 @@ const LogIn = (props) => {
         props.setIsOpenForm();
         return;
       } else if (result.status === 400) {
-        setErrorText("Wrong input or user don`t exist.");
-        setIsShowErrorBlock(true);
+        alert("Wrong input or user don`t exist.");
         return;
       } else if (result.status === 404) {
-        setErrorText("Wrong login or password");
-        setIsShowErrorBlock(true);
+        alert("Wrong login or password");
         return;
       } else {
-        setErrorText("Error" + result.status);
-        setIsShowErrorBlock(true);
+        alert("Error" + result.status);
         return;
       }
     };
@@ -54,14 +47,6 @@ const LogIn = (props) => {
 
   return (
     <div className="central-form">
-      <div
-        onClick={(e) => {
-          e.preventDefault();
-          setIsShowErrorBlock(false);
-        }}
-      >
-        <FlashBlock massage={errorText} isShow={isShowErrorBlock} />
-      </div>
       <div className="user-form">
         <div
           onClick={() => {
@@ -73,6 +58,11 @@ const LogIn = (props) => {
         <h1>Please Login</h1>
         <div className="user-form-part">
           <div>Email</div>
+          {isShowEmptyError && email.length < 3 ? (
+            <p className="error-text">Email must be more then 3 characters.</p>
+          ) : (
+            <></>
+          )}
           <input
             className="user-form-input"
             type="text"
@@ -83,11 +73,18 @@ const LogIn = (props) => {
         </div>
         <div className="user-form-part">
           <div>Password</div>
+          {isShowEmptyError && password.length < 8 ? (
+            <p className="error-text">
+              Password must be more then 8 characters.
+            </p>
+          ) : (
+            <></>
+          )}
           <input
             className="user-form-input"
             type="text"
             placeholder="Password"
-            value={password}
+            value={"*".repeat(password.length)}
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>

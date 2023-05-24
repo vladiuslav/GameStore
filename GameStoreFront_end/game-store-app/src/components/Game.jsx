@@ -5,6 +5,7 @@ import fetchGame from "./Fetches/fetchGames/fetchGetGames/fetchGame";
 import fetchGenres from "./Fetches/fetchGaneres/fetchGenres";
 import GameImage from "./GamePageComponents/GameImage.jsx";
 import GameComments from "./GamePageComponents/GameComments";
+import AddCartItem from "./JsFunctions/CartFunctions/AddCartItem";
 const Game = () => {
   const navigate = useNavigate();
   const [genres, setGenres] = useState([]);
@@ -45,7 +46,6 @@ const Game = () => {
       <></>
     );
   };
-
   return game !== undefined ? (
     <div className="game-page">
       <GameImage className="game-page-image" GameImageUrl={game.imageUrl} />
@@ -53,7 +53,13 @@ const Game = () => {
       <div className="game-price-buy-block">
         <div className="game-price">{game.price + "$"}</div>
         <div className="game-buy">
-          <button>BUY</button>
+          <button
+            onClick={() => {
+              AddCartItem(game.id, 1);
+            }}
+          >
+            BUY
+          </button>
         </div>
       </div>
       <hr />

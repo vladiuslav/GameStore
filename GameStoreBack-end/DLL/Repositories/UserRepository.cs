@@ -36,7 +36,10 @@ namespace DLL.Repositories
 
         public async Task<IEnumerable<User>> GetAllWithDetailsAsync()
         {
-            return await _dbContext.Users.Include(u=>u.PasswordWithSalt).Include(u => u.Comments).ToListAsync();
+            return await _dbContext.Users
+                .Include(u => u.PasswordWithSalt)
+                .Include(u => u.Comments)
+                .ToListAsync();
         }
 
         public async Task<User> GetByIdAsync(int id)
@@ -46,7 +49,10 @@ namespace DLL.Repositories
 
         public async Task<User> GetByIdWithDetailsAsync(int id)
         {
-            return await _dbContext.Users.Include(u => u.PasswordWithSalt).Include(u => u.Comments).FirstAsync(g => g.Id == id);
+            return await _dbContext.Users
+                .Include(u => u.PasswordWithSalt)
+                .Include(u => u.Comments)
+                .FirstAsync(g => g.Id == id);
         }
 
         public async Task UpdateAsync(User entity)

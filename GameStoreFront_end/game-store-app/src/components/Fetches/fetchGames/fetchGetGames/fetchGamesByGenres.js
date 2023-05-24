@@ -1,11 +1,4 @@
-const fetchGamesByGenres = async (checkedState, genres) => {
-  let genresIds = [];
-  checkedState.forEach(function(value, key) {
-    if (value) {
-      genresIds.push(genres.find((genre) => genre.name === key).id);
-    }
-  });
-
+const fetchGamesByGenres = async (genresIds) => {
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 

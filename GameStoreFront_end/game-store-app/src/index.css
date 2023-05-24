@@ -11,6 +11,10 @@ article {
   padding: 1em;
   background-color: #1e1e1e;
 }
+.error-text {
+  margin: 0;
+  color: red;
+}
 .background-gray {
   position: fixed;
   z-index: 10;
@@ -37,3 +41,5 @@ article {
 @import "./Styles/Game.css";
 @import "./Styles/User.css";
 @import "./Styles/Buttons.css";
+@import "./Styles/Cart.css";
+@import "./Styles/Order.css";

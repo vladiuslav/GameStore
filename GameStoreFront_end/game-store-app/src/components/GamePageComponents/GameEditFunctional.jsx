@@ -41,13 +41,17 @@ const GameEditFunctional = (props) => {
       />
       {isShownFunctionalBlock && (
         <div className={props.classNameForOverideBlock}>
-          <div className="game-edit">
+          <div
+            className={props.IsSmallGame ? "game-edit-small" : "game-edit-big"}
+          >
             <Link className="game-edit-link" to={"/ChangeGame/" + props.gameId}>
               <i className="fa-solid fa-pen-to-square"></i> Edit Game
             </Link>
           </div>
           <div
-            className="game-delete"
+            className={
+              props.IsSmallGame ? "game-delete-small" : "game-delete-big"
+            }
             onClick={(e) => {
               deleteGame(e);
             }}

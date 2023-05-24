@@ -5,20 +5,18 @@ import React from "react";
 import fetchGame from "./Fetches/fetchGames/fetchGetGames/fetchGame";
 import fetchGenres from "./Fetches/fetchGaneres/fetchGenres";
 import fetchChangeGame from "./Fetches/fetchGames/fetchChangeGame";
-
-import FlashBlock from "./FlashBlock";
-import ChangeGameImage from "./GamePageComponents/ChangeGameImage";
+import fetchChangeGameImage from "./Fetches/fetchGames/fetchChangeGameImage";
 
 const ChangeGame = () => {
   const navigate = useNavigate();
-  const [isShowErrorBlock, setIsShowErrorBlock] = useState(false);
-  const [errorText, setErrorText] = useState("");
+  const [isShowEmptyError, setIsShowEmptyError] = useState(false);
   const [genres, setGenres] = useState([]);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [checkedState, setCheckedState] = useState(new Map());
-  const { GameId } = useParams(0);
+  const { GameId } = useParams();
+  const [image, setImage] = useState(null);
 
   useEffect(() => {
     const getGame = async () => {
@@ -58,27 +56,10 @@ const ChangeGame = () => {
   const changeGame = (e) => {
     e.preventDefault();
 
-    if (name.length < 1 || description.length < 1 || price.length < 1) {
-      setErrorText("Some input is empty");
-      setIsShowErrorBlock(true);
+    if (name.length < 3 || description.length < 10) {
+      setIsShowEmptyError(true);
       return;
     }
-
-    if (name.length < 3 || name.length > 40) {
-      setErrorText("Name too short or too long");
-      setIsShowErrorBlock(true);
-      return;
-    }
-    if (description.length < 10 || description.length > 400) {
-      setErrorText("Description too short or too long");
-      setIsShowErrorBlock(true);
-      return;
-    }
-
-    if (price.includes(".")) {
-      setPrice(price.replace(/\./g, ","));
-    }
-
     const processFetch = async () => {
       let result = await fetchChangeGame({
         name,
@@ -89,19 +70,35 @@ const ChangeGame = () => {
         GameId,
       });
       if (result.status === 200) {
+        changeImage();
+        alert("Game chenged");
         navigate("/Game/" + GameId);
         return;
       } else if (result.status === 400) {
-        setErrorText("Game name exist or wrong price number.");
-        setIsShowErrorBlock(true);
+        alert("Game name exist");
         return;
       } else if (result.status === 404) {
-        setErrorText("Game doesn`t exist");
-        setIsShowErrorBlock(true);
+        alert("Game doesn`t exist");
         return;
       } else {
-        setErrorText("Error" + result.status);
-        setIsShowErrorBlock(true);
+        alert("Error " + result.status);
+        return;
+      }
+    };
+    processFetch();
+  };
+
+  const changeImage = (e) => {
+    if (image === null || image.length < 1) {
+      return;
+    }
+
+    const processFetch = async () => {
+      let result = await fetchChangeGameImage(image[0], GameId);
+      if (result.status === 200) {
+        return;
+      } else {
+        alert("Error " + result.status);
         return;
       }
     };
@@ -110,17 +107,16 @@ const ChangeGame = () => {
 
   return (
     <div className="dark-background">
-      <div
-        onClick={(e) => {
-          e.preventDefault();
-          setIsShowErrorBlock(false);
-        }}
-      >
-        <FlashBlock massage={errorText} isShow={isShowErrorBlock} />
-      </div>
       <h1>Change Game</h1>
       <div>
         <p>Name</p>
+        {isShowEmptyError && name.length < 3 ? (
+          <p className="error-text">
+            Name can`t be empty and have at least 3 letters
+          </p>
+        ) : (
+          <></>
+        )}
         <input
           className="game-form-input-text"
           type="text"
@@ -131,6 +127,13 @@ const ChangeGame = () => {
       </div>
       <div>
         <p>Game description</p>
+        {isShowEmptyError && description.length < 10 ? (
+          <p className="error-text">
+            Description can`t be empty and have at least 10 letters
+          </p>
+        ) : (
+          <></>
+        )}
         <input
           className="game-form-input-text"
           type="text"
@@ -162,14 +165,26 @@ const ChangeGame = () => {
           type="text"
           placeholder="Add price"
           value={price}
-          onChange={(e) => setPrice(e.target.value)}
+          onChange={(e) => {
+            if (e.target.value.includes(".")) {
+              setPrice(e.target.value.replace(/\./g, ","));
+            } else {
+              setPrice(e.target.value);
+            }
+          }}
         />
       </div>
-
+      <div>
+        <label>Image of game</label>
+        <input
+          className="game-form-input-file"
+          type="file"
+          onChange={(e) => setImage(e.target.files)}
+        />
+      </div>
       <button className="green-button" onClick={(e) => changeGame(e)}>
-        ChangeGame
+        Change Game
       </button>
-      <ChangeGameImage />
     </div>
   );
 };

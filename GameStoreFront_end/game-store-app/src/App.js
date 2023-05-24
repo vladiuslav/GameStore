@@ -12,6 +12,8 @@ import ChangeUser from "./components/ChangeUser";
 import Community from "./components/Community";
 import Support from "./components/Support";
 import Footer from "./components/Footer";
+import Cart from "./components/Cart";
+import Order from "./components/Order";
 
 const App = () => {
   return (
@@ -28,6 +30,8 @@ const App = () => {
           <Route path="/AddGame" element={<AddGame />} />
           <Route path="/User" element={<User />} />
           <Route path="/ChangeUser" element={<ChangeUser />} />
+          <Route path="/Cart" element={<Cart />} />
+          <Route path="/Order" element={<Order />} />
         </Routes>
       </article>
       <Footer />
