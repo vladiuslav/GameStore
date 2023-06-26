@@ -201,21 +201,6 @@ namespace WebApi.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> CreateUser(UserCreateModel user)
         {
-            try
-            {
-                var address = new MailAddress(user.Email).Address;
-            }
-            catch (FormatException)
-            {
-                var problem = new ProblemDetails
-                {
-                    Title = "Email incorect",
-                    Detail = $"The user have incorect email {user.Email}.",
-                    Status = 400,
-                };
-                return BadRequest(problem);
-            }
-
             var userByEmail = await _userService.GetUserByEmailAsync(user.Email);
             if (userByEmail != null)
             {
@@ -254,20 +239,6 @@ namespace WebApi.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> Update(UserUpdateModel user)
         {
-            try
-            {
-                var address = new MailAddress(user.Email).Address;
-            }
-            catch (FormatException)
-            {
-                var problem = new ProblemDetails
-                {
-                    Title = "Email incorect",
-                    Detail = $"The user have incorect email {user.Email}.",
-                    Status = 400,
-                };
-                return BadRequest(problem);
-            }
             var email = User.Claims.First(claim => claim.Type == ClaimTypes.Email).Value;
             var userByIdentity = await _userService.GetUserByEmailAsync(email);
 

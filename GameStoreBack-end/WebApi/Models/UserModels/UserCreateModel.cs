@@ -17,8 +17,7 @@ namespace GameStore.WebAPI.Models.UserModels
         [MaxLength(20)]
         public string UserName { get; set; }
         [Required]
-        [MinLength(3)]
-        [MaxLength(80)]
+        [EmailAddress(ErrorMessage = "Invalid Email Address")]
         public string Email { get; set; }
         [Required]
         [MinLength(8)]
