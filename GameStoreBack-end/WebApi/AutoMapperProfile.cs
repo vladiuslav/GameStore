@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
 using BLL.Models;
 using GameStore.WebAPI.Models;
+using GameStore.WebAPI.Models.CommentModels;
+using GameStore.WebAPI.Models.GameModels;
+using GameStore.WebAPI.Models.GenreModels;
+using GameStore.WebAPI.Models.UserModels;
 using GameStrore.BusinessLogic.Models;
-using WebApi.Models;
 
 namespace WebApi
 {
@@ -10,38 +13,50 @@ namespace WebApi
     {
         public AutoMapperProfile()
 		{
-			CreateMap<GameViewModel, GameModel>()
-				.ForMember(
-					gameModel=>gameModel.Price,
-					gameViewModel=>gameViewModel.MapFrom(game=>decimal.Parse(game.Price))
-				);
-
 			CreateMap<GameModel,GameViewModel>()
 				.ForMember(
                     gameViewModel => gameViewModel.Price,
                     gameModel => gameModel.MapFrom(game => game.Price.ToString())
 				);
 
-			CreateMap<GenreViewModel, GenreModel>()
+			CreateMap<GameCreateModel, GameModel>()
                 .ForMember(
-                    gm => gm.ParentGenreId,
-                    gvm => gvm.MapFrom(g => g.ParentGenreId))
-                .ReverseMap();
+                    gameModel => gameModel.Price,
+                    gameCreateModel => gameCreateModel.MapFrom(game => decimal.Parse(game.Price))
+                );
 
-			CreateMap<UserFullViewModel,UserModel>()
+            CreateMap<GameUpdateModel, GameModel>()
+                .ForMember(
+                    gameModel => gameModel.Price,
+                    gameUpdateModel => gameUpdateModel.MapFrom(game => decimal.Parse(game.Price))
+                );
+
+            CreateMap<GenreModel, GenreViewModel>();
+
+            CreateMap<GenreCreateModel, GenreModel>();
+
+            CreateMap<GenreUpdateModel, GenreModel>();
+
+            CreateMap<UserCreateModel, UserModel>();
+
+            CreateMap<UserFullViewModel,UserModel>()
 				.ReverseMap();
 
-			CreateMap<UserModel, UserViewModel>()
+            CreateMap<UserUpdateModel, UserModel>()
+                .ReverseMap();
+
+            CreateMap<UserModel, UserViewModel>()
 				.ForMember(
 				uvm => uvm.FullName,
 				um => um.MapFrom(u => u.FirstName + ' ' + u.LastName)
 				);
-			CreateMap<CommentModel, CommentViewModel>()
-				.ReverseMap();
+
             CreateMap<CommentModel, CommentCreateModel>()
 				.ReverseMap();
+
 			CreateMap<OrderModel,CreateOrderModel>()
 				.ReverseMap();
+
         }
 	}
 }

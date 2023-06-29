@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace GameStore.WebAPI.Models
+namespace GameStore.WebAPI.Models.CommentModels
 {
     public class CommentCreateModel
     {

@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using BLL.Interfaces;
+using GameStore.WebAPI.Models.GameModels;
+using GameStore.WebAPI.Models.GenreModels;
 using Microsoft.AspNetCore.Mvc;
-using WebApi.Models;
 
 namespace WebApi.Controllers
 {

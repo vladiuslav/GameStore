@@ -1,11 +1,11 @@
-const fetchChangeGame = async ({
+const fetchChangeGame = async (
   name,
   description,
   price,
   checkedState,
   genres,
-  GameId,
-}) => {
+  GameId
+) => {
   let genresIds = [];
   checkedState.forEach(function(value, key) {
     if (value) {
@@ -22,7 +22,6 @@ const fetchChangeGame = async ({
     description: description,
     price: price,
     genresIds: genresIds,
-    commentsIds: [],
   });
 
   var requestOptions = {

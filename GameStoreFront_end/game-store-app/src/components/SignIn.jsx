@@ -6,6 +6,7 @@ import fetchUserRegestration from "./Fetches/fetchUsers/fetchUserRegestration";
 const SignIn = (props) => {
   const navigate = useNavigate();
   const [isShowEmptyError, setIsShowEmptyError] = useState(false);
+  const [isShowEmailValidError, setIsShowEmailValidError] = useState(false);
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -24,8 +25,10 @@ const SignIn = (props) => {
       setIsShowEmptyError(true);
       return;
     }
-    if (email.length < 3) {
-      setIsShowEmptyError(true);
+
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+    if (!emailRegex.test(email)) {
+      setIsShowEmailValidError(true);
       return;
     }
 
@@ -42,15 +45,17 @@ const SignIn = (props) => {
         email,
         password,
       });
-      if (result.status === 200) {
+      if (result.ok) {
         alert("Account created");
         navigate("/");
         return;
-      } else if (result.status === 400) {
-        alert("Wrong input");
-        return;
       } else {
-        alert("Error" + result.status);
+        let errorBody = await result.json();
+        alert(
+          errorBody.title +
+            "\n" +
+            (errorBody.detail !== undefined ? errorBody.detail : "")
+        );
         return;
       }
     };
@@ -128,9 +133,14 @@ const SignIn = (props) => {
           ) : (
             <></>
           )}
+          {isShowEmailValidError ? (
+            <p className="error-text">Email invalid.</p>
+          ) : (
+            <></>
+          )}
           <input
             className="user-form-input"
-            type="text"
+            type="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -147,9 +157,9 @@ const SignIn = (props) => {
           )}
           <input
             className="user-form-input"
-            type="text"
+            type="password"
             placeholder="Password"
-            value={"*".repeat(password.length)}
+            value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>

@@ -1,33 +1,30 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import React from "react";
-import ChangeUserImage from "./userPageComponents/ChangeUserImage";
 import fetchUserGetCurrent from "./Fetches/fetchUsers/fetchUsersGet/fetchUserGetCurrent";
 import fetchChangeUser from "./Fetches/fetchUsers/fetchChangeUser";
-import FlashBlock from "./FlashBlock";
-import CheckIsTokenExpired from "./JsFunctions/CheckIsTokenExpired";
+import fetchChangeUserImage from "./Fetches/fetchUsers/fetchChangeUserImage";
 
 const ChangeUser = () => {
   const navigate = useNavigate();
-  const [isShowErrorBlock, setIsShowErrorBlock] = useState(false);
-  const [errorText, setErrorText] = useState("");
+  const [isShowEmptyError, setIsShowEmptyError] = useState(false);
+  const [isShowEmailValidError, setIsShowEmailValidError] = useState(false);
 
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
   const [userName, setUserName] = useState("");
+  const [image, setImage] = useState(null);
 
   useEffect(() => {
     const getUser = async () => {
-      CheckIsTokenExpired();
-      const token = localStorage.getItem("token");
-      const result = await fetchUserGetCurrent(token);
+      const result = await fetchUserGetCurrent();
       let userFromServer = await result.json();
+
       setEmail(userFromServer.email);
       setFirstName(userFromServer.firstName);
       setLastName(userFromServer.lastName);
-      setPassword(userFromServer.password);
       setUserName(userFromServer.userName);
     };
     getUser();
@@ -36,59 +33,92 @@ const ChangeUser = () => {
   const changeUser = (e) => {
     e.preventDefault();
 
-    if (
-      firstName.length < 3 ||
-      lastName.length < 3 ||
-      userName.length < 3 ||
-      email.length < 3
-    ) {
-      setErrorText("Some input is empty or have less then 3 letters");
-      setIsShowErrorBlock(true);
+    if (firstName.length < 3) {
+      setIsShowEmptyError(true);
       return;
     }
-    if (password.length < 8) {
-      setErrorText("Input is empty or have less 1then 8 letters");
-      setIsShowErrorBlock(true);
+    if (lastName.length < 3) {
+      setIsShowEmptyError(true);
+      return;
+    }
+
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+    if (!emailRegex.test(email)) {
+      setIsShowEmailValidError(true);
+      return;
+    }
+
+    if (password.length > 0 && password.length < 8) {
+      setIsShowEmptyError(true);
       return;
     }
 
     const processFetch = async () => {
-      let result = await fetchChangeUser({
+      let result = await fetchChangeUser(
         firstName,
         lastName,
         userName,
         email,
-        password,
-      });
-      if (result.status === 200) {
+        password.length === 0 ? "" : password
+      );
+      if (result.ok) {
+        await changeImage();
+        alert("Info changed." + "\n" + "now Log in with new info");
+        localStorage.removeItem("token");
+        localStorage.removeItem("refresh_token");
+        localStorage.removeItem("expiredTokenTime");
+        localStorage.removeItem("email");
         navigate("/");
-        return;
-      } else if (result.status === 400) {
-        setErrorText("Wrong input.");
-        setIsShowErrorBlock(true);
+        window.location.reload();
         return;
       } else {
-        setErrorText("Error" + result.status);
-        setIsShowErrorBlock(true);
+        let errorBody = await result.json();
+        alert(
+          errorBody.title +
+            "\n" +
+            (errorBody.detail !== undefined ? errorBody.detail : "")
+        );
         return;
       }
     };
     processFetch();
   };
+
+  const changeImage = async () => {
+    if (image === null || image.length < 1) {
+      return;
+    }
+
+    const processFetch = async () => {
+      let result = await fetchChangeUserImage(image[0]);
+      if (result.ok) {
+        return;
+      } else {
+        let errorBody = await result.json();
+        alert(
+          errorBody.title +
+            "\n" +
+            (errorBody.detail !== undefined ? errorBody.detail : "")
+        );
+        return;
+      }
+    };
+    processFetch();
+  };
+
   //render
   return (
     <div className="dark-background">
-      <div
-        onClick={(e) => {
-          e.preventDefault();
-          setIsShowErrorBlock(false);
-        }}
-      >
-        <FlashBlock massage={errorText} isShow={isShowErrorBlock} />
-      </div>
       <h1>Change User</h1>
       <div>
         <p>First name</p>
+        {isShowEmptyError && firstName.length < 3 ? (
+          <p className="error-text">
+            First name empty or have less then 3 letters
+          </p>
+        ) : (
+          <></>
+        )}
         <input
           type="text"
           placeholder="First name"
@@ -98,6 +128,13 @@ const ChangeUser = () => {
       </div>
       <div>
         <p>Last name</p>
+        {isShowEmptyError && lastName.length < 3 ? (
+          <p className="error-text">
+            Last name empty or have less then 3 letters
+          </p>
+        ) : (
+          <></>
+        )}
         <input
           type="text"
           placeholder="Last name"
@@ -107,6 +144,13 @@ const ChangeUser = () => {
       </div>
       <div>
         <p>User name</p>
+        {isShowEmptyError && userName.length < 3 ? (
+          <p className="error-text">
+            User name empty or have less then 3 letters
+          </p>
+        ) : (
+          <></>
+        )}
         <input
           type="text"
           placeholder="User name"
@@ -116,8 +160,18 @@ const ChangeUser = () => {
       </div>
       <div>
         <p>Email</p>
+        {isShowEmptyError && email.length < 3 ? (
+          <p className="error-text">Email empty or have less then 3 letters</p>
+        ) : (
+          <></>
+        )}
+        {isShowEmailValidError ? (
+          <p className="error-text">Email invalid.</p>
+        ) : (
+          <></>
+        )}
         <input
-          type="text"
+          type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -125,18 +179,27 @@ const ChangeUser = () => {
       </div>
       <div>
         <p>Password</p>
+        {isShowEmptyError && password.length < 8 ? (
+          <p className="error-text">
+            Password empty or have less then 8 letters
+          </p>
+        ) : (
+          <></>
+        )}
         <input
-          type="text"
+          type="password"
           placeholder="Password"
-          value={"*".repeat(password.length)}
+          value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
-
+      <div>
+        <label>Image of game</label>
+        <input type="file" onChange={(e) => setImage(e.target.files)} />
+      </div>
       <button className="green-button" onClick={(e) => changeUser(e)}>
         Change user
       </button>
-      <ChangeUserImage />
     </div>
   );
 };

@@ -21,7 +21,6 @@ const fetchCreateComment = async (
     comment: comment,
     cartModelsIds: cardsList,
   });
-  console.log(raw);
   var requestOptions = {
     method: "POST",
     headers: myHeaders,

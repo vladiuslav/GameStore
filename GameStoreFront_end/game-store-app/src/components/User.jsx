@@ -1,15 +1,19 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import fetchUserGetCurrent from "./Fetches/fetchUsers/fetchUsersGet/fetchUserGetCurrent";
 import GetUserImage from "./userPageComponents/GetUserImage";
 import CheckIsTokenExpired from "./JsFunctions/CheckIsTokenExpired";
 
 const User = () => {
+  const navigate = useNavigate();
   const [user, setUser] = useState([]);
   useEffect(() => {
     const getUser = async () => {
-      CheckIsTokenExpired();
+      if (!(await CheckIsTokenExpired())) {
+        navigate("/");
+        return;
+      }
       const token = localStorage.getItem("token");
       let result = await fetchUserGetCurrent(token);
       let resultJson = await result.json();

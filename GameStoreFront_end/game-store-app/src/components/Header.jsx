@@ -30,10 +30,12 @@ const Header = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("expiredTokenTime");
+    localStorage.removeItem("refreshTokenExpiresionTime");
     localStorage.removeItem("email");
     setIsLogged(false);
     checkIsLogged();
     navigate("/");
+    window.location.reload(); // check is this work
   };
 
   const checkIsLogged = async () => {
@@ -42,7 +44,7 @@ const Header = () => {
     if (token !== null) {
       setIsLogged(true);
       const result = await fetchUserGetCurrent(token);
-      if (result.status === 200) {
+      if (result.ok) {
         let resultjson = await result.json();
         setUser(resultjson);
       }

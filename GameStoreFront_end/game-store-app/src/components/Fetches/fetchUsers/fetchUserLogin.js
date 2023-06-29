@@ -1,10 +1,11 @@
-const fetchUserLogin = async ({ email, password }) => {
+const fetchUserLogin = async ({ email, password, rememberMe }) => {
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
   var raw = JSON.stringify({
     email: email,
     password: password,
+    rememberMe: rememberMe,
   });
 
   var requestOptions = {

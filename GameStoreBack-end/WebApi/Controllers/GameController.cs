@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using BLL.Interfaces;
 using BLL.Models;
-using GameStore.WebAPI.Models;
+using GameStore.WebAPI.Models.CommentModels;
+using GameStore.WebAPI.Models.GameModels;
 using GameStrore.BusinessLogic.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using WebApi.Models;
 
 namespace WebApi.Controllers
 {
@@ -38,7 +38,13 @@ namespace WebApi.Controllers
             var game = _mapper.Map<GameViewModel>(await _gameService.GetByIdAsync(id));
             if (game == null)
             {
-                return NotFound();
+                var problem = new ProblemDetails
+                {
+                    Title = "Game not found",
+                    Detail = $"The game with ID {id} does not exist.",
+                    Status = 404,
+                };
+                return NotFound(problem);
             }
             return Ok(game);
         }
@@ -52,62 +58,76 @@ namespace WebApi.Controllers
             var game = await _gameService.GetByIdAsync(id);
             if (game == null)
             {
-                return NotFound();
+                var problem = new ProblemDetails
+                {
+                    Title = "Game not found",
+                    Detail = $"The game with ID {id} does not exist.",
+                    Status = 404,
+                };
+                return NotFound(problem);
             }
 
             var commentsFiltered = await _commentService.GetCommentsByGameIdAsync(id);
-            var comments = _mapper.Map<IEnumerable<CommentViewModel>>(commentsFiltered);
-            return Ok(comments);
+            return Ok(commentsFiltered);
 
         }
 
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> CreateGame(GameViewModel game)
+        public async Task<IActionResult> CreateGame(GameCreateModel game)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-            
             if((await _gameService.GetByGameNameAsync(game.Name)) != null)
             {
-                return BadRequest();
+                var problem = new ProblemDetails
+                {
+                    Title = "Game already exist",
+                    Detail = $"The game with name {game.Name} already exist.",
+                    Status = 400,
+                };
+                return BadRequest(problem);
             }
             if (string.IsNullOrEmpty(game.Price))
             {
                 game.Price = "0";
             }
             var gameModel = _mapper.Map<GameModel>(game);
-            game.ImageUrl = null;
+            gameModel.ImageUrl = null;
             await _gameService.AddAsync(gameModel);
 
             var lastGame = _gameService.GetAllAsync().Result.Last();
             return Ok(lastGame);
-       
+            
         }
 
         [HttpPut]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> Update([FromBody] GameViewModel game)
+        public async Task<IActionResult> Update(GameUpdateModel game)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
             var gameById = await _gameService.GetByIdAsync(game.Id);
             if (gameById == null)
             {
-                return NotFound(game.Name);
+                var problem = new ProblemDetails
+                {
+                    Title = "Game not found",
+                    Detail = $"The game with ID {game.Id} does not exist.",
+                    Status = 404,
+                };
+                return NotFound(problem);
             }
 
             var gameByName = await _gameService.GetByGameNameAsync(game.Name);
             if (gameByName != null && gameByName.Id != game.Id)
             {
-                return BadRequest();
+                var problem = new ProblemDetails
+                {
+                    Title = "Game already exist",
+                    Detail = $"The game with name {game.Name} already exist.",
+                    Status = 400,
+                };
+                return BadRequest(problem);
             }   
 
             var gameModel = _mapper.Map<GameModel>(game);
@@ -126,11 +146,17 @@ namespace WebApi.Controllers
             var game = await _gameService.GetByIdAsync(id);
             if (game == null)
             {
-                return NotFound();
+                var problem = new ProblemDetails
+                {
+                    Title = "Game not found",
+                    Detail = $"The game with ID {id} does not exist.",
+                    Status = 404,
+                };
+                return NotFound(problem);
             }
             else { 
                 await _gameService.DeleteByIdAsync(id);
-                return Ok();
+                return NoContent();
             }
         }
     }

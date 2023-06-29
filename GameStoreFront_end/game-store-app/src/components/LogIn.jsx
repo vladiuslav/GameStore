@@ -1,44 +1,54 @@
 import React from "react";
 import { useState } from "react";
 import fetchUserLogin from "./Fetches/fetchUsers/fetchUserLogin";
+import { useNavigate } from "react-router-dom";
 
 const LogIn = (props) => {
+  const navigate = useNavigate();
   const [isShowEmptyError, setIsShowEmptyError] = useState(false);
+  const [isShowEmailValidError, setIsShowEmailValidError] = useState(false);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
 
   const loginAccount = async (e) => {
     e.preventDefault();
 
-    if (email.length < 3) {
-      setIsShowEmptyError(true);
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+    if (!emailRegex.test(email)) {
+      setIsShowEmailValidError(true);
       return;
     }
+
     if (password.length < 8) {
       setIsShowEmptyError(true);
       return;
     }
 
     const processFetch = async () => {
-      let result = await fetchUserLogin({ email, password });
-      if (result.status === 200) {
+      let result = await fetchUserLogin({ email, password, rememberMe });
+      if (result.ok) {
         let resultJson = await result.json();
         localStorage.setItem("token", resultJson.token);
         localStorage.setItem("refresh_token", resultJson.refreshToken);
         localStorage.setItem("expiredTokenTime", resultJson.expiresAt);
+        localStorage.setItem(
+          "refreshTokenExpiresionTime",
+          resultJson.refreshTokenExpiresAt
+        );
         localStorage.setItem("email", email);
         props.checkIsLogged();
         props.setIsOpenForm();
-        return;
-      } else if (result.status === 400) {
-        alert("Wrong input or user don`t exist.");
-        return;
-      } else if (result.status === 404) {
-        alert("Wrong login or password");
+        navigate("/User");
         return;
       } else {
-        alert("Error" + result.status);
+        let errorBody = await result.json();
+        alert(
+          errorBody.title +
+            "\n" +
+            (errorBody.detail !== undefined ? errorBody.detail : "")
+        );
         return;
       }
     };
@@ -63,9 +73,14 @@ const LogIn = (props) => {
           ) : (
             <></>
           )}
+          {isShowEmailValidError ? (
+            <p className="error-text">Email invalid.</p>
+          ) : (
+            <></>
+          )}
           <input
             className="user-form-input"
-            type="text"
+            type="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -82,10 +97,18 @@ const LogIn = (props) => {
           )}
           <input
             className="user-form-input"
-            type="text"
+            type="password"
             placeholder="Password"
-            value={"*".repeat(password.length)}
+            value={password}
             onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        <div className="user-form-part">
+          <div>Remember me</div>
+          <input
+            type="checkbox"
+            value={rememberMe}
+            onChange={(e) => setRememberMe(!rememberMe)}
           />
         </div>
         <div className="user-form-part">

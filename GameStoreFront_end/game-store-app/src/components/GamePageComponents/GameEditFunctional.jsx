@@ -2,27 +2,24 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import GameImage from "./GameImage";
 import fetchDeleteGame from "../Fetches/fetchGames/fetchDeleteGame";
-import FlashBlock from "../FlashBlock";
 const GameEditFunctional = (props) => {
   const navigate = useNavigate();
   const [isShownFunctionalBlock, setIsShownFunctionalBlock] = useState(false);
-  const [isShowErrorBlock, setIsShowErrorBlock] = useState(false);
-  const [errorText, setErrorText] = useState("");
   const deleteGame = (e) => {
     e.preventDefault();
 
     const processFetch = async () => {
       let result = await fetchDeleteGame(props.gameId);
-      if (result.status === 200) {
+      if (result.ok) {
         navigate("/Game/" + props.gameId);
         return;
-      } else if (result.status === 404) {
-        setErrorText("Game doesn`t exist");
-        setIsShowErrorBlock(true);
-        return;
       } else {
-        setErrorText("Error" + result.status);
-        setIsShowErrorBlock(true);
+        let errorBody = await result.json();
+        alert(
+          errorBody.title +
+            "\n" +
+            (errorBody.detail !== undefined ? errorBody.detail : "")
+        );
         return;
       }
     };
@@ -60,7 +57,6 @@ const GameEditFunctional = (props) => {
           </div>
         </div>
       )}
-      <FlashBlock massage={errorText} isShow={isShowErrorBlock} />
     </div>
   );
 };

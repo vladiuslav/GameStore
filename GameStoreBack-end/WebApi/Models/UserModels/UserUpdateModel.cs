@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WebApi.Models
+namespace GameStore.WebAPI.Models.UserModels
 {
-    public class UserFullViewModel
+    public class UserUpdateModel
     {
         public int Id { get; set; }
         [Required]
@@ -18,14 +18,8 @@ namespace WebApi.Models
         [MaxLength(20)]
         public string UserName { get; set; }
         [Required]
-        [MinLength(3)]
-        [MaxLength(80)]
+        [EmailAddress(ErrorMessage = "Invalid Email Address")]
         public string Email { get; set; }
-        [Required]
-        [MinLength(8)]
-        [MaxLength(80)]
-        public string Password { get; set; }
-        public string? AvatarImageUrl { get; set; }
-        public ICollection<int> CommentsIds { get; set; }
+        public string? Password { get; set; }
     }
 }

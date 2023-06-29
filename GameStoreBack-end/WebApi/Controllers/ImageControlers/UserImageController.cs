@@ -1,9 +1,5 @@
-﻿using AutoMapper;
-using BLL.Interfaces;
-using BLL.Services;
-using DLL.Entities;
+﻿using BLL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using WebApi.Models;
@@ -25,7 +21,7 @@ namespace WebApi.Controllers
         [HttpPut]
         [Authorize]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> Image( [FromForm] FileUploadModel fileModel)
+        public async Task<IActionResult> Image([FromForm] FileUploadModel fileModel)
         {
             if (fileModel.UploadedFile != null)
             {
@@ -42,15 +38,41 @@ namespace WebApi.Controllers
                 // delete previous image if exist
                 if (user.AvatarImageUrl != null)
                 {
-                    System.IO.File.Delete(_appEnvironment.WebRootPath + user.AvatarImageUrl);
+                    try
+                    {
+                        System.IO.File.Delete(_appEnvironment.WebRootPath + user.AvatarImageUrl);
+                    }
+                    catch
+                    {
+                        var problem = new ProblemDetails
+                        {
+                            Title = "Error deleting image",
+                            Detail = $"Image replacing error.",
+                            Status = 400,
+                        };
+                        return BadRequest(problem);
+                    }
                 }
 
-                // save Files in cataloge wwwroot
-                using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
+                try
                 {
-                    await fileModel.UploadedFile.CopyToAsync(fileStream);
-                    user.AvatarImageUrl = user.Id + filetype;
-                    await _userService.UpdateAsync(user);
+                    // save Files in cataloge wwwroot
+                    using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
+                    {
+                        await fileModel.UploadedFile.CopyToAsync(fileStream);
+                        user.AvatarImageUrl = user.Id + filetype;
+                        await _userService.UpdateAsync(user);
+                    }
+                }
+                catch
+                {
+                    var problem = new ProblemDetails
+                    {
+                        Title = "Error deleting image",
+                        Detail = $"Image creating error.",
+                        Status = 400,
+                    };
+                    return BadRequest(problem);
                 }
             }
             return Ok();
@@ -69,7 +91,13 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                var problem = new ProblemDetails
+                {
+                    Title = "Error deleting image",
+                    Detail = $"Image error: {ex.Message}",
+                    Status = 400,
+                };
+                return BadRequest(problem);
             }
         }
     }

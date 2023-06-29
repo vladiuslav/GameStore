@@ -1,6 +1,7 @@
 const fetchGenerateToken = async () => {
   let refreshToken = localStorage.getItem("refresh_token");
   let token = localStorage.getItem("token");
+
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 

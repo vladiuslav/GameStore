@@ -61,44 +61,48 @@ const ChangeGame = () => {
       return;
     }
     const processFetch = async () => {
-      let result = await fetchChangeGame({
+      let result = await fetchChangeGame(
         name,
         description,
         price,
         checkedState,
         genres,
-        GameId,
-      });
-      if (result.status === 200) {
-        changeImage();
+        GameId
+      );
+      if (result.ok) {
+        await changeImage();
         alert("Game chenged");
         navigate("/Game/" + GameId);
         return;
-      } else if (result.status === 400) {
-        alert("Game name exist");
-        return;
-      } else if (result.status === 404) {
-        alert("Game doesn`t exist");
-        return;
       } else {
-        alert("Error " + result.status);
+        let errorBody = await result.json();
+        alert(
+          errorBody.title +
+            "\n" +
+            (errorBody.detail !== undefined ? errorBody.detail : "")
+        );
         return;
       }
     };
     processFetch();
   };
 
-  const changeImage = (e) => {
+  const changeImage = async () => {
     if (image === null || image.length < 1) {
       return;
     }
 
     const processFetch = async () => {
       let result = await fetchChangeGameImage(image[0], GameId);
-      if (result.status === 200) {
+      if (result.ok) {
         return;
       } else {
-        alert("Error " + result.status);
+        let errorBody = await result.json();
+        alert(
+          errorBody.title +
+            "\n" +
+            (errorBody.detail !== undefined ? errorBody.detail : "")
+        );
         return;
       }
     };

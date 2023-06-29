@@ -2,10 +2,13 @@
 using BLL.Interfaces;
 using BLL.Models;
 using DLL.Entities;
+using GameStore.WebAPI.Models.UserModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Mail;
+using System.Net;
 using System.Security.Claims;
 using WebApi.Models;
 
@@ -44,7 +47,13 @@ namespace WebApi.Controllers
             var user = _mapper.Map<UserViewModel>(await _userService.GetByIdAsync(id));
             if (user == null)
             {
-                return NotFound();
+                var problem = new ProblemDetails
+                {
+                    Title = "User not found",
+                    Detail = $"The user with ID {id} does not exist.",
+                    Status = 404,
+                };
+                return NotFound(problem);
             }
             return Ok(user);
 
@@ -64,15 +73,16 @@ namespace WebApi.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> refreshToken(AuthResultViewModel tokenRequestVM)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
             var result = await VerifyAndGenerateTokenAsync(tokenRequestVM);
             if (result == null)
             {
-                return BadRequest();
+                var problem = new ProblemDetails
+                {
+                    Title = "Refresh token expired",
+                    Detail = $"The refresh token expired or changed.",
+                    Status = 400,
+                };
+                return BadRequest(problem);
             }
             return Ok(result);
         }
@@ -86,7 +96,7 @@ namespace WebApi.Controllers
             {
                 return null;
             }
-            
+
 
             var dbUser = await _userService.GetByIdAsync(storedToken.UserId);
 
@@ -114,20 +124,26 @@ namespace WebApi.Controllers
         [ProducesResponseType(401)]
         public async Task<IActionResult> Login(LoginData loginVM)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("Please, provide all required fields");
-            }
             var user = await _userService.GetUserByLoginData(loginVM);
-            if (user != null)
+            if (user == null)
             {
-                var tokenValue = await GenerateJWTTokenAsync(user, null);
-                return Ok(tokenValue);
+                var problem = new ProblemDetails
+                {
+                    Title = "User wrong credentials",
+                    Detail = $"The user wrong email and password or user does not exist.",
+                    Status = 404,
+                };
+                return Unauthorized(problem);
             }
-            return Unauthorized();
+            if (loginVM.RememberMe == null)
+            {
+                loginVM.RememberMe = false;
+            }
+            var tokenValue = await GenerateJWTTokenAsync(user, null, loginVM.RememberMe);
+            return Ok(tokenValue);
         }
 
-        private async Task<AuthResultViewModel> GenerateJWTTokenAsync(UserModel user, RefreshToken rToken)
+        private async Task<AuthResultViewModel> GenerateJWTTokenAsync(UserModel user, RefreshToken rToken,bool rememberMe=false)
         {
             var authClaims = new List<Claim>()
             {
@@ -162,7 +178,7 @@ namespace WebApi.Controllers
                 IsRevoked = false,
                 UserId = user.Id,
                 DateAdded = DateTime.UtcNow,
-                DateExpire = DateTime.UtcNow.AddMonths(6),
+                DateExpire = rememberMe?DateTime.UtcNow.AddMonths(6): DateTime.UtcNow.AddHours(1),
                 Token = Guid.NewGuid().ToString() + "-" + Guid.NewGuid().ToString()
             };
 
@@ -172,7 +188,8 @@ namespace WebApi.Controllers
             {
                 Token = jwtToken,
                 RefreshToken = refreshToken.Token,
-                ExpiresAt = token.ValidTo
+                ExpiresAt = token.ValidTo,
+                RefreshTokenExpiresAt = refreshToken.DateExpire
             };
 
             return response;
@@ -182,68 +199,80 @@ namespace WebApi.Controllers
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> CreateUser(UserFullViewModel user)
+        public async Task<IActionResult> CreateUser(UserCreateModel user)
         {
-            if (ModelState.IsValid)
+            var userByEmail = await _userService.GetUserByEmailAsync(user.Email);
+            if (userByEmail != null)
             {
-                var userByEmail = await _userService.GetUserByEmailAsync(user.Email);
-                if (userByEmail != null)
+                var problem = new ProblemDetails
                 {
-                    return BadRequest();
-                }
-
-                var userByName = await _userService.GetUserByUserNameAsync(user.UserName);
-                if (userByName != null)
-                {
-                    return BadRequest();
-                }
-
-                var userModel = _mapper.Map<UserModel>(user);
-                userModel.AvatarImageUrl = null;
-                await _userService.AddAsync(userModel);
-                var response = new JsonResult(user);
-                response.StatusCode = 200;
-                return response;
+                    Title = "User already exist",
+                    Detail = $"The user with email {user.Email} already exist.",
+                    Status = 400,
+                };
+                return BadRequest(problem);
             }
-            else
+
+            var userByName = await _userService.GetUserByUserNameAsync(user.UserName);
+            if (userByName != null)
             {
-                return BadRequest();
+                var problem = new ProblemDetails
+                {
+                    Title = "User already exist",
+                    Detail = $"The user with name {user.UserName} already exist.",
+                    Status = 400,
+                };
+                return BadRequest(problem);
             }
+
+            var userModel = _mapper.Map<UserModel>(user);
+            userModel.AvatarImageUrl = null;
+            await _userService.AddAsync(userModel);
+            var response = new JsonResult(user);
+            response.StatusCode = 200;
+            return response;
         }
 
         [HttpPut()]
         [Authorize]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> Update([FromBody] UserFullViewModel user)
+        public async Task<IActionResult> Update(UserUpdateModel user)
         {
-            if (ModelState.IsValid)
+            var email = User.Claims.First(claim => claim.Type == ClaimTypes.Email).Value;
+            var userByIdentity = await _userService.GetUserByEmailAsync(email);
+
+            var userByEmail = await _userService.GetUserByEmailAsync(user.Email);
+            if (userByEmail != null && userByEmail.Id != userByIdentity.Id)
             {
-                var email = User.Claims.First(claim => claim.Type == ClaimTypes.Email).Value;
-                var userByIdentity = await _userService.GetUserByEmailAsync(email);
-
-                var userByEmail = await _userService.GetUserByEmailAsync(user.Email);
-                if(userByEmail!= null && userByEmail.Id != userByIdentity.Id)
+                var problem = new ProblemDetails
                 {
-                    return BadRequest();
-                }
-
-                var userByName = await _userService.GetUserByUserNameAsync(user.UserName);
-                if (userByName != null && userByName.Id != userByIdentity.Id)
-                {
-                    return BadRequest();
-                }
-
-                var userModel = _mapper.Map<UserModel>(user);
-                userModel.Id = userByIdentity.Id;
-                userModel.AvatarImageUrl = userByIdentity.AvatarImageUrl;
-                await _userService.UpdateAsync(userModel);
-                return Ok();
+                    Title = "User already exist",
+                    Detail = $"The user with email {user.Email} already exist.",
+                    Status = 400,
+                };
+                return BadRequest(problem);
             }
-            else
+
+            var userByName = await _userService.GetUserByUserNameAsync(user.UserName);
+            if (userByName != null && userByName.Id != userByIdentity.Id)
             {
-                return BadRequest();
+                var problem = new ProblemDetails
+                {
+                    Title = "User already exist",
+                    Detail = $"The user with name {user.UserName} already exist.",
+                    Status = 400,
+                };
+                return BadRequest(problem);
             }
+
+            var userModel = _mapper.Map<UserModel>(user);
+
+            userModel.Id = userByIdentity.Id;
+            userModel.AvatarImageUrl = userByIdentity.AvatarImageUrl;
+            await _userService.UpdateAsync(userModel);
+            return Ok(userModel);
+
         }
 
         [HttpDelete("{id}")]
@@ -252,11 +281,19 @@ namespace WebApi.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Delete(int id)
         {
+            var user = _userService.GetByIdAsync(id);
+            if(user == null)
+            {
+                var problem = new ProblemDetails
+                {
+                    Title = "User not found",
+                    Detail = $"The user with ID {id} does not exist.",
+                    Status = 404,
+                };
+                return NotFound(problem);
+            }
             await _userService.DeleteByIdAsync(id);
-            var result = new JsonResult("");
-            result.StatusCode = 204;
-            result.ContentType = "application/json";
-            return result;
+            return NoContent();
         }
     }
 }

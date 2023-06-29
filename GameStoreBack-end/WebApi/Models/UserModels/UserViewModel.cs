@@ -1,4 +1,4 @@
-﻿namespace WebApi.Models
+﻿namespace GameStore.WebAPI.Models.UserModels
 {
     public class UserViewModel
     {

@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace BLL.Models
+namespace GameStore.WebAPI.Models.GenreModels
 {
-    public class GenreViewModel
+    public class GenreUpdateModel
     {
+        [Required]
         public int Id { get; set; }
         [Required]
         [MinLength(3)]

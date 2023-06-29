@@ -20,7 +20,7 @@ namespace DLL.Entities
         public string Email { get; set; }
         public string? AvatarImageUrl { get; set; }
         [Required]
-        public int PasswordSaltId { get; set; }
+        public int PasswordWithSaltId { get; set; }
         [Required]
         public PasswordWithSalt PasswordWithSalt { get; set; }
         public ICollection<Comment> Comments { get; set; }

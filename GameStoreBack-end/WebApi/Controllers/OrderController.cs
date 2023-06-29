@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
 using BLL.Interfaces;
+using DLL.Entities;
 using GameStore.WebAPI.Models;
 using GameStrore.BusinessLogic.Interfaces;
 using GameStrore.BusinessLogic.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using WebApi.Models;
 
 namespace GameStore.WebAPI.Controllers
 {
@@ -37,13 +35,19 @@ namespace GameStore.WebAPI.Controllers
         [ProducesResponseType(401)]
         public async Task<IActionResult> createOrder(CreateOrderModel createOrderModel)
         {
-            if (!ModelState.IsValid || !(createOrderModel.PaymentType == "card" || createOrderModel.PaymentType == "cash"))
+            if (!(createOrderModel.PaymentType == "card" || createOrderModel.PaymentType == "cash"))
             {
-                    return BadRequest();
+                var problem = new ProblemDetails
+                {
+                    Title = "Wrong payment type",
+                    Detail = $"The apyment type must be card or cash.",
+                    Status = 400,
+                };
+                return BadRequest(problem);
             }
-            
+
             var games = await _gameService.GetAllAsync();
-            foreach(var cart in createOrderModel.CartModelsIds)
+            foreach (var cart in createOrderModel.CartModelsIds)
             {
                 if (games.FirstOrDefault(g => g.Id == cart.GameId) == null)
                 {
@@ -53,7 +57,7 @@ namespace GameStore.WebAPI.Controllers
             var orderModel = _mapper.Map<OrderModel>(createOrderModel);
             await _orderService.AddAsync(orderModel);
             orderModel.Id = _orderService.GetAllAsync().Result.Last().Id;
-            foreach (var cart  in createOrderModel.CartModelsIds)
+            foreach (var cart in createOrderModel.CartModelsIds)
             {
                 cart.OrderId = orderModel.Id;
                 await _cartService.AddAsync(cart);
