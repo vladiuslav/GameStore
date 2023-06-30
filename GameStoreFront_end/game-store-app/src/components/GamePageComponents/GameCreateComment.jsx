@@ -40,7 +40,15 @@ const GameCreateComment = (props) => {
           CreateComment();
         }}
       >
-        Add Comment
+        Save
+      </button>{" "}
+      <button
+        className="comment-button"
+        onClick={() => {
+          props.closeAddComment();
+        }}
+      >
+        Close
       </button>
     </div>
   );

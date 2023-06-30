@@ -7,6 +7,7 @@ import GetUserImage from "./userPageComponents/GetUserImage";
 import SignIn from "./SignIn";
 import LogIn from "./LogIn";
 import CheckIsTokenExpired from "./JsFunctions/CheckIsTokenExpired";
+import GetCartItems from "./JsFunctions/CartFunctions/GetCartItems";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -99,6 +100,11 @@ const Header = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/Cart" className="nav-item">
+                  {GetCartItems().length}
+                </Link>
+              </li>
+              <li>
                 <Link
                   className="nav-item"
                   onClick={() => {
@@ -138,6 +144,11 @@ const Header = () => {
               <li>
                 <Link to="/Cart" className="nav-item">
                   <i className="fa-solid fa-cart-shopping"></i>
+                </Link>
+              </li>
+              <li>
+                <Link to="/Cart" className="nav-item">
+                  {GetCartItems().length}
                 </Link>
               </li>
               <li>

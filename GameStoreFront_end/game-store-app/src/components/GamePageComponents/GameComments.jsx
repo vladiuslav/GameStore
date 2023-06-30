@@ -9,6 +9,7 @@ import fetchDeleteComment from "../Fetches/fetchComments/fetchDeleteComment";
 import GetUserImage from "../userPageComponents/GetUserImage";
 import GameCreateComment from "./GameCreateComment";
 import CheckIsTokenExpired from "../JsFunctions/CheckIsTokenExpired";
+import CheckIsUserLogin from "../JsFunctions/CheckIsUserLogin";
 
 const GameComments = (props) => {
   const [comments, setComments] = useState("");
@@ -16,8 +17,10 @@ const GameComments = (props) => {
   const [userCurrent, setCurrentUser] = useState({});
   const [changeCommentText, setChangeCommentText] = useState("");
   const [changeCommentId, setchangeCommentId] = useState(0);
+  const [showAddCommentButton, setShowAddCommentButton] = useState(false);
   const [removeCommentId, setremoveCommentId] = useState(0);
   const [replyCommentId, setreplyCommentId] = useState(0);
+  const [showDeleteSaveButtonId, setShowDeleteSaveButtonId] = useState(0);
 
   useEffect(() => {
     const getUsers = async () => {
@@ -50,6 +53,25 @@ const GameComments = (props) => {
     getCurrentUser();
   }, []);
 
+  const DeleteComment = async () => {
+    if (removeCommentId !== 0) {
+      let result = await fetchDeleteComment({
+        commentId: removeCommentId,
+      });
+      if (result.ok) {
+        window.location.reload();
+      } else {
+        let errorBody = await result.json();
+        alert(
+          errorBody.title +
+            "\n" +
+            (errorBody.detail !== undefined ? errorBody.detail : "")
+        );
+        return;
+      }
+    }
+  };
+
   const getCommentsWithReplied = function() {
     let newComents = [];
     comments.forEach((element) => {
@@ -61,30 +83,6 @@ const GameComments = (props) => {
       }
     });
     return newComents;
-  };
-
-  const DeleteButton = function(comment) {
-    if (removeCommentId === comment.id) {
-      return (
-        <span
-          onClick={() => {
-            setremoveCommentId(0);
-          }}
-        >
-          Restore
-        </span>
-      );
-    } else {
-      return (
-        <span
-          onClick={() => {
-            setremoveCommentId(comment.id);
-          }}
-        >
-          Delete
-        </span>
-      );
-    }
   };
 
   const updateComment = async () => {
@@ -106,6 +104,28 @@ const GameComments = (props) => {
     }
   };
 
+  const timeLeft = function(created) {
+    var createdDate = new Date(created);
+
+    var now = new Date();
+
+    var timeDifference = now - createdDate;
+
+    var timeDifferencePositive = Math.abs(timeDifference);
+
+    var seconds = Math.floor(timeDifferencePositive / 1000) % 60;
+    var minutes = Math.floor(timeDifferencePositive / (1000 * 60)) % 60;
+    var hours = Math.floor(timeDifferencePositive / (1000 * 60 * 60)) % 24;
+    var days = Math.floor(timeDifferencePositive / (1000 * 60 * 60 * 24));
+    return (
+      "Time left: " +
+      (days !== 0 ? days + " days, " : "") +
+      (hours !== 0 ? hours + " hours, " : "") +
+      (minutes !== 0 ? minutes + " minutes, " : "") +
+      (seconds !== 0 ? seconds + " seconds" : "")
+    );
+  };
+
   const renderComment = function(comment, replied = false) {
     let user = users.find((u) => u.id === comment.userId);
 
@@ -119,6 +139,7 @@ const GameComments = (props) => {
           )}
         </div>
         <p>{user.userName}</p>
+        <p>{timeLeft(comment.created)}</p>
         {changeCommentId !== comment.id ? (
           <p>{comment.text}</p>
         ) : (
@@ -135,7 +156,15 @@ const GameComments = (props) => {
                 updateComment();
               }}
             >
-              Change
+              Save
+            </button>{" "}
+            <button
+              className="comment-button"
+              onClick={() => {
+                setchangeCommentId(0);
+              }}
+            >
+              Close
             </button>
           </>
         )}
@@ -152,26 +181,28 @@ const GameComments = (props) => {
                 }
               }}
             >
-              Change
+              Edit
             </span>
             |
-            {
+            {showDeleteSaveButtonId !== comment.id ? (
               <span
                 onClick={() => {
-                  const deleteComment = async () => {
-                    let result = await fetchDeleteComment({
-                      commentId: comment.id,
-                    });
-                    if (result.ok) {
-                      window.location.reload();
-                    }
-                  };
-                  deleteComment();
+                  setShowDeleteSaveButtonId(comment.id);
                 }}
               >
                 Delete
               </span>
-            }
+            ) : (
+              <button
+                className="comment-button"
+                onClick={() => {
+                  setremoveCommentId(comment.id);
+                  DeleteComment();
+                }}
+              >
+                Save
+              </button>
+            )}
           </p>
         ) : (
           <></>
@@ -180,6 +211,9 @@ const GameComments = (props) => {
           <GameCreateComment
             gameId={props.gameId}
             repliedCommentId={comment.id}
+            closeAddComment={() => {
+              setreplyCommentId(0);
+            }}
           />
         ) : (
           <p
@@ -209,7 +243,27 @@ const GameComments = (props) => {
       ) : (
         getCommentsWithReplied().map((comment) => renderComment(comment))
       )}
-      <GameCreateComment gameId={props.gameId} repliedCommentId={0} />
+      {CheckIsUserLogin() ? (
+        showAddCommentButton ? (
+          <GameCreateComment
+            gameId={props.gameId}
+            repliedCommentId={0}
+            closeAddComment={() => {
+              setShowAddCommentButton(false);
+            }}
+          />
+        ) : (
+          <p
+            onClick={() => {
+              setShowAddCommentButton(true);
+            }}
+          >
+            Comment
+          </p>
+        )
+      ) : (
+        <></>
+      )}
     </>
   );
 };
