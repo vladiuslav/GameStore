@@ -105,25 +105,8 @@ const GameComments = (props) => {
   };
 
   const timeLeft = function(created) {
-    var createdDate = new Date(created);
-
-    var now = new Date();
-
-    var timeDifference = now - createdDate;
-
-    var timeDifferencePositive = Math.abs(timeDifference);
-
-    var seconds = Math.floor(timeDifferencePositive / 1000) % 60;
-    var minutes = Math.floor(timeDifferencePositive / (1000 * 60)) % 60;
-    var hours = Math.floor(timeDifferencePositive / (1000 * 60 * 60)) % 24;
-    var days = Math.floor(timeDifferencePositive / (1000 * 60 * 60 * 24));
-    return (
-      "Time left: " +
-      (days !== 0 ? days + " days, " : "") +
-      (hours !== 0 ? hours + " hours, " : "") +
-      (minutes !== 0 ? minutes + " minutes, " : "") +
-      (seconds !== 0 ? seconds + " seconds" : "")
-    );
+    const utcDate = new Date(created + "Z"); // Append "Z" to indicate UTC time
+    return utcDate.toLocaleString();
   };
 
   const renderComment = function(comment, replied = false) {
