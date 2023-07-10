@@ -18,6 +18,11 @@ const Order = () => {
   };
 
   function sendOrder() {
+    if (firstName === "" || lastName === "" || email === "" || phone === "") {
+      alert("Please fill all fields");
+      return;
+    }
+
     const processFetch = async () => {
       let result = await fetchCreateComment(
         firstName,
@@ -29,6 +34,7 @@ const Order = () => {
       );
       if (result.ok) {
         RemoveAllCartItems();
+        alert("Order completed");
         navigate("/");
       } else {
         let errorBody = await result.json();

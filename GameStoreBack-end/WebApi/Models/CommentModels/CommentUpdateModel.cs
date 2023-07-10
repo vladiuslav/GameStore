@@ -6,7 +6,7 @@ namespace GameStore.WebAPI.Models.CommentModels
     {
         public int Id { get; set; }
         [Required]
-        [StringLength(600)]
+        [MaxLength(600, ErrorMessage = "Comment max length 600")]
         public string Text { get; set; }
     }
 }
